@@ -1,6 +1,6 @@
-package Tarea0;
+package Tarea1;
 
-public class Tarea0 {
+public class Tarea1 {
     
     public static void main (String[] args) {
         
