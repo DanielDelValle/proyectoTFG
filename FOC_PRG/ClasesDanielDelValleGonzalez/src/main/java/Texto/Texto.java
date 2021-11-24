@@ -1,8 +1,5 @@
 package Texto;
-/**
- *
- * @author Daniel
- */
+
 public class Texto {
     
     public static void main (String[] args) {
@@ -32,21 +29,25 @@ public class Texto {
         //Cambiar "a" por "_" :
         System.out.println("Reemplazando caracteres: " + mi_nombre.replace("a", "_"));
         
-        DanielDelValleGonzalez Correcto = new DanielDelValleGonzalez("Manolo", 45); //instanciamos un objeto con valores correctos        
-        System.out.println("Nombre: " + Correcto.getNombre());
-        System.out.println("Edad: " + Correcto.getEdad());
+        DanielDelValleGonzalez correcto = new DanielDelValleGonzalez("Manolo", 45); //instanciamos un objeto con valores correctos        
+        System.out.println("Nombre: " + correcto.getNombre());
+        System.out.println("Edad: " + correcto.getEdad());
         
-        Correcto.setNombre("Antonio");  //ahora le damos otros valores válidos con los métodos "setter"
-        Correcto.setEdad(25);
-        System.out.println("Nombre desde el setter: " + Correcto.getNombre());
-        System.out.println("Edad desde el setter: " + Correcto.getEdad());
+        correcto.setNombre("Antonio");  //ahora le damos otros valores válidos con los métodos "setter"
+        correcto.setEdad(25);
+        System.out.println("Nombre desde el setter: " + correcto.getNombre());
+        System.out.println("Edad desde el setter: " + correcto.getEdad());
         
-        DanielDelValleGonzalez Erroneo = new DanielDelValleGonzalez("Carlos", 180);  //instanciamos un objeto con edad fuera de rango
-        System.out.println("Comprobar edad reseteada a 0 por estar fuera de rango: edad = " + Erroneo.getEdad()); 
+        DanielDelValleGonzalez erroneo = new DanielDelValleGonzalez("Carlos", 180);  //instanciamos un objeto con edad fuera de rango
+        System.out.println("Comprobar edad reseteada a 0 por estar fuera de rango: edad = " + erroneo.getEdad()); 
         //En este caso, se retornará por pantalla la edad errónea, ya que no hay manera de controlarlo si se fija desde el constructor
         
-        Erroneo.setNombre("Francisca");
-        Erroneo.setEdad(150);               //ahora  sí que será corregido y resetado a 0, además de mostrarse el mensaje de error.
-        System.out.println("Comprobar edad reseteada a 0 por estar fuera de rango: edad = " + Erroneo.getEdad());
+        erroneo.setNombre("Francisca");
+        erroneo.setEdad(150);               //ahora  sí que será corregido y resetado a 0, además de mostrarse el mensaje de error.
+        System.out.println("Comprobar edad reseteada a 0 por estar fuera de rango: edad = " + erroneo.getEdad());
+        
+        //Comprobamos el metodo ayuda
+        
+        correcto.ayuda();
     }
 }

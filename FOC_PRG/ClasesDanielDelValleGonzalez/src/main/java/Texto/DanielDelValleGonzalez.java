@@ -41,6 +41,7 @@ public class DanielDelValleGonzalez {  //constructor sin valores por defecto, so
         }
     }
     
+    //Metodo "ayuda"
     public void ayuda() {
        System.out.println("Esta clase permite crear personas con un nombre y una edad");
     }

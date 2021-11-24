@@ -6,24 +6,28 @@ public class Input02 {
     public static void main(String[] args) {
         
         JOptionPane.showMessageDialog(null,
-                "There's no input here, just a message",
-                "Title",
-                0);
+                "Este panel no acepta inputs - Es sólo un mensaje del sistema", //message shown
+                "Aviso importante para usuarios", //title
+                0);    //Icon number
 
         
         String input1 = (String)JOptionPane.showInputDialog(null,
-                "Is this a question?",
-                "Dialog Title",
-                2,
+                "Por favor, introduzca su nombre",
+                "Pregunta 1 - Nombre",
+                3,
                 null,
                 null,
-                "Type something here.");
+                "Escriba aquí su nombre");
+        JOptionPane.showMessageDialog(null,
+                "Bienvenido, " + input1, //message shown
+                "Saludo", //title
+                1);    //Icon number
         
         
-        String[] acceptableValues = {"Choice 1", "Choice 2", "Choice 3"};
+        String[] acceptableValues = {"Yo diría que sí", "Últimamente no", "No sé"}; //nombres de las opciones
         String input2 = (String)JOptionPane.showInputDialog(null,
-                "Is this a question?",
-                "Dialog Title",
+                "¿Es usted feliz?",
+                "Pregunta 2 - Felicidad",
                 2,
                 null,
                 acceptableValues,
