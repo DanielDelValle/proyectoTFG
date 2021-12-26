@@ -1,9 +1,0 @@
-
-form{width:100%;}
-span {color:Brown; font-weight:bold; text-decoration:underline}
-form {background-color:#f5f979;}
-legend{color:red; font-style:italic}
-h4{color:brown;}
-#user{color:blue;}
-#datos{color:darkgreen;}
-#transp{color:brown;}

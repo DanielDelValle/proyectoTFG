@@ -32,10 +32,10 @@
 				<input type="text" id="idnombre" required placeholder="aquí va el nombre"/>
 				<br>
 				<label for "idapp1">Apellido1*</label>
-				<input type="text" id="idapp1" required placeholder="aquí va el nombre"/>
+				<input type="text" id="idapp1" required placeholder="aquí va el primer apellido"/>
 				<br>
 				<label for "idapp2">Apellido2*</label>
-				<input type="text" id="idapp2" required placeholder="aquí va el nombre"/>
+				<input type="text" id="idapp2" required placeholder="aquí va el segundo apellido"/>
 				<br>
 				<label for "idemail">Email*</label>
 				<input type="email" id="idemail" required placeholder="aquí va el email"/>
