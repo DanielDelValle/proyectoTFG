@@ -1,7 +1,8 @@
 <!DOCTYPE HTML>
 <HTML>
 	<HEAD>
-			<link rel="stylesheet"	href="estiloso.css" type="text/css"/>
+		<meta charset="utf-8">
+		<link rel="stylesheet"	href="estiloso.css" type="text/css"/>
 	</HEAD>
 	
 	<BODY>
@@ -11,7 +12,7 @@
 		</span>
 		<br>
 		<title>SOLICITUD DE EMPLEO CON EMPRESA.SA</title>
-		<FORM ID="FORMULARIO_PRUEBA" action="mailto:danimolar@hotmail.com" method="GET"/>
+		<FORM ID="FORMULARIO_PRUEBA" action="mailto:danimolar@hotmail.com" method="GET" autocomplete/>
 			<fieldset id="user">		
 				<legend><h2>Crear Usuario</h2></legend>
 				<label for "iduser">Nombre Usuario*</label>
@@ -23,6 +24,8 @@
 				<label for "idpasswd2">Repite la Contraseña*</label>
 				<input type="password" id="idpasswd2" required placeholder="aquí va la clave"/>
 				<br>
+				<label for="color">Elije un color para tu usuario</label>
+				<input type="color" name="favcolor">
 
 			</fieldset>			
 		
@@ -49,8 +52,9 @@
 				<label for "idnumero">Años de experiencia con Java*</label>
 				<input type="number" id="idnumero" required placeholder="1 si tienes más de 3 meses"/>
 				<br>
-				<label for "idwempleado">Actualmente trabajo</label>
-				<input type="radio" id="idempleado"/>
+				<label for "idempleado">Actualmente trabajo</label>
+				<input type="radio" id="idempleado" name="ocupado" value="1"/> Sí
+				<input type="radio" id="idempleado" name="ocupado" value="0"/> No
 			</fieldset>
 
 			
@@ -75,8 +79,8 @@
 			<fieldset id="lenguajes">			
 				<legend><h2>Lenguajes de Programación</h2></legend>
 				<legend><h4>Por favor, elija los lenguajes con los que tenga fluidez</h4></legend>
-				<input list="lang">
-				<datalist id="lang">
+				<input list="lang"/>
+				<datalist id="lang"/>
 					<option value="Java" selected >a) Java</option>
 					<option value="Python">b) Python</option>
 					<option value="HTML">c) HTML</option>
@@ -88,6 +92,8 @@
 			<fieldset>
 				<legend><h2>Comentarios</h2></legend>
 				<textarea rows="5" cols="25">Explica por qué quieres trabajar con nosotros</textarea>
+				<label for="archivo">Adjunta tu Currículum Vitae*</label>
+				<input type="file" name="CV" multiple required>
 			</fieldset>
 				<input type="submit" value="Guardar y enviar" />
 				<input type="reset" value="Borrar todo" />
