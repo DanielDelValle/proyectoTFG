@@ -1,7 +1,14 @@
 span {color:Brown; font-weight:bold; text-decoration:underline}
-form {background-color:#f5f979;width:100%;text-align:center;}
+form {background-color:#f5f979;width:100%;}
 legend{color:red; font-style:italic}
 h4{color:brown;}
+form input{border:1px solid;border-radius:20px;}
+#user input:focus{width:200px;background-color:grey;color:blue;}
+#datos input:focus{width:200px;background-color:grey;color:blue;}
+#user label{width:200px;height:15px;float:left;}
+#datos label{width:200px;height:15px;float:left;}
+#idempleado{width:50px;height:15px;}
+textarea{border-radius:20px;width:200px;height:100px;}
 #user{color:blue;}
 #datos{color:darkgreen;}
 #transp{color:brown;}

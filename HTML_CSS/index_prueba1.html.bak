@@ -1,8 +1,7 @@
 <!DOCTYPE HTML>
 <HTML>
 	<HEAD>
-		<meta charset="utf-8">
-		<link rel="stylesheet"	href="estiloso.css" type="text/css"/>
+			<link rel="stylesheet"	href="estiloso.css" type="text/css"/>
 	</HEAD>
 	
 	<BODY>
@@ -24,8 +23,6 @@
 				<label for "idpasswd2">Repite la Contraseña*</label>
 				<input type="password" id="idpasswd2" required placeholder="aquí va la clave"/>
 				<br>
-				<label for="color">Elije un color para tu usuario</label>
-				<input type="color" name="favcolor">
 
 			</fieldset>			
 		
@@ -53,8 +50,9 @@
 				<input type="number" id="idnumero" required placeholder="1 si tienes más de 3 meses"/>
 				<br>
 				<label for "idempleado">Actualmente trabajo</label>
-				<input type="radio" id="idempleado" name="ocupado" value="1"/> Sí
-				<input type="radio" id="idempleado" name="ocupado" value="0"/> No
+				<input type="radio" id="idempleado" name="ocupado" value="si"/>
+				<label for "idparado">No</label>
+				<input type="radio" id="idparado" name="ocupado" value="no"/>
 			</fieldset>
 
 			
@@ -79,9 +77,9 @@
 			<fieldset id="lenguajes">			
 				<legend><h2>Lenguajes de Programación</h2></legend>
 				<legend><h4>Por favor, elija los lenguajes con los que tenga fluidez</h4></legend>
-				<input list="lang"/>
-				<datalist id="lang"/>
-					<option value="Java" selected >a) Java</option>
+				<input list="lang">
+				<datalist id="lang">
+					<option value="Java" >a) Java</option>
 					<option value="Python">b) Python</option>
 					<option value="HTML">c) HTML</option>
 					<option value="CSS">d) Css</option>				
@@ -92,8 +90,6 @@
 			<fieldset>
 				<legend><h2>Comentarios</h2></legend>
 				<textarea rows="5" cols="25">Explica por qué quieres trabajar con nosotros</textarea>
-				<label for="archivo">Adjunta tu Currículum Vitae*</label>
-				<input type="file" name="CV" multiple required>
 			</fieldset>
 				<input type="submit" value="Guardar y enviar" />
 				<input type="reset" value="Borrar todo" />
