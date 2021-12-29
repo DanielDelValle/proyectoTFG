@@ -40,18 +40,18 @@
 				<label for "idemail">Email*</label>
 				<input type="email" id="idemail" required placeholder="aquí va el email"/>
 				<br>
-				<label for "idemail">Web Personal</label>
+				<label for "idurl">Web Personal</label>
 				<input type="url" id="idurl" placeholder="aquí va tu web o repositorio"/>
 				<br>
 				<label for "idfecha">Fecha de Nacimiento*</label>
 				<input type="date" id="idfecha" required />
 				<br>
 				<label for "idnumero">Años de experiencia con Java*</label>
-				<input type="number" id="idnumero" required placeholder="1 si tienes más de 3 meses"/>
+				<input type="number" id="idnumero" min="0" required placeholder="Más de 3 meses = 1"/>
 				<br>
 				<label for "idempleado">Actualmente trabajo</label>
-				<input type="radio" id="idempleado" name="ocupado" value="si"/>
-				<input type="radio" id="idempleado" name="ocupado" value="no"/>
+				Sí<input type="radio" id="idempleado" name="ocupado" value="1"/>
+				No<input type="radio" id="idempleado" name="ocupado" value="0"/>
 			</fieldset>
 
 			

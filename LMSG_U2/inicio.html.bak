@@ -1,0 +1,33 @@
+<!DOCTYPE HTML>
+<HTML>
+	<HEAD>
+			<link rel="stylesheet"	href="estiloDVG.css" type="text/css"/>
+	</HEAD>
+	
+	<BODY>
+		<title> Web Designers Spain S.A. Web Oficial </title> 
+		
+		<header>
+			<h1> >>>>>>>>>>>> WEB DESIGNERS SPAIN S.A. <<<<<<<<<<<< </h1><br>
+		</header>
+	<br>
+		<content id=about_us>			
+			<h2>Sobre nosotros</h2>
+			<p>
+				<h3>Nuestra empresa tiene su sede principal en la ciudad de Granada, donde nació el proyecto. <br>
+			
+				Actualmente tenemos otras sedes en Madrid, Barcelona y Murcia.</h3><br><br>
+			
+				<h2>Servicios ofrecidos</h2>
+			
+				<h3>Nos dedicamos al diseño, creación e implementación de páginas web, cubriendo su producción de principio a fin.<br>
+				Además, ofrecemos un servicio de actualización y renovación de webs para aquellas empresas que deseen ponerse al día.<br><br>
+				Como servicio recientemente añadido, tenemos una centralita de atención urgente tanto para clientes como no clientes, <br>
+				a través de la cuál resolvemos incidencias acontecidas a cualquier web de empresa o particular que requiera nuestros servicios.<br>
+				No duden en consultar nuestras competitivas tarifas, sin ningún tipo de compromiso; estaremos encantados de atenderles.</h3><br><br>
+			
+				<h2>Equipo y recursos</h2>
+				<h3>Nuestro equipo está formado por profesionales con gran experiencia en el ámmbito del diseño web y la programación,			
+				dominando los lenguajes más actuales.</h3><br><br>		
+			</p>			
+		</content>
