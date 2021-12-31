@@ -107,6 +107,11 @@ img{
 	
 }
 
+.note {
+	font-size:11;
+	color:red;
+	font-style:italic;
+
 content .date {	
 	font-size:11;
 	color:blue;
