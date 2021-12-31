@@ -39,31 +39,34 @@
 					<input type="number" id="edad" min="0" placeholder="su edad"/>
 					<br><br>
 					<label for "email">Email*</label>
-					<input type="email" id="email" required placeholder="ejemplo@email.com"/>
-					<br><br><br> 
-					<label for "url">Web a tratar (opcional)</label><br><br>
+					<input type="email" id="email" required placeholder="ejemplo@email.com"/><br><br>
+					<label for "url">Web a tratar (opcional)</label>
 					<input type="url" id="url" placeholder="http://www.ejemplo.com"/><br>	
-					<span class="help">Por favor, introduzca la dirección web completa, tal y como aparece en el ejemplo.</span>		
-					<br><br>
-					<label for "fechaInc">Fecha del incidente a reportar (opcional)</label><br><br>
-					<input type= "date" id="fechaInc"/>
-					<br><br>
-					<label for "previo">Ya he contactado anteriormente con Web Designers Spain S.A.</label><br>
-					Sí<input type="radio" id="previo" name="previo"/>
-					No<input type="radio" id="previo" name="previo" checked />
+					<span class="help">Por favor, introduzca la dirección web completa, tal y como aparece en el ejemplo.</span>
+					<br><br><br> 
+
 				</fieldset>
 				<br>
-				<fieldset id="extra">			
+				<fieldset id="extra">
 					<legend><h2>Datos Complementarios</h2></legend>
-					<span class= "	help">Por favor, indique el tipo de cliente que es, para poder elegir mejor el servicio a prestarle.</span><br><br>
 					<select>
 						<option value="a" selected> a) Particular</option>
 						<option value="b"> b) Empresa Privada</option>
 						<option value="c"> c) Entidad Pública</option>
 						<option value="d" > d) ONG/Fundación</option>		
-					<select>
+					<select><br>
+					<span class= "	help">Por favor, indique el tipo de cliente que es, para poder elegir mejor el servicio a prestarle.</span>
 					<br><br>
-					<label for "land">Lugar de la sede principal de la empresa:</label>
+					<label for "previo">Ya he contactado anteriormente con Web Designers Spain S.A.</label><br><br>
+					Sí<input type="radio" id="previo" name="previo"/>
+					No<input type="radio" id="previo" name="previo" checked /><br><br>
+					<label for "fechaInc">Fecha del incidente a reportar (opcional)</label><br>
+					<input type= "date" id="fechaInc"/>
+					<br><br>		
+					
+			
+					<br><br>
+					<label for "land">Lugar de la sede principal de la empresa:</label><br><br>
 					España<input type="radio" id="land" name="land" checked />
 					Resto de países<input type="radio" id="land" name="land" />
 					<br><br>
