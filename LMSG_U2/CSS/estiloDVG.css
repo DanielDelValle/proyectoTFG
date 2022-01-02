@@ -1,6 +1,5 @@
 header {
-	height:50px;
-	/* margin:auto; */
+	height:80px;
 	background-color:yellow;
 	text-align:center;
 }
@@ -11,9 +10,15 @@ body {
 	
 
 nav {
-	margin-top:30px;
+	margin-top:50px;
 	margin-bottom:30px;
-	text-align:center;
+	width:700px;
+	margin-right:auto;
+	margin-left:auto;
+	
+	/* align-items:center; */
+
+
 
 }
 
@@ -26,6 +31,7 @@ nav ul li {
 	font-size:20pt;
 	display:inline-block;
 	padding:20px;
+	text-align:center;
 	
 
 }
@@ -115,7 +121,6 @@ img{
 	display:block;
 	margin-left:auto;
 	margin-right:auto;
-	width: 40%;
 }
 
 .help {
