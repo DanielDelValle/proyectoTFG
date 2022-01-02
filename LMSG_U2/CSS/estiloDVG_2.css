@@ -1,19 +1,15 @@
 header {
+	position: relative;	
 	height:50px;
-	/* margin:auto; */
+	margin:auto;
 	background-color:yellow;
 	text-align:center;
-}
-	
-body {
-	background-color:#cccccc;
-}
 	
 
+}
 nav {
 	margin-top:30px;
 	margin-bottom:30px;
-	text-align:center;
 
 }
 
@@ -46,17 +42,18 @@ nav ul li a:hover {
 }
 
 
+body {
+	text-align:center;
+	background-image: url("/images/diseño.jpg");
+	background-color: #cccccc;
+}
+
 #articles {
 	text-align:center;
-	
 	}
 	
 #articles h2 {
 	text-decoration:underline;
-}
-
-#about_us {
-	text-align:center;
 }
 
 #contact {
@@ -77,9 +74,11 @@ nav ul li a:hover {
 }
 
 #data label {
-	display: flex;
-	justify-content:center;
-	/* align-items:center; */
+  display: flex;
+  justify-content: flex-end;
+  text-align: right;
+  width: 800px;
+  
 
 }
 
