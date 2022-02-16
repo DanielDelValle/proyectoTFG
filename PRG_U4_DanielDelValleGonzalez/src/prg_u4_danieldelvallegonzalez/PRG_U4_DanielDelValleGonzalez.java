@@ -4,7 +4,11 @@ import clases.*;
 public class PRG_U4_DanielDelValleGonzalez {
 
     public static void main(String[] args) {
-        persona hombre1 = new persona("Manolo", 35);
+        persona yo = new persona();  //creamos persona vacía, para usar constructor vacío, y después damos atributos.
+        yo.setEdad(33);
+        yo.setNombre("Daniel");
+        
+        persona hombre1 = new persona("Manolo", 35); //creamos persona usando constructor con parámetros
         hombre1.describirse();
         System.out.println("-----------------------"); 
         

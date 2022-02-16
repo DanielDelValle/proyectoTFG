@@ -9,7 +9,10 @@ public class persona { //atributos protected en lugar de private, pues tendrá c
         this.nombre = nombre;
         this.edad = edad;           
     }
-    
+    public persona(){ //constructor vacío en caso de querer instanciar y después ir añadiendo atributos con los setter.
+        nombre = "";
+        edad = 1;
+    }
     public String getNombre() {
         return nombre;
     }
