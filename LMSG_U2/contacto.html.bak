@@ -12,7 +12,7 @@
 			<h4>    La web de la empresa española lider en diseño de páginas web  </h4>
 		</header>
 		
-		<nav id="menu">
+		<nav id=menu">
 			<ul>  
 				<li> <a href="index.html" target="_blank">Inicio</a></li>
 				<li> <a href="articulos.html" target="_blank">Artículos</a></li>
