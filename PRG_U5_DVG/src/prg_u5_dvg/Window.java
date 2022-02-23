@@ -260,47 +260,38 @@ public class Window extends javax.swing.JFrame {
     }//GEN-LAST:event_txtCodigoActionPerformed
 
     private void botonInsertarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonInsertarActionPerformed
-        try {
-            if((txtCodigo.getText().equals("")) || (txtNombre.getText().equals("")) || (intCantidad.getText().equals(""))){
-                txtArea.setText("");
-                txtArea.append("Por favor, indique un valor \npara los campos obligatorios \nCodigo, Nombre y Cantidad.");
-            }
-            else{
-                //producto p = new producto(txtCodigo.getText(), txtNombre.getText(), Integer.parseInt(intCantidad.getText()), txtDescripcion.getText());
+        if ((txtCodigo.getText().equals("")) || (txtNombre.getText().equals("")) || (intCantidad.getText().equals(""))) {
+            txtArea.setText("");
+            txtArea.append("Por favor, indique un valor \npara los campos obligatorios \nCodigo, Nombre y Cantidad.");
+        } else {
+
+            try {
+
                 producto p = new producto();
                 p.setCodigo(txtCodigo.getText());
                 p.setNombre(txtNombre.getText());
-                try{
-                    if ((intCantidad.getText()).equals(Integer.parseInt(intCantidad.getText()))){
-                    p.setCantidad(Integer.parseInt(intCantidad.getText()));
-                    }
-                }
-                catch(NumberFormatException en){
-                    txtArea.append("Por favor, introduzca solo valores numéricos enteros en el campo Cantidad" + "\n" +en.getLocalizedMessage());
-                }
-                
+                p.setCantidad(Integer.parseInt(intCantidad.getText()));
                 p.setDescripcion(txtDescripcion.getText());
                 String l = p.Insertar();
                 txtArea.setText("");
                 txtArea.append(l);
 
+            } catch (IOException ex) {
+                Logger.getLogger(Window.class.getName()).log(Level.SEVERE, null, ex);
             }
-        } catch (IOException ex) {
-            Logger.getLogger(Window.class.getName()).log(Level.SEVERE, null, ex);
         }
 
 
     }//GEN-LAST:event_botonInsertarActionPerformed
 
     private void botonBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonBuscarActionPerformed
-        if((txtBusqueda.getText()).equals("")){
+        if ((txtBusqueda.getText()).equals("")) {      //con esta linea chequeo que el campo "busqueda" no esté vacío antes de buscar.
             txtArea.setText("");
             txtArea.setText("Por favor, introduzca un término para iniciar la búsqueda");
-        }
-        else{
+        } else {
             producto p = new producto();
-            txtArea.setText("");        
-            String resultado = p.Buscar(txtBusqueda.getText());
+            txtArea.setText("");
+            String resultado = p.Buscar(txtBusqueda.getText().toLowerCase());
             txtArea.append(resultado);
         }
 
@@ -314,8 +305,8 @@ public class Window extends javax.swing.JFrame {
     }//GEN-LAST:event_botonMostrarTodoActionPerformed
 
     private void botonSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonSalirActionPerformed
-       producto p = new producto();
-       p.salir();
+        producto p = new producto();
+        p.salir();
     }//GEN-LAST:event_botonSalirActionPerformed
 
     private void combOrdenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_combOrdenActionPerformed
@@ -350,30 +341,20 @@ public class Window extends javax.swing.JFrame {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
 
-}
+                }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Window.class  
-
-.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-
-catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Window.class  
-
-.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-
-catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Window.class  
-
-.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-
-catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Window.class  
-
-.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Window.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(Window.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(Window.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(Window.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 

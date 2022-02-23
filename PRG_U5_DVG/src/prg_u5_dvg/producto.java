@@ -23,15 +23,8 @@ public class producto {
 
     public producto(String codigo, String nombre, int cantidad, String descripcion) {
         this.codigo = codigo;
-        this.nombre = nombre;
-            try{
-                if(cantidad %1 == 0)
-                this.cantidad = cantidad;
-            }
-            catch(Exception ex){
-                    System.out.println("El campo 'cantidad' debe ser un valor numérico" + ex.getMessage());               
-            }
-        //this.cantidad = cantidad;
+        this.nombre = nombre;  
+        this.cantidad = cantidad;
         this.descripcion = descripcion;
     }
 
@@ -65,17 +58,18 @@ public class producto {
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
     }
-
+    
     public String Insertar() throws IOException {
+
         String informe;
         try {
             File fich = new File("productos.txt");
             FileWriter fw = new FileWriter(fich, true);
-
+            
             fw.write("ID:" + codigo + System.lineSeparator());
-            fw.write("NOMBRE:" + nombre + System.lineSeparator());
-            fw.write("CANTIDAD:" + String.valueOf(cantidad) + System.lineSeparator());
-            fw.write("DESCRIPCION:" + descripcion + System.lineSeparator());
+            fw.write("NOMBRE:" + nombre.toLowerCase() + System.lineSeparator());
+            fw.write("CANTIDAD:" + cantidad + System.lineSeparator());
+            fw.write("DESCRIPCION:" + descripcion.toLowerCase() + System.lineSeparator());
             
             fw.close();
             informe = "Producto registrado con éxito!" + System.lineSeparator();
@@ -123,16 +117,20 @@ public class producto {
                 String name = bfr.readLine();
                 String amount = bfr.readLine();
                 String description = bfr.readLine();
+                
+                String nameLow=name.toLowerCase();                               // Con estas 2 líneas transformo los string en minusculas para que siempre haya coincidencia
+                String descriptionLow=description.toLowerCase();
+                
                 if (code.contains(busqueda)) {
                     lectura2 = lectura2 + System.lineSeparator() + ((contador2) + 1) + ": " + code + "  " + name + "  " + amount + "  " + description + System.lineSeparator();
                     contador2++;                    
                     }
-                else if(name.contains(busqueda)) {
+                else if(nameLow.contains(busqueda)) {
                     lectura2 = lectura2 + System.lineSeparator() + ((contador2) + 1) + ": " + code + "  " + name + "  " + amount + "  " + description + System.lineSeparator();
                     contador2++;
                     }
-                else if(description.contains(busqueda)) {
-                     lectura2 = lectura2 + System.lineSeparator() + ((contador2) + 1) + ": " + code + "  " + name + "  " + amount + "  " + description + System.lineSeparator();                    
+                else if(descriptionLow.contains(busqueda)) {
+                    lectura2 = lectura2 + System.lineSeparator() + ((contador2) + 1) + ": " + code + "  " + name + "  " + amount + "  " + description + System.lineSeparator();                    
                     contador2++;
                     }
                 code = bfr.readLine();
@@ -147,15 +145,6 @@ public class producto {
     }
 
     public void salir() {
-        System.exit(0);
+        System.exit(0);    //para cerrar el programa
     }
-    public static boolean isInt(String str) {
-	
-  	try {
-    	int x = Integer.parseInt(str);
-      	return true; //String is an Integer
-	} catch (NumberFormatException e) {
-    	return false; //String is not an Integer
-	}
-    }
-}
+ }
