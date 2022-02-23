@@ -13,7 +13,7 @@ public class ReadWrite {
         System.out.println("Texto guardado: " + cadena);
         
         //Crear documento fisico (fich), e instancia clase "FileWriter" (fw), y conectarlas.        
-        File fich = new File("documento.txt");
+        File fich = new File("registroTexto.txt");
         FileWriter fw = new FileWriter(fich, true);
         System.out.println("Se ha creado un fichero en la ubicación: "+ fich.getAbsolutePath());
       
@@ -42,12 +42,18 @@ public class ReadWrite {
         
         //b) Buffered
         BufferedReader bfr = new BufferedReader(new FileReader(fich));
-        String linea_lectura = bfr.readLine();
-        while(linea_lectura != null){
-            System.out.println(linea_lectura);
-            linea_lectura = bfr.readLine();
+        try {
+            String linea_lectura = bfr.readLine();    
+            while(linea_lectura != null){
+                System.out.println(linea_lectura);
+                linea_lectura = bfr.readLine();
+            } 
+        }        
+        catch (IOException ex) {
+                ex.printStackTrace();
         }
         bfr.close();
+        }
+       
     }
-}
     
