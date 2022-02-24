@@ -324,6 +324,7 @@ public class Window extends javax.swing.JFrame {
         intCantidad.setText("");
         txtDescripcion.setText("");
         txtBusqueda.setText("");
+        txtArea.setText("");
     }//GEN-LAST:event_botonBorrarMouseClicked
 
     /**
