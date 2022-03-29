@@ -39,8 +39,8 @@ public class JOption {
                         "Nota: Si el codigo de producto ya existe en la base de datos, no podrá introducirlo de nuevo para evitar duplicados. Use el boton 'modificar'.";
         
         String buscar = "2 - BUSCAR/Busqueda Exacta: Debe introducir un unico valor en un campo cualquiera del producto" + 
-                        System.lineSeparator() + "Si en la lista hay un producto cuyo campo contenga el valor introducido, se motrará en pantalla el resultado." +
-                        System.lineSeparator() + "Además, marcando la casilla 'BUSQUEDA EXACTA' se realizará una busqueda que solo muestre las coincidencias exactas";
+                        System.lineSeparator() + "Si en el registro hay un producto cuyo campo contenga el valor introducido, sin distinguir mayúsculas/minúsculas, se motrará en pantalla el resultado." +
+                        System.lineSeparator() + "Además, marcando la casilla 'BUSQUEDA EXACTA' se realizará una busqueda que solo muestre las coincidencias exactas, siendo CASE SENSITIVE";
         String modificar = "3 - MODIFICAR/Sumar: Debe introducir un codigo valido y existente en la base de datos, ademas de rellenar los campos deseados con la nueva informacion a introducir.Se sustituiran los valores previos."
                 + System.lineSeparator() + "Tras rellenar los campos, pulse modificar y aparecera un mensaje de confirmacion. Pulsando 'aceptar', los cambios seran definitivos."
                 + System.lineSeparator() + "Si marca la casilla 'SUMAR', solo debera rellenar los campos 'codigo' y 'cantidad' para sumar (o restar) la cantidad introducida (establezca un valor positivo o negativo)";
@@ -50,7 +50,7 @@ public class JOption {
         String mostrar = "5 - MOSTRAR TODO: Pulse este boton para mostrar el listado completo de productos registrados.";
         
         String comprar = "6 - LISTA COMPRA: Pulse este boton para mostrar el listado de los productos cuyo stock (cantidad) es igual o menor a cero. " 
-                + System.lineSeparator() + "Ademas, el programa generará un archivo de texto llamado 'productos.txt' con el fin de poder imprimirlo o enviarlo.";
+                + System.lineSeparator() + "Ademas, el programa generará un archivo de texto llamado 'lista_de_la_compra.txt' con el fin de poder imprimirlo o enviarlo.";
                 
         
         int opcion;

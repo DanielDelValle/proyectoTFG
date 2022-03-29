@@ -69,7 +69,7 @@ public class fichero {
           try {
             producto item = new producto(codigo, nombre, cantidad, descripcion);
             for (int i = 0; i < datos.size(); i++) {
-                String comparar = datos.get(i).getCodigo().toLowerCase();  // En esta y la siguiente linea, igualo ambos codigos en minusculas para que no sea case sensitive.
+                String comparar = datos.get(i).getCodigo().toLowerCase();  // En las lineas 72 y 78, igualo ambos codigos en minusculas para que no sea case sensitive.
                 if(codigo.equals("")){
                     mensaje.empty_code();
                     existe = 0;
@@ -120,7 +120,7 @@ public class fichero {
             lista0 = lista0 + "cantidad:  " + datos.get(i).getCantidad() + System.lineSeparator();
             lista0 = lista0 + "Descripcion:  " + datos.get(i).getDescripcion() + System.lineSeparator();
             contador++;
-
+            
         }
         return lista0 + System.lineSeparator() + "Total productos: " + contador;
     }
@@ -136,8 +136,8 @@ public class fichero {
         for (int i = 0; i < datos.size(); i++) {
 
             try {                                           //con este try, creo un archivo.txt a partir de la lista de la compra, para podre imprimirlo y llevarlo encima
-            File fich = new File("productos.txt");
-            FileWriter fw = new FileWriter(fich, false); 
+            File fich = new File("lista_de_la_compra.txt");
+            FileWriter fw = new FileWriter(fich, false);    //el argumento "false" lo pongo para que la lista se sobreescriba cada vez y sea actual, y evitar confusiones
             
             if (Integer.parseInt(datos.get(i).getCantidad()) <= 0){           //compruebo productos con stock 0 o menos, para advertir de que hay que comprarlos
               comprar = i; 
@@ -179,12 +179,12 @@ public class fichero {
         int busqueda = -1;
         int contador = 0;
         for (int i = 0; i < datos.size(); i++) {            
-            String codeLow = datos.get(i).getCodigo().toLowerCase();
-            String nameLow = datos.get(i).getNombre().toLowerCase();           // Con estas 4 líneas transformo los string en minusculas para que siempre haya coincidencia
-            String amountLow = datos.get(i).getCantidad().toLowerCase(); 
-            String descriptionLow = datos.get(i).getDescripcion().toLowerCase();
+            String code = datos.get(i).getCodigo();
+            String name = datos.get(i).getNombre();          
+            String amount = datos.get(i).getCantidad();
+            String description = datos.get(i).getDescripcion();
             
-            if ((codeLow.equals(codigo))){                
+            if (code.equals(codigo)){                
                                 
                 busqueda = i;
                 contador++;
@@ -196,7 +196,7 @@ public class fichero {
 
             }
         
-            if (nameLow.equals(nombre)){                
+            if (name.equals(nombre)){                
                                 
                 busqueda = i;
                 contador++;
@@ -208,7 +208,7 @@ public class fichero {
 
             }
             
-            if (amountLow.equals(cantidad)){                
+            if (amount.equals(cantidad)){                
                                 
                 busqueda = i;
                 contador++;
@@ -220,7 +220,7 @@ public class fichero {
 
             }           
             
-            if (descriptionLow.equals(descripcion)){                
+            if (description.equals(descripcion)){                
                                 
                 busqueda = i;
                 contador++;
@@ -251,10 +251,10 @@ public class fichero {
         for (int i = 0; i < datos.size(); i++) {            
             String codeLow = datos.get(i).getCodigo().toLowerCase();
             String nameLow = datos.get(i).getNombre().toLowerCase();           // Con estas 4 líneas transformo los string en minusculas para que siempre haya coincidencia
-            String amountLow = datos.get(i).getCantidad().toLowerCase();
+            String amount = datos.get(i).getCantidad();
             String descriptionLow = datos.get(i).getDescripcion().toLowerCase();
             
-            if (!"".equals(codigo) & (codeLow.contains(codigo))){          // con !"".equals(parametro), me aseguro de que si el parametro esté vacío, no le tenga en cuenta en la busqueda
+            if (!"".equals(codigo) & (codeLow.contains(codigo.toLowerCase()))){          // con !"".equals(parametro), me aseguro de que si el parametro esté vacío, no le tenga en cuenta en la busqueda
                                 
                 busqueda = i;
                 contador++;
@@ -266,7 +266,7 @@ public class fichero {
 
             }
         
-            else if (!"".equals(nombre) & nameLow.contains(nombre)){                
+            else if (!"".equals(nombre) & nameLow.contains(nombre.toLowerCase())){                
                                 
                 busqueda = i;
                 contador++;
@@ -279,7 +279,7 @@ public class fichero {
 
             }
             
-            else if (!"".equals(nombre) & nameLow.contains(nombre)){                
+            else if (!"".equals(cantidad) & amount.contains(cantidad)){                
                                 
                 busqueda = i;
                 contador++;
@@ -292,7 +292,7 @@ public class fichero {
 
             }            
             
-            else if (!"".equals(cantidad) & amountLow.contains(cantidad)){                
+            else if (!"".equals(descripcion) & descriptionLow.contains(descripcion.toLowerCase())){                
                                 
                 busqueda = i;
                 contador++;

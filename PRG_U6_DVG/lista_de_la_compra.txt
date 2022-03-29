@@ -2,15 +2,15 @@
 
 Los siguientes productos necesitan comprar más stock: 
 
-Codigo:  5555
-Nombre:  Stock_negativo
-Cantidad:  -3
-Descripcion:  
-
-Total productos: 1
 Codigo:  6666
 Nombre:  Chocolate
 Cantidad:  -3
 Descripcion:  Nestle con leche
+
+Total productos: 1
+Codigo:  5555
+Nombre:  Phoskitos
+Cantidad:  0
+Descripcion:  Cajas
 
 Total productos: 2
