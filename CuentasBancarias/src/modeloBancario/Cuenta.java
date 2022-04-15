@@ -56,8 +56,8 @@ public abstract class Cuenta {
         saldo = saldo + ingreso;
         return saldo;
     }
-    public abstract double retirar(double retirada);
+    public abstract void retirar(double retirada); //métodos abstractos que aquí no tienen código pero serán implementados en clases hijas
     
-    public abstract double actualizarSaldo();
+    public abstract void actualizarSaldo();
     
 }

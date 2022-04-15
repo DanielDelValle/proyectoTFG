@@ -11,27 +11,30 @@ package modeloBancario;
  */
 public class CuentaCorriente extends Cuenta{    
     final protected double interesFijo = 0.15;
+
+    public CuentaCorriente() { 
+        /*he añadido constructores sin parametros para poder declarar un objeto
+        de cada tipo y asi usarlos de forma global en todos los metodos*/
+    }
     
     
     public CuentaCorriente(int numeroCuenta, double saldo, Cliente titular, double interesFijo) {
-        super(numeroCuenta, saldo, titular);
+        super(numeroCuenta, saldo, titular);  
     }
     
     @Override
-    public double actualizarSaldo(){
-        saldo = saldo * interesFijo;
-        return saldo;
+    public void actualizarSaldo(){
+        this.setSaldo(saldo+(saldo * interesFijo)/100);
     }
     
     @Override
-    public double retirar(double retirada){
+    public void retirar(double retirada){
         try{
-            saldo = saldo- retirada;
+            this.setSaldo(saldo - retirada);
         }
         catch (Exception ex){
             
         }          
-        
-        return saldo;
+ 
     }
 }

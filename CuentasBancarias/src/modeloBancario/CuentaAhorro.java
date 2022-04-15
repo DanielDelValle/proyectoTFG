@@ -12,6 +12,11 @@ package modeloBancario;
 public class CuentaAhorro extends Cuenta{
     protected double interesVariable;
     final protected double saldoMinimo = 500.00;   
+
+    public CuentaAhorro() {
+        /*he añadido constructores sin parametros para poder declarar un objeto
+        de cada tipo y asi usarlos de forma global en todos los metodos*/
+    }
    
 
     public CuentaAhorro(double interesVariable, int numeroCuenta, double saldo, Cliente titular) {
@@ -20,25 +25,31 @@ public class CuentaAhorro extends Cuenta{
     }
     
     @Override
-    public double retirar(double retirada){
+    public void retirar(double retirada){
         try{
-            if (retirada <= saldoMinimo)
-                saldo = saldo - retirada;
-            else{
-                saldo = saldo;
-            }
+            this.setSaldo(saldo - retirada);
+
         }
+        
         catch (Exception ex){
         }          
         
-        return saldo;
+    }
+
+    @Override
+    public void actualizarSaldo(){
+        this.setSaldo(saldo+(saldo * interesVariable)/100);
     }
     
-    @Override
-    public double actualizarSaldo(){
-        saldo = saldo * interesVariable;
-        return saldo;
+    public double getInteresVariable() {
+        return interesVariable;
     }
+
+    public void setInteresVariable(double interesVariable) {
+        this.interesVariable = interesVariable;
+    }
+    
+
     
     
 }
