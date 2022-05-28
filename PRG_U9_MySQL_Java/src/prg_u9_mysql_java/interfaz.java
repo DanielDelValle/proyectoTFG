@@ -21,11 +21,11 @@ public class interfaz extends javax.swing.JFrame {
      * Creates new form FVehiculos
      */
     
-    mysql sq;
+    mysql sq; 
     public interfaz()  {
         try {
             initComponents();
-            sq = new mysql ();
+            sq = new mysql (); //lo instancio a nivel de clase para poder usarlo en todos los metodos
     
             
             txtArea.setText(sq.listado());
@@ -239,7 +239,7 @@ public class interfaz extends javax.swing.JFrame {
     private void botonAltasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonAltasActionPerformed
        
         int x = sq.altas(Integer.parseInt(intCodigo.getText()), txtNombre.getText(), Integer.parseInt(intLoc_id.getText()), Integer.parseInt(intMng_id.getText()));
-        if (x>0){
+        if (x>0){  //como el metodo altas retorna 1 en caso de exito y 0 en caso contrario, puedo usarlo para determinar las frases de confirmación
            
             txtArea.setText(sq.listado());
             txtArea.append("Alta correcta \n");
@@ -253,7 +253,7 @@ public class interfaz extends javax.swing.JFrame {
 
     private void botonEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonEliminarActionPerformed
       //bajas
-      if (JOptionPane.showConfirmDialog(this, "Deseas borrar?")==JOptionPane.OK_OPTION){
+      if (JOptionPane.showConfirmDialog(this, "Deseas borrar?")==JOptionPane.OK_OPTION){ //una reconfirmación antes de eliminar - en caso de que se elija OK, se ejectua el resto del código
           int i=sq.eliminar(Integer.parseInt(intCodigo.getText()));
           if (i>0){
               txtArea.setText(sq.listado());

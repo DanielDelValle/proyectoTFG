@@ -17,9 +17,9 @@ public class mysql {
     public int altas (int codigo, String nombre, int localizacion_id, int manager_id){
         int i=0;
         try {
-            Class.forName("com.mysql.jdbc.Driver");
+            Class.forName("com.mysql.jdbc.Driver");  //cargo el driver que enlaza con mysql
             try {
-                Connection cn = DriverManager.getConnection("jdbc:mysql://localhost/53665340S","root","");
+                Connection cn = DriverManager.getConnection("jdbc:mysql://localhost/53665340S","root",""); //establezco conexción a la base de datos
                 String sql = "insert into departamentos values(?,?,?,?)";  //es una frase preestablecida, donde cada interrogación equivale a un valor numérico ordenado, por orden de aparición
                 PreparedStatement sentencia =cn.prepareStatement(sql);      //cada valor "?" se sustituirá por los "sentencia.setInt, donde el primer índice indica el orden del simbolo a sustituir
                                                                             //y el segundo argumento indica el valor que se introducirá
@@ -27,7 +27,7 @@ public class mysql {
                 sentencia.setInt (1,codigo);
                 sentencia.setString (2, nombre);
                 sentencia.setInt (3, localizacion_id);
-                sentencia.setInt (4, manager_id);
+                sentencia.setInt (4, manager_id);  //asigno valores a cada una de las interrogaciones
                 
                 i = sentencia.executeUpdate();
                 sentencia.close();
@@ -87,7 +87,7 @@ public class mysql {
                 Statement sentencia =cn.createStatement();
                 ResultSet resultado = sentencia.executeQuery(sql);
                 
-                while (resultado.next()){
+                while (resultado.next()){  //mientras el resultado de la query tenga lineas, le pido que me las devuelva
                     contador++;
                     linea = linea + " Codigo : " + String.valueOf(resultado.getInt(1)) +"\n" 
                     + " Nombre Departamento : " + resultado.getString(2) +"\n" 
@@ -97,7 +97,7 @@ public class mysql {
                     
                 }
                
-                sentencia.close();
+                sentencia.close();  //cierro las conexiones con la base de datos para no producir fallos y sobrecarga de recursos
                 cn.close();
                 
                 
@@ -185,7 +185,7 @@ public class mysql {
             
             }
             
-            System.out.println(filtro);
+            System.out.println(filtro); //esta sentencia me permite ver si el filtro es correcto, ya que es complejo armar una frase tan larga "a ciegas" 
             ejecutado = sentencia.executeUpdate("update departamentos " + filtro + " where codigo = '" + codigo +"';");
 
                                        
@@ -194,7 +194,7 @@ public class mysql {
             
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(mysql.class.getName()).log(Level.SEVERE, null, ex);
-            System.out.println(ex.getMessage());
+            System.out.println(ex.getMessage());  
         } catch (SQLException ex) {
             Logger.getLogger(mysql.class.getName()).log(Level.SEVERE, null, ex);
             System.out.println(ex.getMessage());
@@ -217,9 +217,9 @@ public class mysql {
                 filtro =" codigo like '%" + codigo.trim() + "%'";
             }
             
-            if (nombre.trim()!=""){
-                if (filtro.trim ()!= ""){
-                    filtro = filtro + " and ";
+            if (nombre.trim()!=""){   //si el campo nombre NO esta vacio
+                if (filtro.trim ()!= ""){ //y si el filtro ya tiene datos
+                    filtro = filtro + " and "; //añado la palabra "and" para que la query tenga sentido
                 }    
                 filtro = filtro + " nombre like '%" + nombre.trim() + "%'";
             }
@@ -258,7 +258,7 @@ public class mysql {
             linea = ex.getMessage();
         } catch (SQLException ex) {
             Logger.getLogger(mysql.class.getName()).log(Level.SEVERE, null, ex);
-            linea = ex.getMessage();
+            linea = ex.getMessage();  //si la función entra en un catch y falla, al menos podré imprimir por la interfaz el error (como programador me ayuda a subsanarlo)
         }
         return linea + "número de coincidencias: " + contador +"\n";
     
