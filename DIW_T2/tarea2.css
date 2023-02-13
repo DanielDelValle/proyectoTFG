@@ -1,0 +1,54 @@
+nav {
+    text-align: center;
+    margin-left:25%;
+    margin-top:2%;
+    width: 50%;
+}
+
+.estiloul{
+    list-style: none;
+    padding: 5px;
+}
+
+.estiloul li{
+    border:1px solid; 
+    border-color: #9b9b9b;
+    background-color: #2175bc;
+    text-align: center;
+    margin-right: 3px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 15px;
+    padding-right: 15px;
+    display: inline-block;
+    /*estilo extra añadido (si repito alguna instrucción, sobreescribirá a las anteriores por leerse después)*/
+    border-radius: 25px;
+    border:4px solid;
+    border-color: #d31515;
+    background-color: #21bc50;
+    margin-right: 50px;
+ 
+
+
+
+}
+
+.estiloul a{
+    text-decoration: none;
+    color:#FFFFFF;
+    font-size: 18px;
+}
+
+footer {
+    position: absolute;
+    bottom: 20%;
+    text-align: center;
+    font-weight: bold;
+    font-size: 18px;
+    margin-left: 25%;
+    width: 50%;;
+
+
+}
+
+
