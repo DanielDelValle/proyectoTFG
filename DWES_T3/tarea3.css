@@ -1,0 +1,30 @@
+		
+		
+		body {background-color: powderblue; text-align:center; font-family: Copperplate Gothic;}
+		h1   {font-size:35;color: green; font-weight: bold; margin-top:100px;text-decoration:underline;}
+		h2   {color: green;margin-top:50x;}	
+		table {width : 50%; height : 50%; background-color: yellow; margin-left: auto; margin-right:auto; border: 16px;}
+		td {border: 2px solid #000;}
+		button {margin : 10px; padding: 10px;}
+		a {text-decoration:none;}
+	    @keyframes mymove {75% {bottom: 50px;}
+			}
+		footer{ 
+		    width : 50%;
+		    margin-left: auto;
+		    margin-right:auto;
+        	position: absolute;
+        	border-style:solid;
+        	border-radius:20px;
+        	background-color:yellow;
+        	color: green;
+        	bottom: 0;
+        	animation: mymove 3s infinite;
+        	display:flex;
+        	left: 0;
+        	right: 0;
+        	height: 40px;
+        	width: 200px;
+        	justify-content: center;
+        	align-items:center;
+	        }
