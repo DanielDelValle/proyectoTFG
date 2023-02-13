@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="tempo.css" />
+    <title>Tarea3 DWEC</title>
+    <script>
+        var contador = 0;
+        var segundos = 0;
+        var minutos = 0;
+        var horas = 0;
+
+        function conteo() {
+            contador++;
+            segundos = contador;
+            if (contador == 60) {
+                contador = 0;
+                segundos = 0;
+                minutos++;
+            }
+            if (minutos = 60) {
+                segundos = 0;
+                horas++;
+            }
+
+            if (segundos < 10) {
+                segundos = parseInt(segundos);
+                segundos = "0" + segundos;
+
+            }
+
+            if (minutos < 10) {
+                minutos = parseInt(minutos);
+                minutos = "0" + minutos;
+
+            }
+
+            if (horas < 10) {
+                horas = parseInt(horas);
+                horas = "0" + horas;
+
+            }
+            if ((horas == 23) && (minutos == 59) && (segundos == 59)) {
+                delay(1000);
+                contador = 00;
+                segundos = 00;
+                minutos = 00;
+                horas = 00;
+
+
+            }
+
+
+            document.getElementById("horas").innerHTML = horas;
+            document.getElementById("minutos").innerHTML = minutos;
+            document.getElementById("segundos").innerHTML = segundos;
+
+        }
+
+        function iniciar() {
+            setInterval(conteo, 1000);
+
+        }
+        window.onload(iniciar());
+
+    </script>
+</head>
+
+<body>
+
+    <p><button type="button" , onCLick="window.close()" ;>Cerrar</button></p>
+    <div id="marco">;
+        <div id="horas"></div>
+        <div>:</div>
+        <div id="minutos"></div>
+        <div>:</div>
+        <div id="segundos"></div>
+
+
+</body>
+
+</html>

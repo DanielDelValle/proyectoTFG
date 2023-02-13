@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+		<title>DANIEL_DEL_VALLE_T2_DWEC</title>
+		<meta charset="UTF-8">
+		<style>  
+		body {background-color: powderblue; text-align:center;}
+		h1   {font-size:35;color: green; font-weight: bold; margin-top:100px;text-decoration:underline;}
+		h2   {color: green;margin-top:50x;}			
+		footer{text-align:center;margin-top:100px; }
+		<!--> Le doy estilo al documento para mejorar su visualización</!-->
+		</style>
+	</head>
+
+    <body>
+		<h1>Tarea 2 de Desarrollo Web en Entorno Cliente (DWEC)</h1>
+		<div>
+			<script>
+				<!--> Creo los 2 arrays</!-->
+				var fichAlumno = ["Daniel", "Del Valle", "González", "53665340S", "DWEC", "Desarrollo de Aplicaciones Web", "Instituto FOC" ];
+				var etiquetas = ["Nombre", "Apellido 1", "Apellido 2", "DNI", "Módulo", "Ciclo", "Centro"];
+				
+
+				<!--> En todos los bucles me ayudaré de la variable "i" que actuará como un contador y aumentará su valor con cada ciclo del bucle.</!-->	
+				<!--> Comparando la variable "i" con la longitud de uno del los arrays, podré determinar cuándo el bucle debe terminar: exactamente tras leer el último elemento.</!-->					
+				document.write("<h2> Bucle For </h2>");
+				for(var i = 0;i<etiquetas.length;i++){
+					document.write(etiquetas[i] + ": " + "<b>"+ fichAlumno[i] +"</b>" + "<br>");
+				}		
+						
+				document.write("<h2> Bucle While </h2>");
+				var i = 0;
+				while(i<etiquetas.length){
+					document.write(etiquetas[i] + ": " + "<b>"+ fichAlumno[i] +"</b>" + "<br>");
+					i++;
+					}								
+			
+				document.write("<h2> Bucle Do While </h2>");
+				var i = 0;
+				do{
+					document.write(etiquetas[i] + ": " + "<b>"+ fichAlumno[i] +"</b>" + "<br>");
+					i++;
+				}while(i<etiquetas.length);		
+				<!--> Se ejecutará la acción al menos una vez, pues se encuentra tras el "do" y antes de evaluar la condición "while"</!-->	
+			</script>
+		</div>		
+    </body>
+	<footer>
+		<h3>Documento Creado el 08/11/2022</h3>
+	</footer>
+</html>
