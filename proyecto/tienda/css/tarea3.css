@@ -1,0 +1,203 @@
+body{
+    background-color:#deb887;
+    font-family: 'Cambria';
+}
+
+#cabecera {
+    background-color: #8b4513;
+    font-size: 25px;
+    padding: 10px;
+    display:block;
+
+}
+
+
+#cabecera img {
+    float:left; 
+    margin-left:1%;  
+    margin-top:4px; 
+    transition: transform 1s;
+    
+}
+#gif{
+    float:right;
+    margin-left:20%;
+    position:absolute;
+    top:0px;
+    left:33%;
+
+}
+
+#cabecera img:hover {
+    transform:scale(1.25);
+}
+
+
+
+#cabecera h1 {
+    text-decoration: underline;
+    text-decoration-color: #deb887;
+    text-decoration-line: solid;
+    position: relative;
+    top: 20px;
+    left: 1%;
+    font-family: 'Cambria';
+    font-style: italic;
+    color:#deb887;
+
+    
+}
+
+nav {
+    text-align: center;
+    margin-top:2%;
+    width: 10%;
+
+
+    
+}
+
+.sidemenu ul{
+    list-style: none;
+    padding: 5px;
+    
+
+}
+
+.sidemenu li{
+    border:4px double; 
+    border-color: #e7a109;
+    background-color: #d3d01b;
+    text-align: center;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 15px;
+    padding-right: 15px;
+    height:25px;
+    display: flex;
+  
+    
+}
+
+.sidemenu a{
+    text-decoration: none;
+    color:#8b4513;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.sidemenu a:hover{
+    font-size: 150%;
+}
+
+.ingredientes {
+    text-align: left;
+    padding:10px;
+    border-spacing: 15px;
+    margin-left: 12%;
+    width:100%;
+    color:#8b4513;
+    font-size: 22px;
+    
+}    
+.contenido {
+    display:flex;
+}
+    
+.ingredientes table{
+    align-self: flex-start;
+    margin-top: 5%;
+
+ 
+}
+
+#foto{
+    margin-left:3%;
+    }
+
+.ingredientes h1{
+    text-decoration: underline solid;
+}
+
+.ingredientes th{
+    text-decoration: underline;
+
+}
+
+.ingredientes td {
+    padding-right:30px;
+
+    
+}
+
+.elaboracion {
+    text-align: left;
+    padding:10px;
+    border-spacing: 20px;
+    margin-left: 12%;
+    width:78%;
+    color:#8b4513;
+    font-size: 22px;
+}
+.elaboracion h2{
+    text-align:left;
+    
+}
+.elaboracion ul{ 
+    text-align:left;
+    list-style:square;
+}
+
+#audio{
+    text-align: center;
+    align-content: center;
+    margin:15px auto;
+    border:4px double #ff5100d2;
+    padding:5px;
+    width:50%;
+}
+#video{
+    text-align: center;
+    align-content: center;
+    margin:15px auto;
+    padding:5px;
+    width:75%;
+}
+
+@keyframes rebote {75% {bottom: 50px;}
+}
+footer{ 
+width : 50%;
+margin-left: auto;
+margin-right:auto;
+position: fixed;
+border-style:solid;
+border-radius:20px;
+background-color:#ff7f50;
+color: #002d80;
+bottom: 0;
+animation: rebote 3s infinite;
+display:flex;
+left: 0;
+right: 0;
+height: 40px;
+width: 250px;
+justify-content: center;
+align-items:center;
+}
+/*
+@media only screen and (max-width: 480px) {
+    #foto {
+    width: 50%;
+    }
+}
+@media only screen and (max-width: 800px) {
+    #foto {
+      width: 75%;
+    }
+}
+@media only screen and (min-width: 801px) {
+    #foto {
+      width: 100%;
+    }
+}*/

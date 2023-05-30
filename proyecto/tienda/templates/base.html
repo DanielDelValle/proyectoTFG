@@ -1,0 +1,59 @@
+<!-- base.html  -->
+<html lang="es">
+ 
+<head>
+
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <base href="http://localhost/proyecto/tienda/" />  <!-- Establezco url "base" de la que parten de forma relativa el resto, simplificando las redirecciones-->
+    <link rel="stylesheet" type="text/css" href="css/tarea5.css">
+    {% block stylesheets %}
+
+    {% endblock %}
+
+    {% block script %}
+
+    {% endblock %}
+
+
+
+</head>
+
+    <body>
+		<header class="banner"></header>
+        <nav>
+            <!-- Menú de navegación -->
+			<div>
+                <nav>
+                    <ul class="sidemenu">
+            
+                        <li><a href=”#” >Recetas</a></li>        
+                        <li><a href=”#” >Mi Cesta</a></li>        
+                        <li><a href="contacto">Contacto</a></li>
+                        
+                    </ul>        
+            
+                </nav>
+
+
+        
+        <!-- En este bloque se cargará el contenido -->
+        <div>  
+        {% block busqueda %}
+    
+        {% endblock %}
+        </div>
+		<div>
+        {% block content %}{% endblock %}
+        </div>
+
+        <footer>
+            <!-- Contenido del footer -->
+            2023 Daniel del Valle Gonzalez Proyecto Fin de FP
+        </footer>
+
+    </body>
+
+
+</html>
