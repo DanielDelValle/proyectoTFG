@@ -27,6 +27,14 @@ $(document).ready(function(){
 
 {% endblock %}
 
+{% block login %}
+
+<a href = "index.php/login_empleados">Login Empleados</a><br>
+<a href = "index.php/login_clientes">Login Clientes</a>
+
+
+{% endblock %}
+
 {% block busqueda %}
 
 <p><h1>Búsqueda de producto por nombre</h1></p>
@@ -46,20 +54,26 @@ $(document).ready(function(){
 
 
 {% block content %}
+
+
         <ul style="list-style: none">
             <!-- Mostramos una lista de los artículos-->
 			{%for articulo in articulos %}
 			<li>
-                Articulo: {{articulo.id}}
-                    <img src="imagenes/{{articulo.a_imagen}}"/>
-                    <h2>{{articulo.titulo}}</h2>
-					<a href="http://localhost/proyecto/tienda/index.php/articulo?id={{articulo.id}}">Detalle</a>
+                    <h2>ID PRODUCTO: {{articulo.id_prod}}</h2>
+                    <img src="imagenes/{{articulo.nombre}}.jpg"/>
+
+              <!--  <img src="imagenes/fresón de palos.jpg"/> -->
+
+                    
+                    <h2>{{articulo.nombre}}</h2>
+  
+					<a href="http://localhost/proyecto/tienda/index.php/detalle_articulo?id={{articulo.id_prod}}">Detalle</a>
 					<br>
 					<br>
             </li>
 			{% endfor %}
         </ul>
-        <a href = "index.php/login_empleados">Login Empleados</a><br>
-        <a href = "index.php/login_clientes">Login Clientes</a>
+
 
 {% endblock %}	

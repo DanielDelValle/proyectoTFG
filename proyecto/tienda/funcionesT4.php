@@ -2,7 +2,7 @@
 function checkSession(){
 session_start(); //crear sesión, y si hay usuario logeado, recoge el usuario en una variable.
     if (!isset($_SESSION["usuario"])) {
-        exit(header("location:frutasdelvalle.php"));   // si no hay un usuario correctamente identificado, se redirige al login.
+        exit(header("location:index.php"));   // si no hay un usuario correctamente identificado, se redirige al login.
         //exit;     // evita seguir ejecutando código de ésta página        
 }
 }

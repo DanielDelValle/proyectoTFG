@@ -1,5 +1,5 @@
 <?php
-session_start();
+//session_start(); //LO COMENTÉ PARA ELIMINAR DUPLICIDAD DE SESSION
 if (isset($_POST["entrar"])) {
 	//Procesar formulario
 	//Obtener contraseña codificada de bd, por ejemplo:
@@ -25,7 +25,7 @@ if (isset($_POST["entrar"])) {
 			//Establecer sesion autentificada
 			$_SESSION["usuario"] = $usuario;
 
-			exit(header("location:home_empleados.html"));
+			exit(header("location:home_empleados"));
 		} else $mensaje = "<h2>Usuario y/o contraseña incorrectos</h2>";
 	} else $mensaje = "<h2>Los campos usuario y contraseña son obligatorios<h2>";
 } else if (isset($_SESSION["usuario"])) {

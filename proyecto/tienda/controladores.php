@@ -6,7 +6,7 @@ require_once '../vendor/autoload.php';
 $loader = new \Twig\Loader\FilesystemLoader('templates');
 $twig = new \Twig\Environment($loader);
 
-$twig->addGlobal('session', $_SESSION);
+$twig->addGlobal('session', $_SESSION); // para el tema sesiones de usuario
 
 
 /*, [
@@ -15,11 +15,26 @@ $twig->addGlobal('session', $_SESSION);
 descomentar y poner a continuacion de la linea "$twig=....($loader," para habilitar cache*/ 
 
 
+/*function controlador_index2()
+{
+    // Petición al modelo para que retorne la lista de artículos de la BD
+    $articulos = cargar_datos();
+    $sugerencias = resultado_ajax();
+    
+    // Carga la plantilla que se mostrará al usuario con los datos recuperados del modelo
+	global $twig;
+    // Carga la plantilla que se mostrará al usuario con los datos recuperados 
+    // del modelo
+    $template = $twig->load('articulos.html');
+	echo $template->render(array ( 'articulos' => $articulos, 'sugerencias' => $sugerencias));
+    echo gettype($sugerencias);
+}*/
+
 function controlador_index()
 {
     // Petición al modelo para que retorne la lista de artículos de la BD
-    $articulos = lista_articulos();
-    
+    $articulos = cargar_datos();
+
     // Carga la plantilla que se mostrará al usuario con los datos recuperados del modelo
 	global $twig;
     // Carga la plantilla que se mostrará al usuario con los datos recuperados 
@@ -28,17 +43,18 @@ function controlador_index()
 	echo $template->render(array ( 'articulos' => $articulos));
 }
 
+
 // Controlador específico de artículo
 function controlador_detalle($id)
-{
+{   
     // Petición al modelo para que retorne la lista de artículos de la BD
-    $articulo = articulo($id);
+    $articulo = detalle_articulo($id);
     // Carga la plantilla que se mostrará al usuario con los datos recuperados 
     // del modelo
 	global $twig;
     // Carga la plantilla que se mostrará al usuario con los datos recuperados 
     // del modelo
-    $template = $twig->load('detalles_articulo.html');
+    $template = $twig->load('detalle_articulo.html');
 	echo $template->render(array ( 'articulo' => $articulo));
 }
 
@@ -113,17 +129,17 @@ function controlador_contacto()
 }
 
 
-function controlador_sugerencias()
+function controlador_busqueda()
 {
     // Petición al modelo para que retorne la lista de artículos de la BD
-    $articulos = lista_articulos();
+    $resultado = buscar_producto();
     // Carga la plantilla que se mostrará al usuario con los datos recuperados del modelo
 	global $twig;
     // Carga la plantilla que se mostrará al usuario con los datos recuperados 
     // del modelo
 
-    $template = $twig->load('sugerencias.html');
-	echo $template->render(array ( 'articulos' => $articulos));
+    $template = $twig->load('busqueda.html');
+	echo $template->render(array ( 'resultado' => $resultado));
 }
 
 function controlador_registro()

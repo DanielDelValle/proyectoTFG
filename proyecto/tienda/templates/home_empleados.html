@@ -10,9 +10,10 @@
 
 <body>
         <p>
-        <h3><?= $bienvenida ?></h3>
+        <h3>BIENVENIDO {{usuario}}</h3>
         <div contact>
-            <form method="POST"  action="<?php echo htmlentities($_SERVER['PHP_SELF']); ?>" autocomplete>
+            <form method="POST"  action="" autocomplete>
+           <!--<form method="POST"  action="<?php echo htmlentities($_SERVER['PHP_SELF']); ?>" autocomplete> -->
                 <!--  se define método post y se evita inyección codigo malicioso con htmlentities -->
                 <fieldset>
                     <legend>Entrada de datos personales</legend><br>
@@ -33,11 +34,13 @@
                 </fieldset>
             </form>
             <br>
-            <form method="POST" action="<?php echo htmlentities($_SERVER['PHP_SELF']); ?>" autocomplete>
+            <form method="POST" action="" autocomplete>
                 <fieldset >
                     <legend>Selección de Horario</legend><br>
                     <label for="horario">Horario</label>
                     <select name="horario" id="horario">
+<!-- USAR RENDER ARRAY EN EL (CONTROLADOR) PARA METER AQUI LAS 3 OPCIONES -->
+
                         <option <?php if (!$choice) { ?>selected="true" <?php }; ?>value="">--- Elija una opción ---</option>
                         <option <?php if ($choice == 'mañana') { ?>selected="true" <?php }; ?>value='mañana'>Mañana</option>
                         <option <?php if ($choice == 'tarde') { ?>selected="true" <?php }; ?>value='tarde'>Tarde</option>

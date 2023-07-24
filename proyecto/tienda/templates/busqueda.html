@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block stylesheets %}
+<link rel="stylesheet" type="text/css" href="css/tarea8.css">
+{% endblock %}
+
+
+
+{% block content %}		
+			<!-- Mostramos una lista de los artículos-->
+			RESULTADOS DE LA BUSQUEDA:
+			Detalles artículo ID: {{articulo.id_prod}}
+			<img width="400" height="400" src="imagenes/{{articulo.nombre}}.jpg"/>/> 
+				<h2>{{articulo.nombre}}</h2>
+				<h2>PRECIO: {{articulo.precio}}€ / {{articulo.unidad}}</h2>
+				<h2>STOCK DISPONIBLE: {{articulo.stock}} {{articulo.unidad}}(s)</h2>
+				<h3>DESCRIPCION: {{articulo.descripcion}}</h3>
+
+
+				<form action="index.php" method="POST">
+					<input type="submit" value="Volver"/>
+				</form>
+{% endblock %}	
