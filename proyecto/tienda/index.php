@@ -1,18 +1,8 @@
 <?php // Controlador frontal 
-require_once 'funcionesT4.php';
-checkSession();
-checkCookie();
-require "control_login.php";
+require_once 'funciones_sesion.php';
 require_once "modelo.php";
 require_once 'validadores.php';
 require_once 'controladores.php';
-//session_start();
-//session_destroy();
-$tel_ok = false;
-$email_ok = false;
-$usuario = $_SESSION["usuario"];
-$bienvenida = "<h3><b>Bienvenido " . $usuario . "</b></h3>";
-$mensaje = "";
 
 
 // Recogemos la uri insertada
@@ -26,7 +16,7 @@ $URI = $segments[count($segments)-1];
 /**si quisiera distinguir entre misma extension "home" por ejemplo, precedida de "empleado" o "cliente" para aplicar una u otra plantilla(vista) y controlador
 $URI2 = $segments[count($segments)-2];**/
 
-//echo ">>>$URI<br>";  para mostrar la URI actual
+echo ">>>$URI<br>";  //para mostrar la URI actual
 
 if ($URI == 'index.php') 
 {
@@ -48,27 +38,19 @@ elseif ($URI == 'busqueda')
 
 
 
-elseif ($URI == 'login_clientes')
+elseif ($URI == 'login')
 {      
-		controlador_login_clientes(); 
+		controlador_login(); 
 }
 
 
-elseif ($URI == 'login_empleados')
-{      
-		controlador_login_empleados(); 
-}
 
-elseif ($URI == 'home_clientes')
+
+elseif ($URI == 'home')
 {
-		controlador_home_clientes(); 
+		controlador_home(); 
 }
 
-
-elseif ($URI == 'home_empleados') //&& session = empleado (por ejemplo) 
-{
-		controlador_home_empleados(); 
-}
 
 
 /**si quisiera distinguir entre misma extension "home" porejemplo, precedida de "empleado" o "cliente" para aplicar una u otra plantilla(vista) y controlador
@@ -77,6 +59,10 @@ elseif (($URI == 'home') && ($URI2 == 'empleado.php'))
 		controlador_home_empleado(); 
 }**/
 
+elseif ($URI == 'adios')
+{
+		controlador_adios(); 
+}
 
 
 

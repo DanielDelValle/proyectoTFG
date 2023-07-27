@@ -1,4 +1,6 @@
 <?php
+require "funcionesT4.php";
+checkSession();
 //session_start(); //LO COMENTÉ PARA ELIMINAR DUPLICIDAD DE SESSION
 if (isset($_POST["entrar"])) {
 	//Procesar formulario

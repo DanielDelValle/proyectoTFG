@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block stylesheets %}
+<link rel="stylesheet" type="text/css" href="css/tarea4.css">
+{% endblock %}
+
+
+
+
+{% block content %}		
+			<!-- Mostramos una lista de los artículos-->
+ 		<p>LOGIN </p>
+
+		 <h1>Bienvenido</h1>
+
+		 {% block mensaje %}
+		<p class='mensaje'>{{mensaje}}</p><br>
+		{% endblock %}
+
+			 <form action="" method="POST">
+	 
+					 <legend>Acceso a usuarios</legend>
+	 
+					 <label for="usuario">Usuario</label>
+					 <input type="text" name="usuario" id="usuario" value= {{usuario}}  >
+	 
+	 
+					 <label for="contrasena">Contraseña</label>
+					 <input type="password" name="contrasena" id="contrasena" />
+					 <br>
+	 
+					 <!--	<input type = "submit" name ="entrar" value = "Entrar" method ="POST" /> -->
+					 <button type="submit" name="entrar" method="POST">Entrar</button>
+	 
+			 </form>
+
+
+
+	<form action="index.php" method="POST">
+		<input type="submit" value="Volver"/>
+	</form>
+{% endblock %}	

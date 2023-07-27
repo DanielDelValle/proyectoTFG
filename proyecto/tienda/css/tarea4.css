@@ -10,6 +10,7 @@ h3   {font-size:25px;color: #309c30; font-weight: bold; margin-top:75px;margin-b
 	background: url("../imagenes/banner.png") no-repeat #80bdc5;
 }
 
+.titulo   {font-size:50px;color: #309c30; font-weight: bold; margin-top:75px;margin-bottom:75px;}
 
 div {
 	text-align:center;

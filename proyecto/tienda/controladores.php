@@ -1,12 +1,22 @@
 <?php
-
 // controladores.php
 require_once '../vendor/autoload.php';
+
+
 
 $loader = new \Twig\Loader\FilesystemLoader('templates');
 $twig = new \Twig\Environment($loader);
 
-$twig->addGlobal('session', $_SESSION); // para el tema sesiones de usuario
+require_once 'funciones_sesion.php';
+require_once "modelo.php";
+require_once 'validadores.php';
+
+//session_destroy();
+$tel_ok = false;
+$email_ok = false;
+$usuario = "";
+$mensaje = "";
+//$twig->addGlobal('session', $_SESSION); // para el tema sesiones de usuario
 
 
 /*, [
@@ -59,60 +69,93 @@ function controlador_detalle($id)
 }
 
 
-function controlador_login_clientes()
-{
+
+function controlador_login()
+{session_start();
+    if (isset($_POST["entrar"])) {
+        //Procesar formulario
+        //Obtener contraseña codificada de bd, por ejemplo:
+        $user = "daniel";
+        $pass = crypt('daniel', '$1$somethin$');
+        //&pass = md5('daniel')
+        $mensaje = "";
+        //Comprobar que el nombre y contrasena no están vacíos
+        if (isset($_POST["usuario"])) $usuario = $_POST["usuario"];
+        else $usuario = "";
+    
+        if (isset($_POST["contrasena"])) $contrasena = $_POST["contrasena"];
+        else $contrasena = "";
+    
+        if ($usuario != "" && $contrasena != "") {
+            //Comprobar credenciales
+            //if ($usuario == "admin" && md5($contrasena) == $pass)
+            if (($usuario == $user) && (crypt($contrasena, '$1$somethin$')) == $pass) {
+                //Login correcto
+                //Establecer sesion autentificada
+                $_SESSION["usuario"] = $usuario;    
+                exit(header("location:home"));
+            } else {
+                $mensaje = "<h2>Usuario y/o contraseña incorrectos</h2>";
+                $delay=2;
+                header("Refresh:$delay");}
+        } else $mensaje = "<h2>Los campos usuario y contraseña son obligatorios<h2>";
+    } else if (isset($_SESSION["usuario"])) {
+        //Sesión ya iniciada
+        $usuario = $_SESSION["usuario"];
+        $mensaje = "";
+    } else {
+        //Carga en vacío sin sesión iniciada
+        $usuario = "";
+        $mensaje = "";
+    }
+
+    // Petición al modelo para que retorne la lista de artículos de la BD
+    $articulos = lista_articulos();
+    // Carga la plantilla que se mostrará al usuario con los datos recuperados del modelo
+	global $twig;
+    $template = $twig->load('login.html');
+    echo $template->render(array ( 'usuario' => $usuario, 'mensaje' =>$mensaje));
+}
+
+
+function controlador_home()
+{checkSession();
     // Petición al modelo para que retorne la lista de artículos de la BD
     $articulos = lista_articulos();
     // Carga la plantilla que se mostrará al usuario con los datos recuperados del modelo
 	global $twig;
     // Carga la plantilla que se mostrará al usuario con los datos recuperados 
     // del modelo
+    $usuario = $_SESSION["usuario"];
+    $template = $twig->load('home.html');
 
-    $template = $twig->load('login_clientes.html');
-	echo $template->render(array ( 'articulos' => $articulos));
+    if (isset($_POST["cerrar_sesion"])){
+        closeSession();
+        killCookie();
+        exit(header("location:adios"));
+    }
+    
+   
+	echo $template->render(array ( 'articulos' => $articulos, 'usuario' =>$usuario));
+
+ 
+
+
+
 }
 
-function controlador_login_empleados()
+function controlador_adios()
 {
-    // Petición al modelo para que retorne la lista de artículos de la BD
-    $articulos = lista_articulos();
+
     // Carga la plantilla que se mostrará al usuario con los datos recuperados del modelo
 	global $twig;
-    // Carga la plantilla que se mostrará al usuario con los datos recuperados 
-    // del modelo
-    $template = $twig->load('login_empleados.html');
-    echo $template->render(array ( 'articulos' => $articulos));
+ 
+ 
+    //$usuario = $_SESSION["usuario"];
+    $template = $twig->load('adios.html');
+    echo $template->render(array());  //array vacio obligatorio (aunque no se mande info)
 
 }
-
-
-function controlador_home_clientes()
-{
-    // Petición al modelo para que retorne la lista de artículos de la BD
-    $articulos = lista_articulos();
-    // Carga la plantilla que se mostrará al usuario con los datos recuperados del modelo
-	global $twig;
-    // Carga la plantilla que se mostrará al usuario con los datos recuperados 
-    // del modelo
-
-    $template = $twig->load('home_clientes.html');
-	echo $template->render(array ( 'articulos' => $articulos));
-}
-
-function controlador_home_empleados()
-{
-    // Petición al modelo para que retorne la lista de artículos de la BD
-    $articulos = lista_articulos();
-    // Carga la plantilla que se mostrará al usuario con los datos recuperados del modelo
-	global $twig;
-    // Carga la plantilla que se mostrará al usuario con los datos recuperados 
-    // del modelo
-
-    $template = $twig->load('home_empleados.html');
-	echo $template->render(array ( 'articulos' => $articulos));
-}
-
-
 
 
 function controlador_contacto()

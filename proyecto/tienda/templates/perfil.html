@@ -10,7 +10,7 @@
     <base href="http://localhost/proyecto/tienda/" />  <!-- Establezco url "base" de la que parten de forma relativa el resto, simplificando las redirecciones-->
     <link rel="stylesheet" type="text/css" href="css/tarea5.css">
     {% block stylesheets %}
-  
+
     {% endblock %}
 
     {% block script %}
@@ -29,8 +29,8 @@
                 <nav>
                     <ul class="sidemenu">
             
-                        <li><a href="perfil" >Mi perfil</a></li>        
-                        <li><a href="cesta" >Mi Cesta</a></li>        
+                        <li><a href=”#” >Mi perfil</a></li>        
+                        <li><a href=”#” >Mi Cesta</a></li>        
                         <li><a href="contacto">Contacto</a></li>
                         
                     </ul>        
@@ -44,18 +44,25 @@
 
         
         <!-- En este bloque se cargará el contenido -->
-        <div>  
-        {% block busqueda %}
-    
-        {% endblock %}
-        </div>
 
 
 		<div>
-        {% block content %}{% endblock %}
+        {% block content %}
+        			<!-- Mostramos una lista de los artículos-->
+			Detalles Perfil: {{$_SESSION['usuario']}}
+			<img width="400" height="400" src="imagenes/{{articulo.nombre}}.jpg"/> 
+				<h2>{{articulo.nombre}}</h2>
+				<h2>PRECIO: {{articulo.precio}}€ / {{articulo.unidad}}</h2>
+				<h2>STOCK DISPONIBLE: {{articulo.stock}} {{articulo.unidad}}(s)</h2>
+				<h3>DESCRIPCION: {{articulo.descripcion}}</h3>
+
+
+				<form action="index.php" method="POST">
+					<input type="submit" value="Volver"/>
+				</form>
+        
+        {% endblock %}
         </div>
-
-
 
         <footer>
             <!-- Contenido del footer -->
