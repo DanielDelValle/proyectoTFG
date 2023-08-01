@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block stylesheets %}
+<link rel="stylesheet" type="text/css" href="css/tarea8.css">
+{% endblock %}
+
+{% block script %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+
+<script>
+$(document).ready(function(){
+    $("#busqueda").keyup(function(){
+        $.ajax({
+            type:"GET",
+            url: "modelo.php",
+            data: {"q":$("#busqueda").val()},
+            success: function(data) {
+                $("#sugerencias").html(data);
+            }
+        });
+    });
+//    $("#busqueda").keyup(function(){
+//        $("#sugerencias").load("sugerenciasPHP.php?q=" + $("#busqueda").val());
+//    });
+});
+</script>
+
+{% endblock %}
+
+{% block login %}
+
+<a href = "http://localhost/proyecto/tienda/index.php/login">Login</a><br>
+
+
+{% endblock %}
+
+{% block busqueda %}
+
+<p><h1>Búsqueda de producto por nombre</h1></p>
+<form> 
+<!--
+    Cada vez que tecleamos algo en este field se ejecutará mostrar_sugerencias 
+-->
+<p>Introduzca el término a buscar</p><input type="text" id="busqueda">
+</form>
+<!-- En el span con id="sugerencias" mostraremos las coincidencias -->
+<p><strong>Sugerencias:</strong> <span id="sugerencias"></span></p>
+            </div>			
+        </nav>
+        
+
+{% endblock %}
+
+
+{% block content %}
+
+
+        <ul style="list-style: none">
+            <!-- Mostramos una lista de los artículos-->
+			{%for producto in productos %}
+			<li>
+                    <h2>ID PRODUCTO: {{producto.id_prod}}</h2>
+                    <img src="imagenes/{{producto.nombre}}.jpg"/>
+
+              <!--  <img src="imagenes/fresón de palos.jpg"/> -->
+
+                    
+                    <h2>{{producto.nombre}}</h2>
+  
+					<a href="http://localhost/proyecto/tienda/index.php/detalle_producto?id={{producto.id_prod}}">Detalle</a>
+					<br>
+					<br>
+            </li>
+			{% endfor %}
+        </ul>
+
+
+{% endblock %}	

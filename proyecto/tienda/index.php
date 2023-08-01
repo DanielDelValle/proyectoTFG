@@ -23,7 +23,7 @@ if ($URI == 'index.php')
     controlador_index(); // Se ejecuta el controlador específico de index
 }
 
-elseif ($URI == 'detalle_articulo' && isset($_GET['id'])) 
+elseif ($URI == 'detalle_producto' && isset($_GET['id'])) 
 {
     // Se ejecuta el controlador específico que muestra los detalles de un 
     // articulo específico
@@ -56,7 +56,6 @@ elseif ($URI == 'home')
 /**si quisiera distinguir entre misma extension "home" porejemplo, precedida de "empleado" o "cliente" para aplicar una u otra plantilla(vista) y controlador
 elseif (($URI == 'home') && ($URI2 == 'empleado.php'))
 {
-		controlador_home_empleado(); 
 }**/
 
 elseif ($URI == 'adios')

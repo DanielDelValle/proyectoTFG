@@ -16,6 +16,7 @@ $tel_ok = false;
 $email_ok = false;
 $usuario = "";
 $mensaje = "";
+$cesta = array();
 //$twig->addGlobal('session', $_SESSION); // para el tema sesiones de usuario
 
 
@@ -27,51 +28,54 @@ descomentar y poner a continuacion de la linea "$twig=....($loader," para habili
 
 /*function controlador_index2()
 {
-    // Petición al modelo para que retorne la lista de artículos de la BD
-    $articulos = cargar_datos();
+    // Petición al modelo para que retorne la lista de productos de la BD
+    $productos = cargar_datos();
     $sugerencias = resultado_ajax();
     
     // Carga la plantilla que se mostrará al usuario con los datos recuperados del modelo
 	global $twig;
     // Carga la plantilla que se mostrará al usuario con los datos recuperados 
     // del modelo
-    $template = $twig->load('articulos.html');
-	echo $template->render(array ( 'articulos' => $articulos, 'sugerencias' => $sugerencias));
+    $template = $twig->load('productos.html');
+	echo $template->render(array ( 'productos' => $productos, 'sugerencias' => $sugerencias));
     echo gettype($sugerencias);
 }*/
 
 function controlador_index()
 {
-    // Petición al modelo para que retorne la lista de artículos de la BD
-    $articulos = cargar_datos();
+    // Petición al modelo para que retorne la lista de productos de la BD
+    $productos = lista_productos();
 
     // Carga la plantilla que se mostrará al usuario con los datos recuperados del modelo
 	global $twig;
     // Carga la plantilla que se mostrará al usuario con los datos recuperados 
     // del modelo
-    $template = $twig->load('articulos.html');
-	echo $template->render(array ( 'articulos' => $articulos));
+    $template = $twig->load('productos.html');
+	echo $template->render(array ( 'productos' => $productos));
 }
 
 
 // Controlador específico de artículo
 function controlador_detalle($id)
-{   
-    // Petición al modelo para que retorne la lista de artículos de la BD
-    $articulo = detalle_articulo($id);
-    // Carga la plantilla que se mostrará al usuario con los datos recuperados 
+{
+    $cesta = checkCesta();
+    $producto = detalle_producto($id);
+// Carga la plantilla que se mostrará al usuario con los datos recuperados 
     // del modelo
 	global $twig;
     // Carga la plantilla que se mostrará al usuario con los datos recuperados 
     // del modelo
-    $template = $twig->load('detalle_articulo.html');
-	echo $template->render(array ( 'articulo' => $articulo));
+    
+    $template = $twig->load('detalle_producto.html');  
+	echo $template->render(array ( 'producto' => $producto, 'cesta' => $cesta));
 }
 
 
 
 function controlador_login()
 {session_start();
+
+
     if (isset($_POST["entrar"])) {
         //Procesar formulario
         //Obtener contraseña codificada de bd, por ejemplo:
@@ -83,7 +87,7 @@ function controlador_login()
         if (isset($_POST["usuario"])) $usuario = $_POST["usuario"];
         else $usuario = "";
     
-        if (isset($_POST["contrasena"])) $contrasena = $_POST["contrasena"];
+        if (isset($_POST["contrasena"])) $contrasena = $_POST["contrasena"]; //en caso de que queramos guardar la contreaseña
         else $contrasena = "";
     
         if ($usuario != "" && $contrasena != "") {
@@ -92,12 +96,16 @@ function controlador_login()
             if (($usuario == $user) && (crypt($contrasena, '$1$somethin$')) == $pass) {
                 //Login correcto
                 //Establecer sesion autentificada
-                $_SESSION["usuario"] = $usuario;    
+                $_SESSION["usuario"] = $usuario; 
+
+                if (empty($_SESSION["cesta"])) $_SESSION["cesta"] = array();
+                else $cesta = $_SESSION["cesta"];
+
                 exit(header("location:home"));
             } else {
                 $mensaje = "<h2>Usuario y/o contraseña incorrectos</h2>";
-                $delay=2;
-                header("Refresh:$delay");}
+
+            }
         } else $mensaje = "<h2>Los campos usuario y contraseña son obligatorios<h2>";
     } else if (isset($_SESSION["usuario"])) {
         //Sesión ya iniciada
@@ -109,8 +117,7 @@ function controlador_login()
         $mensaje = "";
     }
 
-    // Petición al modelo para que retorne la lista de artículos de la BD
-    $articulos = lista_articulos();
+    // Petición al modelo para que retorne la lista de productos de la BD
     // Carga la plantilla que se mostrará al usuario con los datos recuperados del modelo
 	global $twig;
     $template = $twig->load('login.html');
@@ -120,23 +127,26 @@ function controlador_login()
 
 function controlador_home()
 {checkSession();
-    // Petición al modelo para que retorne la lista de artículos de la BD
-    $articulos = lista_articulos();
+    // Petición al modelo para que retorne la lista de productos de la BD
+    $productos = lista_productos();
     // Carga la plantilla que se mostrará al usuario con los datos recuperados del modelo
 	global $twig;
     // Carga la plantilla que se mostrará al usuario con los datos recuperados 
     // del modelo
     $usuario = $_SESSION["usuario"];
-    $template = $twig->load('home.html');
+    $cesta = $_SESSION["cesta"];
+   
 
+
+    
     if (isset($_POST["cerrar_sesion"])){
         closeSession();
         killCookie();
         exit(header("location:adios"));
     }
     
-   
-	echo $template->render(array ( 'articulos' => $articulos, 'usuario' =>$usuario));
+    $template = $twig->load('home.html');
+	echo $template->render(array ( 'productos' => $productos, 'usuario' =>$usuario));
 
  
 
@@ -151,7 +161,6 @@ function controlador_adios()
 	global $twig;
  
  
-    //$usuario = $_SESSION["usuario"];
     $template = $twig->load('adios.html');
     echo $template->render(array());  //array vacio obligatorio (aunque no se mande info)
 
@@ -160,21 +169,19 @@ function controlador_adios()
 
 function controlador_contacto()
 {
-    // Petición al modelo para que retorne la lista de artículos de la BD
-    $articulos = lista_articulos();
     // Carga la plantilla que se mostrará al usuario con los datos recuperados del modelo
 	global $twig;
     // Carga la plantilla que se mostrará al usuario con los datos recuperados 
     // del modelo
 
     $template = $twig->load('contacto.html');
-	echo $template->render(array ( 'articulos' => $articulos));
+	echo $template->render(array ( 'productos' => $productos));
 }
 
 
 function controlador_busqueda()
 {
-    // Petición al modelo para que retorne la lista de artículos de la BD
+    // Petición al modelo para que retorne la lista de productos de la BD
     $resultado = buscar_producto();
     // Carga la plantilla que se mostrará al usuario con los datos recuperados del modelo
 	global $twig;

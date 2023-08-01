@@ -38,44 +38,6 @@ catch (PDOException $e) {
 
 
 
-function buscar_producto(){
-
-	$pdo = conexion();
-    if($pdo){
-            try{				
-				$sql= "SELECT * FROM producto WHERE id_prod = '$id'";  // QUERY ESTANDAR
-
-				/*$sql= $pdo->prepare("SELECT * FROM producto WHERE id_prod = ?");  //QUERY PREPARADA
-				$sql->execute([$id]);
-				$resultado = $sql->fetchColumn();*/
-
-                $resultado = $pdo->query($sql);
-                while($fila= $resultado->fetchAll(PDO::FETCH_ASSOC)){
-
-                }
-                $mensaje = "Se han encontrado <b>" . $resultado->rowCount() . "</b> producto(s) <br><br>";
-                if ($resultado->rowCount()==0)  return null; 
-				else return $producto;
-
-                 }
-    
-            catch(PDOException $e){
-                echo 'Excepción: ', $e->getMessage();
-                return null;
-            }
-           
-        }else{    return null; die("error en la conexión a la BD"); //en caso de no haber conexión, directamente se para el proceso
-            
-            
-            
-        }  return $producto;
-        
-    }
-
-
-
-
-
 
 function get_sugerencias_ajax($busqueda){
 	$pdo = conexion();
@@ -97,7 +59,7 @@ function get_sugerencias_ajax($busqueda){
 				//La variable coincidencias se concatenará con un salto de línea mas el título del libro
 				//$coincidencias .= "<br>".$producto->nombre;
 
-				$coincidencias .= "<br><a href=http://localhost/proyecto/tienda/index.php/detalle_articulo?id=". $producto->id_prod .">$producto->nombre</a>";
+				$coincidencias .= "<br><a href=http://localhost/proyecto/tienda/index.php/detalle_producto?id=". $producto->id_prod .">$producto->nombre</a>";
 				/*	<a href="<?php echo $row['page_link'] ?>"><?php echo $row['page_title'] ?></a>*/
 				
 			}
@@ -146,7 +108,7 @@ function get_sugerencias_ajax($busqueda){
 
 	
 
-function cargar_datos()
+function lista_productos()
 {	
 		$pdo = conexion();
 		if($pdo){
@@ -154,7 +116,7 @@ function cargar_datos()
 			//La búsqueda se realiza en mysql con el comando LIKE
 			$sql = ("SELECT * FROM producto");		
 			$lectura = $pdo->query($sql);
-			$articulos= $lectura->fetchAll(PDO::FETCH_OBJ);
+			$lista_productos= $lectura->fetchAll(PDO::FETCH_OBJ);
 
 		}	
 		
@@ -164,29 +126,13 @@ function cargar_datos()
 		  }
 		}  
 		
-	return $articulos;
+	return $lista_productos;
 			
 		
 }
 
 
-function lista_articulos()
-{
-    $articulos = cargar_datos();
-    return $articulos;
-}
-
-
-function detalle_articulo($id)
-{
-	$articulos = cargar_datos();
-	$detalles = $articulos[$id-1];  //HAY QUE CAMBIAR ESTE METODO DE ACCESO PARA QUE SEA EXACTO (SOLO ESTA MOSTRANDO EL ORDEN DEL ARRAY -1 PARA CONTRARRESTAR LA POSICION "0")
-	//echo serialize($detalles);   //convierte en string el resultado (array) como string
-
-    return $detalles;
-}
-
-/*function detalle_articulo($id)
+function detalle_producto($id)
 {	
 	$id = isset($_REQUEST["id"]) ? $_REQUEST["id"] : "";
 	echo $id;
@@ -196,9 +142,7 @@ function detalle_articulo($id)
 			//La búsqueda se realiza en mysql con el comando LIKE
 			$sql = "SELECT p.id_prod, p.nombre, p.precio, p.unidad, p.stock, p.descripcion FROM producto p WHERE id_prod ='$id'";		
 			$lectura = $pdo->query($sql);
-			$articulo= $lectura->fetchAll(PDO::FETCH_ASSOC); //------- ERROR POSIBLE - INVESTIGAR FETCH OBJETO // ARRAY ------- fijarse que mvca del profe carga array
-		echo serialize($articulo);  //PARA MOSTRAR EL ARRAY "ARTICULO" COMO STRING
-
+			$articulo= $lectura->fetchObject();
 		}	
 		
 		catch(PDOException $e){
@@ -210,13 +154,13 @@ function detalle_articulo($id)
 	return $articulo;
 			
 		
-}*/
+}
 
 
 function opiniones()
 {
 	//Obtener usuario y sugerencia
-		$listaCpiniones = array(
+		$listaOpiniones = array(
 		array(
 			"usuario" => "Pepe23",
 			"sugerencia" => "Quiero precios más baratos"),	

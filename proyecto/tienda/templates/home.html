@@ -10,7 +10,10 @@
 
 <body>
         <p>
+            
         <h3 class='titulo'>BIENVENIDO {{usuario}}</h3>
+
+
         <div contact>
             <form method="POST"  action="" autocomplete>
            <!--<form method="POST"  action="<?php echo htmlentities($_SERVER['PHP_SELF']); ?>" autocomplete> -->
@@ -18,7 +21,7 @@
                 <fieldset>
                     <legend>Entrada de datos personales</legend><br>
 
-
+   
 
                     <label for="telefono">Telefono</label>
                     <input id="telefono" type="text" placeholder="Introduzca su teléfono" name="telefono" value="<?php if(isset($_SESSION['telefono'])){echo $_SESSION['telefono'];}?>" /> <!--  se establece el valor del campo para que se mantenga visible en la web -->
@@ -54,7 +57,6 @@
                     <!--<input type="submit" name="borrar" value="Borrar" method="POST" />-->
                     <!--  el botón "Borrar" da la orden de borrar datos de sesión y elimina cookie-->
 
-                    
                     <button type="submit" name="cerrar_sesion" method="POST">Cerrar Sesion</button>
                 </fieldset>
             </form>

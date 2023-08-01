@@ -23,6 +23,7 @@
 
     <body>
 		<header class="banner"></header>
+        {% block toolbar %}      
         <nav>
             <!-- Menú de navegación -->
 			<div>
@@ -35,7 +36,8 @@
                         
                     </ul>        
             
-                </nav>
+                </nav>    
+        {% endblock %}
         <div>  
             {% block login %}
         
