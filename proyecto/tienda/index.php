@@ -1,7 +1,4 @@
 <?php // Controlador frontal 
-require_once 'funciones_sesion.php';
-require_once "modelo.php";
-require_once 'validadores.php';
 require_once 'controladores.php';
 
 
@@ -31,12 +28,6 @@ elseif ($URI == 'detalle_producto' && isset($_GET['id']))
 }
 
 
-elseif ($URI == 'busqueda') 
-{
-    controlador_busqueda(); 
-}
-
-
 
 elseif ($URI == 'login')
 {      
@@ -57,6 +48,25 @@ elseif ($URI == 'home')
 elseif (($URI == 'home') && ($URI2 == 'empleado.php'))
 {
 }**/
+
+
+elseif ($URI == 'perfil')
+{      
+		controlador_perfil(); 
+}
+
+
+
+
+elseif ($URI == 'cesta')
+{      
+		controlador_cesta(); 
+}
+
+
+
+
+
 
 elseif ($URI == 'adios')
 {

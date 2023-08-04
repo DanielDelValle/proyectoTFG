@@ -15,15 +15,15 @@ function conexion()
 try {    
 //Conexión PDO
     $cadenaConexion="mysql:host=localhost;dbname=tienda;charset=utf8";
-    $pdo = new PDO($cadenaConexion, 'daniel', 'Daniel88!');     
-	array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8");  
+    $pdo = new PDO($cadenaConexion, 'daniel', 'Daniel88!',    
+	array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8", PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION)); 
 	//PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_OBJ) para devolver objetos, pero fetchObject ya lo hace
     return $pdo;
     }
 	
 catch (PDOException $e) {
     return null;
-	die('Conexión a base de datos no conseguida');
+	die(json_encode(array('outcome' => false, 'message' => 'Conexión a BD no conseguida')));
     }
 }
 
@@ -140,7 +140,7 @@ function detalle_producto($id)
 		if($pdo){
 			try{
 			//La búsqueda se realiza en mysql con el comando LIKE
-			$sql = "SELECT p.id_prod, p.nombre, p.precio, p.unidad, p.stock, p.descripcion FROM producto p WHERE id_prod ='$id'";		
+			$sql = "SELECT p.id_prod, p.nombre, p.precio, p.stock, p.descripcion FROM producto p WHERE id_prod ='$id'";		
 			$lectura = $pdo->query($sql);
 			$articulo= $lectura->fetchObject();
 		}	
@@ -155,6 +155,33 @@ function detalle_producto($id)
 			
 		
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 function opiniones()

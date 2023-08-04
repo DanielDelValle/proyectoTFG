@@ -1,13 +1,3 @@
-<!DOCTYPE html>
-<html lang="es">
-    <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Crear BD - PDO</title>
-</head>
-<body>
-
 <?php
     try{
     $cadenaConexion ="mysql:host=localhost";  //no indico ninguna base de datos, porque se trata de crearla ("mysql:dbname=BD_daniel; host=localhost" por ejemplo)
@@ -35,7 +25,6 @@
                     id_prod INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
                     nombre VARCHAR(25),
                     precio DECIMAL(5),
-                    unidad VARCHAR(15),
                     stock DECIMAL(10),
                     descripcion VARCHAR(250)
                     )";
@@ -65,7 +54,7 @@
                 $sql3="CREATE TABLE IF NOT EXISTS pedido (
                     id_pedido INTEGER(5) NOT NULL AUTO_INCREMENT PRIMARY KEY,        
                     nif_cliente VARCHAR(9),
-                    precio_total DECIMAL(7),
+                    total_precio DECIMAL(7),
                     forma_pago VARCHAR(20),
                     estado_pago VARCHAR(20),
                     estado_pedido VARCHAR(20),
@@ -100,17 +89,17 @@
 
                         
                 //Insertar datos iniciales tabla PRODUCTO
-                $sql5 = "INSERT INTO producto (nombre, precio, unidad, stock, descripcion)
-                         VALUES('Naranja de Zumo', 2.50, 'Kilo', 30.0, 'Naranjas de zumo valencianas'), 
-                            ('Naranja de Mesa', 2.00, 'Kilo', 20.0, 'Naranjas de mesa'), 
-                            ('Fresón de Palos', 5.50, 'Caja', 20.0, 'Caja de 2Kg de fresón de Palos de la Frontera'),
-                            ('Plátano de Canarias', 2.19, 'Kilo', 50.5, 'El auténtico plátano de Canarias'),
-                            ('Aguacate Nacional', 4.50, 'Kilo', 30.0, 'Aguacate cultivado en la Axarquía (España)'),
-                            ('Limón', 1.99, 'Kilo', 20, 'Limón nacional procedente de cultivo sostenible'),
-                            ('Tomate Cherry', 1.99, 'Envase', 15.0, 'Envase de 1Kg de tomate cherry'),
-                            ('Tomate Pera', 2.25, 'Kilo', 35.5, 'Tomate pera de origen canario, perfecto para salsas, gazpacho, sofritos y todo tipo de preparados.'),
-                            ('Tomate RAF', 3.09, 'Kilo', 15.0, 'Tomate RAF de calidad, máximo sabor, perfecto para ensaladas.'),
-                            ('Pepino Español', 1.79, 'Kilo', 25.0, 'Pepino español, el de toda la vida, cultivado en Almería.'
+                $sql5 = "INSERT INTO producto (nombre, precio, stock, descripcion)
+                         VALUES('Naranja de Zumo', 2.50, 30.0, 'Naranjas de zumo valencianas'), 
+                            ('Naranja de Mesa', 2.00, 20.0, 'Naranjas de mesa'), 
+                            ('Fresón de Palos', 5.50, 20.0, 'Caja de 2Kg de fresón de Palos de la Frontera'),
+                            ('Plátano de Canarias', 2.19, 50.5, 'El auténtico plátano de Canarias'),
+                            ('Aguacate Nacional', 4.50, 30.0, 'Aguacate cultivado en la Axarquía (España)'),
+                            ('Limón', 1.99, 20, 'Limón nacional procedente de cultivo sostenible'),
+                            ('Tomate Cherry', 1.99, 15.0, 'Envase de 1Kg de tomate cherry'),
+                            ('Tomate Pera', 2.25, 35.5, 'Tomate pera de origen canario, perfecto para salsas, gazpacho, sofritos y todo tipo de preparados.'),
+                            ('Tomate RAF', 3.09, 15.0, 'Tomate RAF de calidad, máximo sabor, perfecto para ensaladas.'),
+                            ('Pepino Español', 1.79, 25.0, 'Pepino español, el de toda la vida, cultivado en Almería.'
                             )"                            
                                         ;
                                  
@@ -131,7 +120,7 @@
 
 
                 //Insertar datos iniciales tabla PEDIDO
-                $sql7= "INSERT INTO pedido (nif_cliente, precio_total, forma_pago, estado_pago, estado_pedido, enviado_fecha, entregado_fecha, notas)
+                $sql7= "INSERT INTO pedido (nif_cliente, total_precio, forma_pago, estado_pago, estado_pedido, enviado_fecha, entregado_fecha, notas)
                         VALUES('53665340S', 355.68, 'bizum', 'pendiente', 'preparando', '2023-07-26 10:30:00', '2023-07-28 12:00:00', 'Entregar antes del lunes 30/07'                        
                 
                 )";

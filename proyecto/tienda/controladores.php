@@ -10,11 +10,14 @@ $twig = new \Twig\Environment($loader);
 require_once 'funciones_sesion.php';
 require_once "modelo.php";
 require_once 'validadores.php';
+//include 'Cart.php';
+//include 'cartAction.php';
 
 //session_destroy();
 $tel_ok = false;
 $email_ok = false;
 $usuario = "";
+$contrasena = "";
 $mensaje = "";
 $cesta = array();
 //$twig->addGlobal('session', $_SESSION); // para el tema sesiones de usuario
@@ -134,32 +137,88 @@ function controlador_home()
     // Carga la plantilla que se mostrará al usuario con los datos recuperados 
     // del modelo
     $usuario = $_SESSION["usuario"];
-    $cesta = $_SESSION["cesta"];
+    if (isset($_POST["perfil"])) controlador_perfil();
+    if (isset($_POST["cesta"])) exit(header("location:cesta"));
+    if (isset($_POST["ver_productos"])) exit(header("location:index.php"));
    
-
-
-    
+   
     if (isset($_POST["cerrar_sesion"])){
-        closeSession();
-        killCookie();
-        exit(header("location:adios"));
+        controlador_adios();
+        exit;
     }
+    
     
     $template = $twig->load('home.html');
 	echo $template->render(array ( 'productos' => $productos, 'usuario' =>$usuario));
 
- 
+
+
+}
+
+
+
+function controlador_perfil()
+{checkSession();
+    // Petición al modelo para que retorne la lista de productos de la BD
+    // Carga la plantilla que se mostrará al usuario con los datos recuperados del modelo
+	global $twig;
+    // Carga la plantilla que se mostrará al usuario con los datos recuperados 
+    // del modelo
+    $usuario = $_SESSION["usuario"];
+
+
+    if (isset($_POST["cerrar_sesion"])){
+        controlador_adios();
+        exit;
+    }
+    
+    $template = $twig->load('perfil.html');
+	echo $template->render(array ( 'usuario' =>$usuario));
 
 
 
 }
+
+
+
+
+
+function controlador_cesta()
+{checkSession();
+    // Petición al modelo para que retorne la lista de productos de la BD
+    // Carga la plantilla que se mostrará al usuario con los datos recuperados del modelo
+	global $twig;
+    // Carga la plantilla que se mostrará al usuario con los datos recuperados 
+    // del modelo
+    $usuario = $_SESSION["usuario"];
+
+   
+    if (isset($_POST["cerrar_sesion"])){
+        controlador_adios();
+        exit;
+    }
+    
+    $template = $twig->load('cesta.html');
+	echo $template->render(array ( 'usuario' =>$usuario ));
+
+
+
+}
+
+
+
+
+
+
+
 
 function controlador_adios()
 {
 
     // Carga la plantilla que se mostrará al usuario con los datos recuperados del modelo
 	global $twig;
- 
+    closeSession();
+    killCookie();
  
     $template = $twig->load('adios.html');
     echo $template->render(array());  //array vacio obligatorio (aunque no se mande info)

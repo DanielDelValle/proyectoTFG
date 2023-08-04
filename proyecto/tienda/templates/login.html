@@ -8,10 +8,13 @@
 
 
 {% block content %}		
-			<!-- Mostramos una lista de los artículos-->
- 		<p>LOGIN </p>
 
-		 <h1>Bienvenido</h1>
+{% block toolbar %}      
+
+{% endblock %}
+			<!-- Mostramos una lista de los artículos-->
+
+		 <h1>Inicio de Sesión</h1>
 
 		 {% block mensaje %}
 		<p class='mensaje'>{{mensaje}}</p><br>
@@ -26,7 +29,7 @@
 	 
 	 
 					 <label for="contrasena">Contraseña</label>
-					 <input type="password" name="contrasena" id="contrasena" />
+					 <input type="password" name="contrasena" id="contrasena"/>
 					 <br>
 	 
 					 <!--	<input type = "submit" name ="entrar" value = "Entrar" method ="POST" /> -->
