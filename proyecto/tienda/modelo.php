@@ -117,6 +117,7 @@ function lista_productos()
 			$sql = ("SELECT * FROM producto");		
 			$lectura = $pdo->query($sql);
 			$lista_productos= $lectura->fetchAll(PDO::FETCH_OBJ);
+			$pdo = null;
 
 		}	
 		
@@ -143,6 +144,7 @@ function detalle_producto($id)
 			$sql = "SELECT p.id_prod, p.nombre, p.precio, p.stock, p.descripcion FROM producto p WHERE id_prod ='$id'";		
 			$lectura = $pdo->query($sql);
 			$producto= $lectura->fetchObject();
+			$pdo = null;
 		}	
 		
 		catch(PDOException $e){

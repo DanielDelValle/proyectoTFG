@@ -7,7 +7,8 @@ function checkSession(){
             //exit;     // evita seguir ejecutando código de ésta página 
         }else{} 
         echo session_id();
-        return $usuario = ($_SESSION["usuario"]);
+        $usuario = ($_SESSION["usuario"]);
+        return $usuario;
         
     }
 /*ACLARACIONES DE $_SESSION:
@@ -83,12 +84,11 @@ function checkCookie(){
 
 
 function checkCesta(){    
-       if (empty($_SESSION['cesta'])) {$cesta = array();}
-       else {$cesta = $_SESSION['cesta'];}
+       if (!isset($_SESSION['cesta'])) $cesta = array();
+       else $cesta = $_SESSION['cesta'];
     
        return $cesta;
     
-      
     }
 
 

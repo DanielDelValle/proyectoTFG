@@ -19,7 +19,6 @@ $email_ok = false;
 $usuario = "";
 $contrasena = "";
 $mensaje = "";
-$cesta = array();
 //$twig->addGlobal('session', $_SESSION); // para el tema sesiones de usuario
 
 
@@ -57,11 +56,9 @@ function controlador_index()
 	echo $template->render(array ( 'productos' => $productos));
 }
 
-
-// Controlador específico de artículo
 function controlador_detalle($id)
-{   $usuario = checkSession();
-    $cesta = checkCesta();
+{   session_start();
+    $_SESSION['cesta'] = checkCesta();
     $producto = get_object_vars(detalle_producto($id));  //transformo el objeto que devuelve el modelo en 
 // Carga la plantilla que se mostrará al usuario con los datos recuperados 
     // del modelo
@@ -69,33 +66,56 @@ function controlador_detalle($id)
     // Carga la plantilla que se mostrará al usuario con los datos recuperados 
     // del modelo
     if (isset($_POST["anadir_producto"])) {
+        $usuario = checkSession();
+        $_SESSION['cesta'] = checkCesta();
         $prod_add = array();
         //$prod_add = new ArrayObject();  PARA CREAR UN ARRAY DE OBJETOS VACIO
-        $identif = (int)$producto['id_prod'];
+        $prod_add['id'] = (int)$producto['id_prod'];
+        $prod_add['nombre'] = $producto['nombre'];
+        $prod_add['precio'] = (float)$producto['precio'];
+        $prod_add['cantidad'] = (float)1.0;
+        
 
-        if(!empty($cesta)){
-            // foreach ...                                                 PENDIENTE FOREACH?¿?
-        /*    if (in_array($identif, $_SESSION['cesta'][$identif])){ 
-                $$_SESSION['cesta'][$identif]['cantidad'] += 1;
-            }        */
+        if(count($_SESSION['cesta']) != 0){
+            if(in_array($prod_add['id'], array_keys($_SESSION['cesta']))){
+                $_SESSION['cesta'][$prod_add['id']]['cantidad'] +=1;
+            } 
+            else {
+                $_SESSION['cesta'][$prod_add['id']] = $prod_add;
+            }
+        
+        }else{
+            $_SESSION['cesta'][$prod_add['id']] = $prod_add;
         }
-        else{
-            $prod_add['id'] = (int)$producto['id_prod'];
-            $prod_add['nombre'] = $producto['nombre'];
-            $prod_add['precio'] = (float)$producto['precio'];
-            $prod_add['cantidad'] = (float)1.0;
+
+        }
     
-            $_SESSION['cesta'][$identif] = $prod_add;
-        }
-
-    }
-
     $template = $twig->load('detalle_producto.html');  
-	echo $template->render(array ( 'producto' => $producto, 'cesta' => $cesta));
+	echo $template->render(array ( 'producto' => $producto));
     var_dump($_SESSION['cesta']);
-    var_dump($cesta);
     return $producto;
     
+}
+
+function controlador_cesta()
+{$usuario = checkSession();
+    $cesta = checkCesta();
+    // Petición al modelo para que retorne la lista de productos de la BD
+    // Carga la plantilla que se mostrará al usuario con los datos recuperados del modelo
+	global $twig;
+    // Carga la plantilla que se mostrará al usuario con los datos recuperados 
+    // del modelo
+
+   
+    if (isset($_POST["cerrar_sesion"])){
+        controlador_adios();
+        exit;
+    }
+    
+    $template = $twig->load('cesta.html');
+	echo $template->render(array ( 'usuario' =>$usuario, 'cesta' => $cesta));
+    var_dump($cesta);
+
 }
 
 
@@ -209,28 +229,6 @@ function controlador_perfil()
 
 
 
-
-
-function controlador_cesta()
-{$usuario = checkSession();
-    $cesta = checkCesta();
-    // Petición al modelo para que retorne la lista de productos de la BD
-    // Carga la plantilla que se mostrará al usuario con los datos recuperados del modelo
-	global $twig;
-    // Carga la plantilla que se mostrará al usuario con los datos recuperados 
-    // del modelo
-
-   
-    if (isset($_POST["cerrar_sesion"])){
-        controlador_adios();
-        exit;
-    }
-    
-    $template = $twig->load('cesta.html');
-	echo $template->render(array ( 'usuario' =>$usuario, 'cesta' => $cesta));
-    var_dump($cesta);
-
-}
 
 
 function controlador_adios()
