@@ -60,25 +60,49 @@ function controlador_index()
 
 // Controlador específico de artículo
 function controlador_detalle($id)
-{
+{   $usuario = checkSession();
     $cesta = checkCesta();
-    $producto = detalle_producto($id);
+    $producto = get_object_vars(detalle_producto($id));  //transformo el objeto que devuelve el modelo en 
 // Carga la plantilla que se mostrará al usuario con los datos recuperados 
     // del modelo
 	global $twig;
     // Carga la plantilla que se mostrará al usuario con los datos recuperados 
     // del modelo
+    if (isset($_POST["anadir_producto"])) {
+        $prod_add = array();
+        //$prod_add = new ArrayObject();  PARA CREAR UN ARRAY DE OBJETOS VACIO
+        $identif = (int)$producto['id_prod'];
+
+        if(!empty($cesta)){
+            // foreach ...                                                 PENDIENTE FOREACH?¿?
+        /*    if (in_array($identif, $_SESSION['cesta'][$identif])){ 
+                $$_SESSION['cesta'][$identif]['cantidad'] += 1;
+            }        */
+        }
+        else{
+            $prod_add['id'] = (int)$producto['id_prod'];
+            $prod_add['nombre'] = $producto['nombre'];
+            $prod_add['precio'] = (float)$producto['precio'];
+            $prod_add['cantidad'] = (float)1.0;
     
+            $_SESSION['cesta'][$identif] = $prod_add;
+        }
+
+    }
+
     $template = $twig->load('detalle_producto.html');  
 	echo $template->render(array ( 'producto' => $producto, 'cesta' => $cesta));
+    var_dump($_SESSION['cesta']);
+    var_dump($cesta);
+    return $producto;
+    
 }
 
 
 
-function controlador_login()
-{session_start();
+function controlador_login(){
 
-
+{   session_start();
     if (isset($_POST["entrar"])) {
         //Procesar formulario
         //Obtener contraseña codificada de bd, por ejemplo:
@@ -90,7 +114,7 @@ function controlador_login()
         if (isset($_POST["usuario"])) $usuario = $_POST["usuario"];
         else $usuario = "";
     
-        if (isset($_POST["contrasena"])) $contrasena = $_POST["contrasena"]; //en caso de que queramos guardar la contreaseña
+        if (isset($_POST["contrasena"])) $contrasena = $_POST["contrasena"];
         else $contrasena = "";
     
         if ($usuario != "" && $contrasena != "") {
@@ -99,27 +123,30 @@ function controlador_login()
             if (($usuario == $user) && (crypt($contrasena, '$1$somethin$')) == $pass) {
                 //Login correcto
                 //Establecer sesion autentificada
-                $_SESSION["usuario"] = $usuario; 
-
-                if (empty($_SESSION["cesta"])) $_SESSION["cesta"] = array();
-                else $cesta = $_SESSION["cesta"];
-
+                $_SESSION["usuario"] = $usuario;    
+                //$_SESSION["contrasena"] = $contrasena;                
                 exit(header("location:home"));
+                //session_regenerate_id();  //para evitar ataque de fijacion de sesion (en redes compartidas)
             } else {
-                $mensaje = "<h2>Usuario y/o contraseña incorrectos</h2>";
-
-            }
-        } else $mensaje = "<h2>Los campos usuario y contraseña son obligatorios<h2>";
+                $mensaje = "Usuario y/o contraseña incorrectos";
+                $delay=2;
+                header("Refresh:$delay");}  //PENDIENTE AÑADIR AQUI CONTADOR DE INTENTOS
+        } else $mensaje = "Los campos usuario y contraseña son obligatorios";
     } else if (isset($_SESSION["usuario"])) {
         //Sesión ya iniciada
         $usuario = $_SESSION["usuario"];
+        //$contrasena = $_SESSION["contrasena"];
         $mensaje = "";
     } else {
         //Carga en vacío sin sesión iniciada
         $usuario = "";
+        //$contrasena = "";
         $mensaje = "";
     }
 
+
+}
+        
     // Petición al modelo para que retorne la lista de productos de la BD
     // Carga la plantilla que se mostrará al usuario con los datos recuperados del modelo
 	global $twig;
@@ -128,8 +155,9 @@ function controlador_login()
 }
 
 
+
 function controlador_home()
-{checkSession();
+{$usuario = checkSession();
     // Petición al modelo para que retorne la lista de productos de la BD
     $productos = lista_productos();
     // Carga la plantilla que se mostrará al usuario con los datos recuperados del modelo
@@ -137,7 +165,7 @@ function controlador_home()
     // Carga la plantilla que se mostrará al usuario con los datos recuperados 
     // del modelo
     $usuario = $_SESSION["usuario"];
-    if (isset($_POST["perfil"])) controlador_perfil();
+    if (isset($_POST["perfil"])) exit(header("location:perfil"));
     if (isset($_POST["cesta"])) exit(header("location:cesta"));
     if (isset($_POST["ver_productos"])) exit(header("location:index.php"));
    
@@ -158,7 +186,7 @@ function controlador_home()
 
 
 function controlador_perfil()
-{checkSession();
+{$usuario = checkSession();
     // Petición al modelo para que retorne la lista de productos de la BD
     // Carga la plantilla que se mostrará al usuario con los datos recuperados del modelo
 	global $twig;
@@ -184,13 +212,13 @@ function controlador_perfil()
 
 
 function controlador_cesta()
-{checkSession();
+{$usuario = checkSession();
+    $cesta = checkCesta();
     // Petición al modelo para que retorne la lista de productos de la BD
     // Carga la plantilla que se mostrará al usuario con los datos recuperados del modelo
 	global $twig;
     // Carga la plantilla que se mostrará al usuario con los datos recuperados 
     // del modelo
-    $usuario = $_SESSION["usuario"];
 
    
     if (isset($_POST["cerrar_sesion"])){
@@ -199,17 +227,10 @@ function controlador_cesta()
     }
     
     $template = $twig->load('cesta.html');
-	echo $template->render(array ( 'usuario' =>$usuario ));
-
-
+	echo $template->render(array ( 'usuario' =>$usuario, 'cesta' => $cesta));
+    var_dump($cesta);
 
 }
-
-
-
-
-
-
 
 
 function controlador_adios()

@@ -142,7 +142,7 @@ function detalle_producto($id)
 			//La búsqueda se realiza en mysql con el comando LIKE
 			$sql = "SELECT p.id_prod, p.nombre, p.precio, p.stock, p.descripcion FROM producto p WHERE id_prod ='$id'";		
 			$lectura = $pdo->query($sql);
-			$articulo= $lectura->fetchObject();
+			$producto= $lectura->fetchObject();
 		}	
 		
 		catch(PDOException $e){
@@ -151,7 +151,7 @@ function detalle_producto($id)
 		  }
 		}  
 		
-	return $articulo;
+	return $producto;
 			
 		
 }
