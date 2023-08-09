@@ -14,7 +14,7 @@ function checkSession(){
 /*ACLARACIONES DE $_SESSION:
     - session_write_close() = session_commit() (SINONIMOS)  */
 
-function closeSession() //elimina la sesión
+function closeSession() //elimina la sesión sin borrar los datos de la cesta
     {  
         if ((session_status() === PHP_SESSION_ACTIVE)) {
             //echo "<p>Cerrando sesión</p>";
@@ -41,7 +41,7 @@ function closeSession() //elimina la sesión
     
 
 
-function closeSession2() //elimina la sesión
+function closeSession2() //elimina la sesión totalmente
 {
     if ((session_status() === PHP_SESSION_ACTIVE)) {
         //echo "<p>Cerrando sesión</p>";

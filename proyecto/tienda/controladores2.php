@@ -10,7 +10,7 @@ $twig = new \Twig\Environment($loader);
 require_once 'funciones_sesion.php';
 require_once "modelo.php";
 require_once 'validadores.php';
-//include 'Cesta.php';
+//include 'Cart.php';
 //include 'cartAction.php';
 
 //session_destroy();
@@ -93,9 +93,6 @@ function controlador_detalle($id)
         }
 
         }
-
-
-        
         global $twig;
     $template = $twig->load('detalle_producto.html');  
 	echo $template->render(array ( 'producto' => $producto));
@@ -106,46 +103,13 @@ function controlador_detalle($id)
 
 function controlador_cesta()
 {$usuario = checkSession();
-    $_SESSION['cesta'] = checkCesta();
-    $cesta = $_SESSION['cesta'];
+    $cesta = checkCesta();
     // Petición al modelo para que retorne la lista de productos de la BD
     // Carga la plantilla que se mostrará al usuario con los datos recuperados del modelo
 	global $twig;
     // Carga la plantilla que se mostrará al usuario con los datos recuperados 
     // del modelo
 
-function total_precio(){
-    $total= 0;
-    $total_precio = 0;
-    foreach((($_SESSION['cesta'])) as $i){
-        var_dump($i);
-     $total = (($i['precio']) * ($i['cantidad']));
-        $total_precio += $total;
-        echo $total_precio;
-    }
-return $total_precio;
-}
-
-function total_prods(){
-    $total_prods = count($_SESSION['cesta']);
-    return $total_prods;
-    }
-
-
-    $total_prods = total_prods();
-    $total_precio = total_precio();
-
-
-
-
-    if (isset($_POST["vaciar_cesta"])) {
-        unset($_SESSION['cesta']);
-        $mensaje = "Cesta Vaciada con Éxito";
-        $delay=1;
-        header("Refresh:$delay");
-
-
-    }
    
     if (isset($_POST["cerrar_sesion"])){
         controlador_adios();
@@ -153,7 +117,7 @@ function total_prods(){
     }
     
     $template = $twig->load('cesta.html');
-	echo $template->render(array ( 'usuario' =>$usuario, 'cesta' => $cesta, 'total_prods'=> $total_prods, 'total_precio' => $total_precio));
+	echo $template->render(array ( 'usuario' =>$usuario, 'cesta' => $cesta));
     var_dump($cesta);
 
 }

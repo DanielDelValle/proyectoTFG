@@ -160,7 +160,7 @@
 
                 }else echo "Error creando BD";   
 
-            
+                $pdo = null;
             
     }
     catch(PDOException $e){

@@ -12,12 +12,16 @@
         <p>
             
         <h3 class='titulo'>CESTA DE {{usuario}}</h3>
+        <h2>Total Productos: {{total_prods}}</h2>
+        <h2>Total precio mercancias: {{total_precio}} €</h2>
 
 
-        <div contact>
+        <div>
             <form method="POST"  action="" autocomplete>
                 <!--  el botón "Cerrar Sesion" da la orden de borrar datos de sesión y elimina cookie-->
 
+                    <button type="submit" name="vaciar_cesta" method="POST">Vaciar la Cesta</button>
+     
                     <button type="submit" name="cerrar_sesion" method="POST">Cerrar Sesion</button>
                 </fieldset>
             </form>
