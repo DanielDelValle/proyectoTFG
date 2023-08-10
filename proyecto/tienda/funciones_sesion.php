@@ -14,34 +14,21 @@ function checkSession(){
 /*ACLARACIONES DE $_SESSION:
     - session_write_close() = session_commit() (SINONIMOS)  */
 
-function closeSession() //elimina la sesión sin borrar los datos de la cesta
+function closeSession2() //elimina la sesión sin borrar los datos de la cesta
     {  
         if ((session_status() === PHP_SESSION_ACTIVE)) {
             //echo "<p>Cerrando sesión</p>";
             //Si hay sesión abierta, se define como array vacío el contenido de la misma
             //$_SESSION['usuario'] = "";
-            $_SESSION = array();                
-            //Se limpia la cookie de sesion estableciendo tiempo de duración negativo, entre otras medidas
-            if (ini_get("session.use_cookies")) {
-                $params = session_get_cookie_params();
-                setcookie(
-                    session_name(),
-                    '',
-                    time() - 42000,
-                    $params["path"],
-                    $params["domain"],
-                    $params["secure"],
-                    $params["httponly"]
-                );
-            }
-            session_destroy();  //destruye sesion
+            session_write_close();
+           // session_destroy();  //destruye sesion
         }
     }
 
     
 
 
-function closeSession2() //elimina la sesión totalmente
+function closeSession() //elimina la sesión totalmente
 {
     if ((session_status() === PHP_SESSION_ACTIVE)) {
         //echo "<p>Cerrando sesión</p>";

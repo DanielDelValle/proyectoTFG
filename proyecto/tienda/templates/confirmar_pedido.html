@@ -12,7 +12,7 @@
 
 <form method="POST"  action="" autocomplete>
 
-    <h3 class='titulo'>CESTA DE {{usuario}}</h3>
+    <h3 class='titulo'>Confirmar Pedido Nº {{pedido.id_pedido}}</h3>
     <table id ='cesta' >
     <th>Id_Producto</th><th>Nombre</th><th>Cantidad</th><th>€/Kg</th><th>Subtotal</th>
 
@@ -20,15 +20,13 @@
         <tr>
         <td><input type="checkbox" name="checkbox[]" class="checkbox"  value= {{producto.id}}>
         {{producto.id}}</td><td>{{producto.nombre}}</td><td>{{producto.cantidad}}</td><td>{{producto.precio}}</td><td>{{ producto.cantidad * producto.precio}}€</td>
-        <td><a href="http://localhost/proyecto/tienda/index.php/detalle_producto?id={{producto.id}}">Ver Producto</a></td>
         </tr>
-
         {% endfor %}    
 
-          <tr><td><h2>Total Productos: {{total_prods}}</h2></td></tr>
-          <tr><td><h2>Total Peso mercancias: {{total_kg}} Kilo(s)</h2></td></tr>
-          <tr><td><h2>Total Precio mercancias: {{total_precio}} €</h2></td></tr>    
-          <tr><td><h2>Total pedido(mercancía + envío): PENDIENTE</h2></td></tr>  
+        <tr><td><h2>Total Productos: {{total_prods}}</h2></td></tr>
+        <tr><td><h2>Total Peso mercancias: {{total_kg}} Kilo(s)</h2></td></tr>
+        <tr><td><h2>Total Precio mercancias: {{total_precio}} €</h2></td></tr>    
+        <tr><td><h2>Total pedido(mercancía + envío): PENDIENTE</h2></td></tr>  
     </table>
   
 
@@ -38,7 +36,7 @@
 
                 <button type="submit" name="borrar_producto" method="POST">Borrar Producto</button>
 
-                    <button type="submit" name="vaciar_cesta" method="POST">Vaciar la Cesta</button>
+                    <button type="submit" name="volver_cesta" method="POST">Volver a la Cesta</button>
 
                          
                     <button type="submit" name="confirmar_pedido" method="POST">Confirmar Pedido</button>

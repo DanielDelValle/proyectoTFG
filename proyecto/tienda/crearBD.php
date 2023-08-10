@@ -55,6 +55,7 @@
                     id_pedido INTEGER(5) NOT NULL AUTO_INCREMENT PRIMARY KEY,        
                     nif_cliente VARCHAR(9),
                     total_precio DECIMAL(7),
+                    total_kg DECIMAL (5),
                     forma_pago VARCHAR(20),
                     estado_pago VARCHAR(20),
                     estado_pedido VARCHAR(20),
@@ -75,8 +76,8 @@
                 $sql4="CREATE TABLE IF NOT EXISTS albaran (
                     id_pedido INTEGER(5) NOT NULL PRIMARY KEY,      
                     id_prod INTEGER NOT NULL,
-                    cantidad INTEGER NOT NULL,
-                    unidad VARCHAR(15),
+                    cantidad DECIMAL(5),
+                    total_kg DECIMAL(5),
                     notas VARCHAR (500)
                     )";
                                       
@@ -131,8 +132,8 @@
                        
 
                 //Insertar datos iniciales tabla ALBARAN
-                $sql8= "INSERT INTO albaran (id_pedido, id_prod, cantidad, unidad, notas)
-                        VALUES(1, 5, 3, 'Caja', 'Entregar antes del lunes 30/07'
+                $sql8= "INSERT INTO albaran (id_pedido, id_prod, cantidad, total_kg, notas)
+                        VALUES(1, 5, 3.0, 'Caja', 'Entregar antes del lunes 30/07'
 
                 )";
 

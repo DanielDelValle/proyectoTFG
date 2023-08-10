@@ -93,13 +93,10 @@ function controlador_detalle($id)
         }
 
         }
-
-
         
         global $twig;
     $template = $twig->load('detalle_producto.html');  
 	echo $template->render(array ( 'producto' => $producto));
-    var_dump($_SESSION['cesta']);
     return $producto;
     
 }
@@ -108,43 +105,80 @@ function controlador_cesta()
 {$usuario = checkSession();
     $_SESSION['cesta'] = checkCesta();
     $cesta = $_SESSION['cesta'];
-    // Petición al modelo para que retorne la lista de productos de la BD
-    // Carga la plantilla que se mostrará al usuario con los datos recuperados del modelo
+    $mensaje = "";
+
 	global $twig;
-    // Carga la plantilla que se mostrará al usuario con los datos recuperados 
-    // del modelo
+
 
 function total_precio(){
     $total= 0;
     $total_precio = 0;
-    foreach((($_SESSION['cesta'])) as $i){
-        var_dump($i);
-     $total = (($i['precio']) * ($i['cantidad']));
-        $total_precio += $total;
-        echo $total_precio;
-    }
+    $cesta = checkCesta();
+    foreach((($cesta)) as $i){
+        $total = (($i['precio']) * ($i['cantidad']));
+            $total_precio += $total;
+            
+        }$_SESSION['total_precio'] = $total_precio;
+
 return $total_precio;
 }
+$total_precio = total_precio();
 
 function total_prods(){
     $total_prods = count($_SESSION['cesta']);
+    $_SESSION['total_prods'] = $total_prods;
     return $total_prods;
     }
+$total_prods = total_prods();
+ 
+function total_kg(){
+    $total_kg = 0;
+    foreach((($_SESSION['cesta'])) as $i) {
+        $total_kg += $i['cantidad'];
+        }$_SESSION['total_kg'] = $total_kg;
+    return (int)$total_kg;
+    }
+$total_kg = total_kg();
+
+function borrar_producto(){
+    $mensaje="";
+    if(isset($_POST['checkbox'])) {
+    $checked = $_POST['checkbox'];
+    if(intval($checked) == 1){
+        foreach($_POST['checkbox'] as $val){
+            unset($_SESSION['cesta'][intval($val)]);
+        }
+        $delay=1;
+        header("Refresh:$delay");
+        $mensaje = "Producto eliminado con Éxito";
+    }
+}else $mensaje = "Por favor, seleccione al menos un producto para eliminar";
+return $mensaje;
+}
+    
+    
+function vaciar_cesta(){
+        unset($_SESSION['cesta']);
+        $mensaje = "Cesta Vaciada con Éxito";
+        $delay=1;
+        header("Refresh:$delay");
+        return $mensaje;
+    }
+
+    if(isset($_POST["confirmar_pedido"])){
+        exit(header("location:confirmar_pedido"));}
 
 
-    $total_prods = total_prods();
-    $total_precio = total_precio();
-
-
+    if(isset($_POST["borrar_producto"])){
+        $mensaje = borrar_producto();
+    }
 
 
     if (isset($_POST["vaciar_cesta"])) {
         unset($_SESSION['cesta']);
         $mensaje = "Cesta Vaciada con Éxito";
         $delay=1;
-        header("Refresh:$delay");
-
-
+        header("refresh:$delay");
     }
    
     if (isset($_POST["cerrar_sesion"])){
@@ -153,8 +187,23 @@ function total_prods(){
     }
     
     $template = $twig->load('cesta.html');
-	echo $template->render(array ( 'usuario' =>$usuario, 'cesta' => $cesta, 'total_prods'=> $total_prods, 'total_precio' => $total_precio));
+	echo $template->render(array ( 'usuario' =>$usuario, 'cesta' => $cesta, 'mensaje' =>$mensaje, 'total_kg'=> $total_kg, 'total_prods'=> $total_prods, 'total_precio' => $total_precio));
     var_dump($cesta);
+
+}
+
+function controlador_confirmar_pedido(){
+    $usuario = checkSession();
+    $_SESSION['cesta'] = checkCesta();
+    $cesta = $_SESSION['cesta'];
+    $mensaje="";
+    $total_precio = $_SESSION['total_precio'];
+    $total_kg = $_SESSION['total_kg'];
+    $total_prods = $_SESSION['total_prods'];
+
+    global $twig;
+    $template = $twig->load('confirmar_pedido.html');
+	echo $template->render(array ( 'usuario' =>$usuario, 'cesta' => $cesta, 'mensaje' => $mensaje, 'total_prods'=>$total_prods, 'total_kg'=> $total_kg, 'total_precio'=>$total_precio));
 
 }
 
