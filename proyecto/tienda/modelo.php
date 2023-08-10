@@ -136,7 +136,6 @@ function lista_productos()
 function detalle_producto($id)
 {	
 	$id = isset($_REQUEST["id"]) ? $_REQUEST["id"] : "";
-	echo $id;
 		$pdo = conexion();
 		if($pdo){
 			try{
@@ -159,8 +158,29 @@ function detalle_producto($id)
 }
 
 
-
-
+function datos_cliente($email)
+{	
+	$email = isset($_SESSION['usuario']) ? $_SESSION['usuario'] : "";
+		$pdo = conexion();
+		if($pdo){
+			try{
+			//La búsqueda se realiza en mysql con el comando LIKE
+			$sql = "SELECT c.nif, c.nombre, c.apellidos, c.telefono, c.direccion, c.localidad, c.cod_postal, c.provincia FROM cliente c WHERE email ='$email'";		
+			$lectura = $pdo->query($sql);
+			$producto= $lectura->fetchObject();
+			$pdo = null;
+		}	
+		
+		catch(PDOException $e){
+			echo 'Excepción: ', $e->getMessage();
+			return null;
+		  }
+		}  
+		
+	return $producto;
+			
+		
+}
 
 
 

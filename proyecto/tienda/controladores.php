@@ -165,9 +165,10 @@ function vaciar_cesta(){
         return $mensaje;
     }
 
-    if(isset($_POST["confirmar_pedido"])){
+    if(isset($_POST["confirmar_pedido"]) and ($total_prods>0)){
         exit(header("location:confirmar_pedido"));}
-
+        else $mensaje="No hay productos en su cesta";
+    
 
     if(isset($_POST["borrar_producto"])){
         $mensaje = borrar_producto();
@@ -194,6 +195,8 @@ function vaciar_cesta(){
 
 function controlador_confirmar_pedido(){
     $usuario = checkSession();
+    $cliente = datos_cliente($usuario);
+    var_dump($cliente);
     $_SESSION['cesta'] = checkCesta();
     $cesta = $_SESSION['cesta'];
     $mensaje="";
@@ -201,9 +204,14 @@ function controlador_confirmar_pedido(){
     $total_kg = $_SESSION['total_kg'];
     $total_prods = $_SESSION['total_prods'];
 
+    if(isset($_POST["volver_cesta"])){
+        exit(header("location:cesta"));
+    }
+
+
     global $twig;
     $template = $twig->load('confirmar_pedido.html');
-	echo $template->render(array ( 'usuario' =>$usuario, 'cesta' => $cesta, 'mensaje' => $mensaje, 'total_prods'=>$total_prods, 'total_kg'=> $total_kg, 'total_precio'=>$total_precio));
+	echo $template->render(array ( 'usuario' =>$usuario, 'cliente'=>$cliente, 'cesta' => $cesta, 'mensaje' => $mensaje, 'total_prods'=>$total_prods, 'total_kg'=> $total_kg, 'total_precio'=>$total_precio));
 
 }
 
@@ -215,7 +223,7 @@ function controlador_login(){
     if (isset($_POST["entrar"])) {
         //Procesar formulario
         //Obtener contraseña codificada de bd, por ejemplo:
-        $user = "daniel";
+        $user = "danimolar@hotmail.com";
         $pass = crypt('daniel', '$1$somethin$');
         //&pass = md5('daniel')
         $mensaje = "";

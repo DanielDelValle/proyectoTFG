@@ -42,6 +42,7 @@
                     direccion VARCHAR(50),
                     localidad VARCHAR(20),
                     cod_postal INTEGER(5),
+                    provincia VARCHAR(25),
                     creado_fecha DATETIME DEFAULT NOW()
                     
                     )";
@@ -111,8 +112,8 @@
                                         
                 
                 //Insertar datos iniciales tabla CLIENTE
-                $sql6 = "INSERT INTO cliente (nif, nombre, apellidos, email, telefono, direccion, localidad, cod_postal)
-                            VALUES('53665340S', 'Daniel', 'Del Valle Gonzalez', 'danimolar@hotmail.com', 657056073, 'Avenida Colmenar Viejo', 'San Sebastián de los Reyes', 28701)";
+                $sql6 = "INSERT INTO cliente (nif, nombre, apellidos, email, telefono, direccion, localidad, cod_postal, provincia)
+                            VALUES('53665340S', 'Daniel', 'Del Valle Gonzalez', 'danimolar@hotmail.com', 657056073, 'Avenida Colmenar Viejo', 'San Sebastián de los Reyes', 28701, 'Madrid')";
 
                 if($bd->query($sql6)){
                 echo "Datos insertados con éxito en tabla CLIENTE<br>";

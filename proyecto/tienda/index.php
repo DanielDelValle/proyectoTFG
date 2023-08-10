@@ -13,7 +13,7 @@ $URI = $segments[count($segments)-1];
 /**si quisiera distinguir entre misma extension "home" por ejemplo, precedida de "empleado" o "cliente" para aplicar una u otra plantilla(vista) y controlador
 $URI2 = $segments[count($segments)-2];**/
 
-echo ">>>$URI<br>";  //para mostrar la URI actual
+//echo ">>>$URI<br>";  //para mostrar la URI actual
 
 if ($URI == 'index.php') 
 {
