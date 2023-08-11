@@ -63,9 +63,9 @@ elseif ($URI == 'cesta')
 		controlador_cesta(); 
 }
 
-elseif ($URI == 'confirmar_pedido')
+elseif ($URI == 'confirmar_datos')
 {      
-		controlador_confirmar_pedido(); 
+		controlador_confirmar_datos(); 
 }
 
 

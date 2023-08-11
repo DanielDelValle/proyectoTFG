@@ -103,6 +103,7 @@ function controlador_detalle($id)
 
 function controlador_cesta()
 {$usuario = checkSession();
+    $cliente = datos_cliente($usuario);
     $_SESSION['cesta'] = checkCesta();
     $cesta = $_SESSION['cesta'];
     $mensaje = "";
@@ -165,10 +166,12 @@ function vaciar_cesta(){
         return $mensaje;
     }
 
-    if(isset($_POST["confirmar_pedido"]) and ($total_prods>0)){
-        exit(header("location:confirmar_pedido"));}
-        else $mensaje="No hay productos en su cesta";
-    
+    if(isset($_POST["confirmar_datos"])){
+
+        if($total_prods>0){exit(header("location:confirmar_datos"));}
+
+        elseif ($total_prods===0)$mensaje="No hay productos en su cesta";
+    }
 
     if(isset($_POST["borrar_producto"])){
         $mensaje = borrar_producto();
@@ -188,15 +191,14 @@ function vaciar_cesta(){
     }
     
     $template = $twig->load('cesta.html');
-	echo $template->render(array ( 'usuario' =>$usuario, 'cesta' => $cesta, 'mensaje' =>$mensaje, 'total_kg'=> $total_kg, 'total_prods'=> $total_prods, 'total_precio' => $total_precio));
-    var_dump($cesta);
+	echo $template->render(array ( 'usuario' =>$usuario, 'cliente'=> $cliente, 'cesta' => $cesta, 'mensaje' =>$mensaje, 'total_kg'=> $total_kg, 'total_prods'=> $total_prods, 'total_precio' => $total_precio));
+
 
 }
 
-function controlador_confirmar_pedido(){
+function controlador_confirmar_datos(){
     $usuario = checkSession();
     $cliente = datos_cliente($usuario);
-    var_dump($cliente);
     $_SESSION['cesta'] = checkCesta();
     $cesta = $_SESSION['cesta'];
     $mensaje="";
@@ -210,7 +212,7 @@ function controlador_confirmar_pedido(){
 
 
     global $twig;
-    $template = $twig->load('confirmar_pedido.html');
+    $template = $twig->load('confirmar_datos.html');
 	echo $template->render(array ( 'usuario' =>$usuario, 'cliente'=>$cliente, 'cesta' => $cesta, 'mensaje' => $mensaje, 'total_prods'=>$total_prods, 'total_kg'=> $total_kg, 'total_precio'=>$total_precio));
 
 }
@@ -275,6 +277,7 @@ function controlador_login(){
 
 function controlador_home()
 {$usuario = checkSession();
+    $cliente = datos_cliente($usuario);
     // Petición al modelo para que retorne la lista de productos de la BD
     $productos = lista_productos();
     // Carga la plantilla que se mostrará al usuario con los datos recuperados del modelo
@@ -304,6 +307,7 @@ function controlador_home()
 
 function controlador_perfil()
 {$usuario = checkSession();
+    $cliente = datos_cliente($usuario);
     // Petición al modelo para que retorne la lista de productos de la BD
     // Carga la plantilla que se mostrará al usuario con los datos recuperados del modelo
 	global $twig;

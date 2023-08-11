@@ -19,12 +19,11 @@ function closeSession() //elimina la sesión sin borrar los datos de la cesta
         if ((session_status() === PHP_SESSION_ACTIVE)) {
             //echo "<p>Cerrando sesión</p>";
             //Si hay sesión abierta, se define como array vacío el contenido de la misma
-            //$_SESSION['usuario'] = "";
+            unset($_SESSION['usuario']);
             session_write_close();
            // session_destroy();  //destruye sesion
         }
     }
-
     
 
 
@@ -58,8 +57,6 @@ function killCookie() {
     }  //elimina la cookie horario
 
 }
-
-
 
 
 function checkCookie(){

@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block stylesheets %}
+<link rel="stylesheet" type="text/css" href="css/tarea8.css">
+{% endblock %}
+
+
+{% block content %}
+{% block mensaje %}
+<p class='mensaje'>{{mensaje}}</p><br>
+{% endblock %}
+
+<form method="POST" action="" autocomplete>
+
+    <h3 class='titulo'>Confirmar Datos del Envío</h3>
+    <div>
+        <table id='datos_cliente'>
+            <th>NIF</th>
+            <th>Nombre</th>
+            <th>Apellidos</th>
+            <th>Email</th>
+            <th>Telefono</th>
+            <th>Direccion</th>
+            <th>Localidad</th>
+            <th>Codigo Postal</th>
+            <th>Provincia</th>
+
+            <tr>
+                <td>{{cliente.nif}}</td>
+                <td>{{cliente.nombre}}</td>
+                <td>{{cliente.apellidos}}</td>
+                <td>
+            <tr><td>{{cliente.email}}</td>
+                <td>{{cliente.telefono}}</td>
+            <tr>
+                <td>{{cliente.direccion}}</td>
+                <td>{{cliente.localidad}}</td>
+                <td>{{cliente.cod_postal}}</td>
+                <td>{{cliente.provincia}}</td>
+            </tr>
+
+
+        </table>
+    </div>
+
+    <div>
+        <fieldset>
+            <!--   el botón "Cerrar Sesion" da la orden de borrar datos de sesión y elimina cookie-->
+
+            <button type="submit" name="borrar_producto" method="POST">Borrar Producto</button>
+
+            <button type="submit" name="volver_cesta" method="POST">Volver a la Cesta</button>
+
+
+            <button type="submit" name="confirmar_pedido" method="POST">Confirmar Pedido</button>
+
+            <button type="submit" name="cerrar_sesion" method="POST">Cerrar Sesion</button>
+
+
+        </fieldset>
+    </div>
+</form>
+
+
+</html>
+{% endblock %}

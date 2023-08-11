@@ -165,9 +165,9 @@ function datos_cliente($email)
 		if($pdo){
 			try{
 			//La búsqueda se realiza en mysql con el comando LIKE
-			$sql = "SELECT c.nif, c.nombre, c.apellidos, c.telefono, c.direccion, c.localidad, c.cod_postal, c.provincia FROM cliente c WHERE email ='$email'";		
+			$sql = "SELECT c.nif, c.nombre, c.apellidos, c.email, c.telefono, c.direccion, c.localidad, c.cod_postal, c.provincia FROM cliente c WHERE email ='$email'";		
 			$lectura = $pdo->query($sql);
-			$producto= $lectura->fetchObject();
+			$cliente= $lectura->fetchObject();
 			$pdo = null;
 		}	
 		
@@ -177,7 +177,7 @@ function datos_cliente($email)
 		  }
 		}  
 		
-	return $producto;
+	return $cliente;
 			
 		
 }

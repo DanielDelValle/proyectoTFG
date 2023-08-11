@@ -12,7 +12,7 @@
 
 <form method="POST"  action="" autocomplete>
 
-    <h3 class='titulo'>CESTA DE {{usuario}}</h3>
+    <h3 class='titulo'>CESTA DE {{cliente.nombre}}</h3>
     <table id ='cesta' >
     <th>Id_Producto</th><th>Nombre</th><th>Cantidad</th><th>€/Kg</th><th>Subtotal</th>
 
@@ -36,12 +36,13 @@
 
                 <!--  el botón "Cerrar Sesion" da la orden de borrar datos de sesión y elimina cookie-->
 
+            <fieldset>
                 <button type="submit" name="borrar_producto" method="POST">Borrar Producto</button>
 
                     <button type="submit" name="vaciar_cesta" method="POST">Vaciar la Cesta</button>
 
                          
-                    <button type="submit" name="confirmar_pedido" method="POST">Confirmar Pedido</button>
+                    <button type="submit" name="confirmar_datos" method="POST">Confirmar Datos</button>
      
                     <button type="submit" name="cerrar_sesion" method="POST">Cerrar Sesion</button>
 
