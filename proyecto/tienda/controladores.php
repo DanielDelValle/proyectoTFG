@@ -210,7 +210,10 @@ function controlador_confirmar_datos(){
         exit(header("location:cesta"));
     }
 
-
+    if (isset($_POST["cerrar_sesion"])){
+        controlador_adios();
+        exit;
+    }
     global $twig;
     $template = $twig->load('confirmar_datos.html');
 	echo $template->render(array ( 'usuario' =>$usuario, 'cliente'=>$cliente, 'cesta' => $cesta, 'mensaje' => $mensaje, 'total_prods'=>$total_prods, 'total_kg'=> $total_kg, 'total_precio'=>$total_precio));

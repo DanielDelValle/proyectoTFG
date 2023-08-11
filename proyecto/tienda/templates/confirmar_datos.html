@@ -14,29 +14,36 @@
 
     <h3 class='titulo'>Confirmar Datos del Envío</h3>
     <div>
-        <table id='datos_cliente'>
-            <th>NIF</th>
-            <th>Nombre</th>
-            <th>Apellidos</th>
-            <th>Email</th>
-            <th>Telefono</th>
-            <th>Direccion</th>
-            <th>Localidad</th>
-            <th>Codigo Postal</th>
-            <th>Provincia</th>
-
+        <table id="datos_cliente">
             <tr>
-                <td>{{cliente.nif}}</td>
-                <td>{{cliente.nombre}}</td>
-                <td>{{cliente.apellidos}}</td>
-                <td>
-            <tr><td>{{cliente.email}}</td>
-                <td>{{cliente.telefono}}</td>
+                <th>NIF</th>
+                <th>Nombre</th>
+                <th>Apellidos</th>
+            </tr>
             <tr>
-                <td>{{cliente.direccion}}</td>
-                <td>{{cliente.localidad}}</td>
-                <td>{{cliente.cod_postal}}</td>
-                <td>{{cliente.provincia}}</td>
+                <td><input type="text" value={{cliente.nif}}></input></td>
+                <td><input type="text" value={{cliente.nombre}}></input></td>
+                <td><input type="text" value={{cliente.apellidos}}></input></td>
+            </tr>
+            <tr>
+                <th>Telefono</th>
+                <th>Email</th>
+            </tr>
+            <tr>
+                <td><input type="text" value={{cliente.email}}></input></td>
+                <td><input type="text" value={{cliente.telefono}}></input></td>
+            </tr>
+            <tr>
+                <th>Direccion</th>
+                <th>Localidad</th>
+                <th>Codigo Postal</th>
+                <th>Provincia</th>
+            </tr>
+            <tr>
+                <td><input type="text" value={{cliente.direccion}}></input></td>
+                <td><input type="text" value={{cliente.localidad}}></input></td>
+                <td><input type="text" value={{cliente.cod_postal}}></input></td>
+                <td><input type="text" value={{cliente.provincia}}></input></td>
             </tr>
 
 
@@ -47,10 +54,7 @@
         <fieldset>
             <!--   el botón "Cerrar Sesion" da la orden de borrar datos de sesión y elimina cookie-->
 
-            <button type="submit" name="borrar_producto" method="POST">Borrar Producto</button>
-
             <button type="submit" name="volver_cesta" method="POST">Volver a la Cesta</button>
-
 
             <button type="submit" name="confirmar_pedido" method="POST">Confirmar Pedido</button>
 
