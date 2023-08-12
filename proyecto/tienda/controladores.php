@@ -249,7 +249,7 @@ function controlador_confirmar_pedido(){
                     exit(header("location:pedido_realizado"));
 
                 case "transferencia_bancaria":
-                    $_SESSION['pedido']['forma_pago'] = 'transferenia_bancaria';
+                    $_SESSION['pedido']['forma_pago'] = 'transferencia_bancaria';
                     exit(header("location:pedido_realizado"));
             }
         }else $mensaje = "Por favor, seleccione una forma de pago";
@@ -339,7 +339,7 @@ function controlador_login(){
         //$contrasena = "";
         $mensaje = "";
     }    
-    
+    var_dump($_SESSION);
 	global $twig;
     $template = $twig->load('login.html');
     echo $template->render(array ( 'usuario' => $usuario, 'mensaje' =>$mensaje));
@@ -356,7 +356,7 @@ function controlador_home()
 	global $twig;
     // Carga la plantilla que se mostrará al usuario con los datos recuperados 
     // del modelo
-    $usuario = $_SESSION["usuario"];
+
     if (isset($_POST["perfil"])) exit(header("location:perfil"));
     if (isset($_POST["cesta"])) exit(header("location:cesta"));
     if (isset($_POST["ver_productos"])) exit(header("location:index.php"));
@@ -366,7 +366,7 @@ function controlador_home()
     }
     
     $template = $twig->load('home.html');
-	echo $template->render(array ( 'productos' => $productos, 'usuario' =>$usuario));
+	echo $template->render(array ( 'productos' => $productos, 'usuario' =>$usuario, 'cliente'=> $cliente));
 
 
 
@@ -382,7 +382,7 @@ function controlador_perfil()
 	global $twig;
     // Carga la plantilla que se mostrará al usuario con los datos recuperados 
     // del modelo
-    $usuario = $_SESSION["usuario"];
+
 
 
     if (isset($_POST["cerrar_sesion"])){
@@ -390,7 +390,7 @@ function controlador_perfil()
     }
     
     $template = $twig->load('perfil.html');
-	echo $template->render(array ( 'usuario' =>$usuario));
+	echo $template->render(array ( 'usuario' =>$usuario, 'cliente'=>$cliente));
 
 
 
