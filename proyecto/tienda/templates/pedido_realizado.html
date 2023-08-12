@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block stylesheets %}
+<link rel="stylesheet" type="text/css" href="css/tarea8.css">
+{% endblock %}
+
+
+{% block content %}
+{% block mensaje %}
+<p class='mensaje'>{{mensaje}}</p><br>
+{% endblock %}
+
+<form method="POST" action="" autocomplete>
+
+    <h3 class='titulo'>PEDIDO Nº {{pedido.id}} REALIZADO CON ÉXITO</h3>
+    <div>
+        <table id="datos_cliente">
+            <tr>
+                <th>NIF</th>
+                <th>Nombre</th>
+                <th>Apellidos</th>
+            </tr>
+            <tr>
+                <td>{{cliente.nif}}</td>
+                <td>{{cliente.nombre}}</td>
+                <td>{{cliente.apellidos}}</td>
+            </tr>
+            <tr>
+                <th>Telefono</th>
+                <th>Email</th>
+            </tr>
+            <tr>
+                <td>{{cliente.email}}</td>
+                <td>{{cliente.telefono}}</td>
+            </tr>
+            <tr>
+                <th>Direccion</th>
+                <th>Localidad</th>
+                <th>Codigo Postal</th>
+                <th>Provincia</th>
+            </tr>
+            <tr>
+                <td>{{cliente.direccion}}</td>
+                <td>{{cliente.localidad}}</td>
+                <td>{{cliente.cod_postal}}</td>
+                <td>{{cliente.provincia}}</td>
+            </tr>
+
+
+        </table>
+    </div>
+
+
+    <table id ='cesta' >
+        <th>Nombre</th><th>Id_Producto</th><th>Cantidad</th><th>€/Kg</th><th>Subtotal</th>
+    
+            {% for key, producto in cesta %}
+            <tr>
+            <td>
+            {{producto.nombre}}</td><td>{{producto.id}}</td><td>{{producto.cantidad}}</td><td>{{producto.precio}}</td><td>{{ producto.cantidad * producto.precio}}€</td>
+            </tr>    
+            {% endfor %}       
+              <tr><td><h2>Total Productos: {{total_prods}}</h2></td></tr>
+              <tr><td><h2>Total Peso mercancias: {{total_kg}} Kilo(s)</h2></td></tr>
+              <tr><td><h2>Total Precio mercancias: {{total_precio}} €</h2></td></tr>    
+              <tr><td><h2>Total pedido(mercancía + envío): PENDIENTE</h2></td></tr>  
+    </table>
+
+    <div>
+        <fieldset>
+            <!--   el botón "Cerrar Sesion" da la orden de borrar datos de sesión y elimina cookie-->
+
+            <button type="submit" name="ver_productos" method="POST">Ver Productos</button>
+
+            <button type="submit" name="volver_home" method="POST">Volver a mi Cuenta</button>
+
+            <button type="submit" name="cerrar_sesion" method="POST">Cerrar Sesion</button>
+
+
+        </fieldset>
+    </div>
+</form>
+
+
+
+{% endblock %}

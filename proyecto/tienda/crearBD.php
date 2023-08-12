@@ -40,10 +40,11 @@
                 email VARCHAR(25),
                 telefono INTEGER(9),
                 direccion VARCHAR(50),
-                localidad VARCHAR(20),
+                localidad VARCHAR(50),
                 cod_postal INTEGER(5),
                 provincia VARCHAR(25),
-                creado_fecha DATETIME DEFAULT NOW()
+                creado_fecha DATETIME DEFAULT NOW(),
+                estado_usuario ENUM ('activo', 'inactivo', 'baja', 'bloqueado', 'pendiente') DEFAULT 'activo'     
                 
                 )";
 

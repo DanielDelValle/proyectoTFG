@@ -14,13 +14,13 @@
 
     <h3 class='titulo'>CESTA DE {{cliente.nombre}}</h3>
     <table id ='cesta' >
-    <th>Id_Producto</th><th>Nombre</th><th>Cantidad</th><th>€/Kg</th><th>Subtotal</th>
+    <th>Nombre</th><th>Id_Producto</th><th>Cantidad</th><th>€/Kg</th><th>Subtotal</th>
 
         {% for key, producto in cesta %}
         <tr>
-        <td><input type="checkbox" name="checkbox[]" class="checkbox"  value= {{producto.id}}>
-        {{producto.id}}</td><td>{{producto.nombre}}</td><td>{{producto.cantidad}}</td><td>{{producto.precio}}</td><td>{{ producto.cantidad * producto.precio}}€</td>
-        <td><a href="http://localhost/proyecto/tienda/index.php/detalle_producto?id={{producto.id}}">Ver Producto</a></td>
+        <td><input type="checkbox" name="productos_borrar[]" class="checkbox"  value= {{producto.id}}>
+            <a href="http://localhost/proyecto/tienda/index.php/detalle_producto?id={{producto.id}}">{{producto.nombre}}</a></td><td>{{producto.id}}</td><td>{{producto.cantidad}}</td><td>{{producto.precio}}</td><td>{{ producto.cantidad * producto.precio}}€</td>
+        <td></td>
         </tr>
 
         {% endfor %}    
@@ -37,21 +37,20 @@
                 <!--  el botón "Cerrar Sesion" da la orden de borrar datos de sesión y elimina cookie-->
 
             <fieldset>
-                <button type="submit" name="borrar_producto" method="POST">Borrar Producto</button>
+                    <button type="submit" name="borrar_producto" method="POST">Borrar Producto</button>
 
-                    <button type="submit" name="vaciar_cesta" method="POST">Vaciar la Cesta</button>
-
+                    <button type="submit" name="vaciar_cesta" method="POST">Vaciar Cesta</button>
                          
-                    <button type="submit" name="confirmar_datos" method="POST">Confirmar Datos</button>
+                    <button type="submit" name="datos_envio" method="POST">Continuar a Datos Envio</button>
      
                     <button type="submit" name="cerrar_sesion" method="POST">Cerrar Sesion</button>
 
 
                 </fieldset>
-            </form>
+
         </div>
+    </form>
 
 
 
-</html>
 {% endblock %}	

@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+
+{% block stylesheets %}
+<link rel="stylesheet" type="text/css" href="css/tarea8.css">
+{% endblock %}
+
+
+{% block content %}
+{% block mensaje %}
+<p class='mensaje'>{{mensaje}}</p><br>
+{% endblock %}
+
+<form method="POST" action="" autocomplete>
+
+    <h3 class='titulo'>Confirmar Pedido</h3>
+    <div>
+        <table id="datos_cliente">
+            <tr>
+                <th>NIF</th>
+                <th>Nombre</th>
+                <th>Apellidos</th>
+            </tr>
+            <tr>
+                <td>{{cliente.nif}}</td>
+                <td>{{cliente.nombre}}</td>
+                <td>{{cliente.apellidos}}</td>
+            </tr>
+            <tr>
+                <th>Telefono</th>
+                <th>Email</th>
+            </tr>
+            <tr>
+                <td>{{cliente.email}}</td>
+                <td>{{cliente.telefono}}</td>
+            </tr>
+            <tr>
+                <th>Direccion</th>
+                <th>Localidad</th>
+                <th>Codigo Postal</th>
+                <th>Provincia</th>
+            </tr>
+            <tr>
+                <td>{{cliente.direccion}}</td>
+                <td>{{cliente.localidad}}</td>
+                <td>{{cliente.cod_postal}}</td>
+                <td>{{cliente.provincia}}</td>
+            </tr>
+
+
+        </table>
+    </div>
+
+
+    <table id='cesta'>
+        <th>Nombre</th>
+        <th>Id_Producto</th>
+        <th>Cantidad</th>
+        <th>€/Kg</th>
+        <th>Subtotal</th>
+
+        {% for key, producto in cesta %}
+        <tr>
+            <td>{{producto.nombre}}</td>
+            <td>{{producto.id}}</td>
+            <td>{{producto.cantidad}}</td>
+            <td>{{producto.precio}}</td>
+            <td>{{ producto.cantidad * producto.precio}}€</td>
+        </tr>
+        {% endfor %}
+        <tr>
+            <td>
+                <h2>Total Productos: {{total_prods}}</h2>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <h2>Total Peso mercancias: {{total_kg}} Kilo(s)</h2>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <h2>Total Precio mercancias: {{total_precio}} €</h2>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <h2>Total pedido(mercancía + envío): PENDIENTE</h2>
+            </td>
+        </tr>
+    </table>
+
+    <fieldset>
+        <legend>FORMA DE PAGO:</legend>
+
+        <div>
+            <input type="radio" id="bizum" name="forma_pago" value="bizum" />
+            <label for="bizum">Bizum</label>
+        </div>
+        <div>
+            <input type="radio" id="transferencia_bancaria" name="forma_pago" value="transferencia_bancaria" />
+            <label for="transferencia bancaria">Transferencia Bancaria</label>
+        </div>
+    </fieldset>
+
+
+    <div>
+
+        <!--   el botón "Cerrar Sesion" da la orden de borrar datos de sesión y elimina cookie-->
+
+        <button type="submit" name="volver_cesta" method="POST">Volver a la Cesta</button>
+
+        <button type="submit" name="volver_datos" method="POST">Volver a Datos de Envío</button>
+
+        <button type="submit" name="confirmar_pedido" method="POST">Confirmar Pedido</button>
+
+        <button type="submit" name="cerrar_sesion" method="POST">Cerrar Sesion</button>
+
+
+
+    </div>
+</form>
+
+
+
+{% endblock %}

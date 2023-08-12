@@ -21,17 +21,17 @@
                 <th>Apellidos</th>
             </tr>
             <tr>
-                <td><input type="text" value={{cliente.nif}}></input></td>
-                <td><input type="text" value={{cliente.nombre}}></input></td>
-                <td><input type="text" value={{cliente.apellidos}}></input></td>
+                <td><input type="text" value='{{cliente.nif}}'></input></td>
+                <td><input type="text" value='{{cliente.nombre}}'></input></td>
+                <td><input type="text" value='{{cliente.apellidos}}'></input></td>
             </tr>
             <tr>
                 <th>Telefono</th>
                 <th>Email</th>
             </tr>
             <tr>
-                <td><input type="text" value={{cliente.email}}></input></td>
-                <td><input type="text" value={{cliente.telefono}}></input></td>
+                <td><input type="text" value='{{cliente.email}}'></input></td>
+                <td><input type="text" value='{{cliente.telefono}}'></input></td>
             </tr>
             <tr>
                 <th>Direccion</th>
@@ -40,10 +40,10 @@
                 <th>Provincia</th>
             </tr>
             <tr>
-                <td><input type="text" value={{cliente.direccion}}></input></td>
-                <td><input type="text" value={{cliente.localidad}}></input></td>
-                <td><input type="text" value={{cliente.cod_postal}}></input></td>
-                <td><input type="text" value={{cliente.provincia}}></input></td>
+                <td><input type="text" value='{{cliente.direccion}}'></input></td>
+                <td><input type="text" value='{{cliente.localidad}}'></input></td>
+                <td><input type="text" value='{{cliente.cod_postal}}'></input></td>
+                <td><input type="text" value='{{cliente.provincia}}'></input></td>
             </tr>
 
 
@@ -56,15 +56,13 @@
 
             <button type="submit" name="volver_cesta" method="POST">Volver a la Cesta</button>
 
-            <button type="submit" name="confirmar_pedido" method="POST">Confirmar Pedido</button>
+            <button type="submit" name="confirmar_datos" method="POST">Confirmar Datos</button>
 
             <button type="submit" name="cerrar_sesion" method="POST">Cerrar Sesion</button>
 
-
         </fieldset>
     </div>
+
 </form>
 
-
-</html>
 {% endblock %}

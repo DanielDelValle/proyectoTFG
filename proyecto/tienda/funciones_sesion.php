@@ -1,15 +1,17 @@
 <?php
 function checkSession(){
-    if(session_status() === PHP_SESSION_NONE)
-    session_start(); //crear sesión, y si hay usuario logeado, recoge el usuario en una variable.
-        if (!isset($_SESSION["usuario"])) {
+    session_start();
+    if(session_status() !== PHP_SESSION_ACTIVE){
+     //crear sesión, y si hay usuario logeado, recoge el usuario en una variable.
+      if (!isset($_SESSION["usuario"])) {
+          $usuario = "";
             exit(header("location:login"));   // si no hay un usuario correctamente identificado, se redirige al login.
             //exit;     // evita seguir ejecutando código de ésta página 
-        }else{} 
+        }else{ 
         echo session_id();
-        $usuario = ($_SESSION["usuario"]);
-        return $usuario;
-        
+        $usuario = $_SESSION["usuario"];
+        return $usuario;}
+    }
     }
 /*ACLARACIONES DE $_SESSION:
     - session_write_close() = session_commit() (SINONIMOS)  */
@@ -20,6 +22,7 @@ function closeSession() //elimina la sesión sin borrar los datos de la cesta
             //echo "<p>Cerrando sesión</p>";
             //Si hay sesión abierta, se define como array vacío el contenido de la misma
             unset($_SESSION['usuario']);
+            $usuario = "";
             session_write_close();
            // session_destroy();  //destruye sesion
         }
