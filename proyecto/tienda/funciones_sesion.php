@@ -4,7 +4,7 @@ function checkSession(){
         session_start();
      //crear sesión, y si hay usuario logeado, recoge el usuario en una variable.
       if (!isset($_SESSION["usuario"])) {
-          $usuario = "";
+         // $usuario = "";
             exit(header("location:login"));   // si no hay un usuario correctamente identificado, se redirige al login.
             //exit;     // evita seguir ejecutando código de ésta página 
         }else{ 

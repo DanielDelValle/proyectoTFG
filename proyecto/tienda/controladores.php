@@ -58,16 +58,9 @@ function controlador_index()
 }
 
 function controlador_detalle($id)
-{   session_start();
-    $_SESSION['cesta'] = checkCesta();
-    $producto = get_object_vars(detalle_producto($id));  //transformo el objeto que devuelve el modelo en array asociativo
-// Carga la plantilla que se mostrará al usuario con los datos recuperados 
-    // del modelo
-	
-    // Carga la plantilla que se mostrará al usuario con los datos recuperados 
-    // del modelo
-    if (isset($_POST["anadir_producto"])) {
+{   $producto = get_object_vars(detalle_producto($id));  //transformo el objeto que devuelve el modelo en array asociativo
 
+    if (isset($_POST["anadir_producto"])) {
         $usuario = checkSession();
         $_SESSION['cesta'] = checkCesta();
         $prod_add = array();  //$prod_add = new ArrayObject(); 
@@ -95,7 +88,7 @@ function controlador_detalle($id)
 
         }
         
-        global $twig;
+    global $twig;
     $template = $twig->load('detalle_producto.html');  
 	echo $template->render(array ( 'producto' => $producto));
     return $producto;
@@ -187,7 +180,6 @@ function vaciar_cesta(){
         exit(header('location:adios'));
     }
 
-    
     $template = $twig->load('cesta.html');
 	echo $template->render(array ( 'usuario' =>$usuario, 'cliente'=> $cliente, 'cesta' => $cesta, 'mensaje' =>$mensaje, 'total_kg'=> $total_kg, 'total_prods'=> $total_prods, 'total_precio' => $total_precio));
 
@@ -319,9 +311,8 @@ function controlador_login(){
                 //Establecer sesion autentificada
                 $_SESSION["usuario"] = $usuario;    
                 //$_SESSION["contrasena"] = $contrasena;  
-         
+                session_regenerate_id(); //para evitar ataque de fijacion de sesion (en redes compartidas)
                 exit(header("location:home"));
-                //session_regenerate_id();  //para evitar ataque de fijacion de sesion (en redes compartidas)
             } else {
                 $mensaje = "Usuario y/o contraseña incorrectos";                
         //      $delay=2;
@@ -339,7 +330,7 @@ function controlador_login(){
         //$contrasena = "";
         $mensaje = "";
     }    
-    var_dump($_SESSION);
+
 	global $twig;
     $template = $twig->load('login.html');
     echo $template->render(array ( 'usuario' => $usuario, 'mensaje' =>$mensaje));
