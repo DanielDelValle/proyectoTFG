@@ -9,7 +9,6 @@
 */
 
 
-
 function conexion()
 {
 try {    
@@ -17,6 +16,7 @@ try {
     $cadenaConexion="mysql:host=localhost;dbname=tienda;charset=utf8";
     $pdo = new PDO($cadenaConexion, 'daniel', 'Daniel88!',    
 	array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8", PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION)); 
+	//PDO::ATTR_EMULATE_PREPARES, false   desactivar emulacion
 	//PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_OBJ) para devolver objetos, pero fetchObject ya lo hace
     return $pdo;
     }
@@ -35,6 +35,24 @@ catch (PDOException $e) {
 * @return array Retorna $coincidencias(una cadena de caracteres) si encuentra coincidencias con la búsqueda en mysql
 * @return null retorna null si hay algún error
 */
+
+function conexion_mysqli(){
+
+$servername = "localhost";
+$username = "daniel";
+$password = "Daniel88!";
+
+// Create connection
+$mysqli = mysqli_connect($servername, $username, $password);
+
+// Check connection
+if (!$mysqli) {
+	die("Connection failed: " . mysqli_connect_error());
+}
+echo "Connected successfully";
+
+
+}
 
 
 
@@ -178,9 +196,63 @@ function datos_cliente($email)
 		}  
 		
 	return $cliente;
-			
+}		
+
+function insert_productos_pedido($id_pedido, $cesta){
+
+		$mysqli = conexion_mysqli();
+		if($mysqli){
+			try{
+				foreach($cesta as $producto){
+
+					//$sql .= "INSERT INTO pedido_productos (id_pedido, id_prod, cantidad) VALUES ('".$id_pedido."', '".$producto['id_prod']."', '".$producto['cantidad']."');";
+					$sql = "INSERT INTO pedido_productos (id_pedido, id_prod, cantidad) 
+					VALUES ('".$id_pedido."', '".$producto['id_prod']."', '".$producto['cantidad']."');";
+
+				}
+
+				
+			$insertarProductosCesta = $mysqli->multi_query($sql);
+			$mysqli.close();
+			return true;
+		}	
+		
+		catch(Exception $e){
+			echo 'Excepción: ', $e->getMessage();
+			return null;
+			}
+		}  
 		
 }
+
+function insert_pedido($id_pedido, $nif, $total_precio, $total_kg, $forma_pago, $notas){
+
+	$pdo = conexion();
+	$sql = '';
+	if($pdo){
+		try{
+
+			$sql = "INSERT INTO pedido(id_pedido, nif_cliente, total_precio, total_kg, forma_pago, enviado_fecha, entregado_fecha, notas) 
+						VALUES ('".$id_pedido."', '".$nif."', '".$total_precio."', '".$total_kg."', '".$forma_pago."', NULL, NULL, '".$notas."');";
+
+
+			$insertarPedido = $pdo->query($sql);
+		$pdo = null;
+		return true;
+	}	
+	
+	catch(PDOException $e){
+		echo 'Excepción: ', $e->getMessage();
+		return null;
+		}
+	}  
+
+
+	
+
+	}
+	
+
 
 
 

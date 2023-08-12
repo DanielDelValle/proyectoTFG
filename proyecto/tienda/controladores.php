@@ -65,7 +65,7 @@ function controlador_detalle($id)
         $_SESSION['cesta'] = checkCesta();
         $prod_add = array();  //$prod_add = new ArrayObject(); 
         
-        $prod_add['id'] = (int)$producto['id_prod'];
+        $prod_add['id_prod'] = (int)$producto['id_prod'];
         $prod_add['nombre'] = $producto['nombre'];
         $prod_add['precio'] = (float)$producto['precio'];
         $prod_add['cantidad'] = (float)1.0;
@@ -73,17 +73,17 @@ function controlador_detalle($id)
         //si el array "cesta" dentro de SESSION tiene alguna entrada, se compara la id del producto a introductir con los KEYS .
         //Si ya está dentro, sólo se actualiza la cantidad.
         if(count($_SESSION['cesta']) != 0){
-            if(in_array($prod_add['id'], array_keys($_SESSION['cesta']))){
-                $_SESSION['cesta'][$prod_add['id']]['cantidad'] +=1;
+            if(in_array($prod_add['id_prod'], array_keys($_SESSION['cesta']))){
+                $_SESSION['cesta'][$prod_add['id_prod']]['cantidad'] +=1;
             } 
             else {
                 //Si ninguno de los productos de la cesta es el que vamos a introducir, se introduce el mismo
-                $_SESSION['cesta'][$prod_add['id']] = $prod_add;
+                $_SESSION['cesta'][$prod_add['id_prod']] = $prod_add;
             }
         
         }else{
             // Si la cesta esta vacia se introduce directamente el producto, dandole como indice la ID del mismo para mas facil identificacion.
-            $_SESSION['cesta'][$prod_add['id']] = $prod_add;
+            $_SESSION['cesta'][$prod_add['id_prod']] = $prod_add;
         }
 
         }
@@ -224,7 +224,7 @@ function controlador_confirmar_pedido(){
     $total_prods = $_SESSION['total_prods'];
     $mensaje="";
    // unset($_SESSION['cesta']);     // DESCOMENTAR CUANDO YA NO NECESITE HACER PRUEBAS  //eliminamos cesta pues ya se ha transformado en pedido
-
+   $contador = 0;
     if(isset($_POST["volver_cesta"])){
         exit(header("location:cesta"));
     }
@@ -233,19 +233,31 @@ function controlador_confirmar_pedido(){
         exit(header("location:datos_envio"));
     }
 
-    if(isset($_POST["confirmar_pedido"])){
         if(isset($_POST['forma_pago'])){
             switch(($_POST['forma_pago'])){
                 case "bizum":
                     $_SESSION['pedido']['forma_pago'] = 'bizum';
-                    exit(header("location:pedido_realizado"));
 
                 case "transferencia_bancaria":
-                    $_SESSION['pedido']['forma_pago'] = 'transferencia_bancaria';
-                    exit(header("location:pedido_realizado"));
+                    $_SESSION['pedido']['forma_pago'] = 'transferencia_bancaria';                 
             }
+            if(isset($_POST["confirmar_pedido"])){
+ 
+            $id_pedido = $cliente->nif.strval($contador);
+            $forma_pago = $_SESSION['pedido']['forma_pago'];
+            $notas = $_POST['notas'];
+            echo  insert_productos_pedido($id_pedido, $cesta);
+            echo  insert_pedido($id_pedido, $cliente->nif, $total_precio, $total_kg, $forma_pago, $notas);
+         //if(insert_productos_pedido($id_pedido, $cesta) && (insert_pedido($id_pedido, $cliente->nif, $total_precio, $total_kg, $forma_pago, $notas)))
+            $contador +=1;
+    
+          //  exit(header("location:pedido_realizado"));
+
+            //    else $mensaje= "error al grabar el pedido - por favor, repita el proceso de nuevo";
+            }
+
         }else $mensaje = "Por favor, seleccione una forma de pago";
-    }
+
 
     if (isset($_POST["cerrar_sesion"])){
         exit(header('location:adios'));

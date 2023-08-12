@@ -54,16 +54,16 @@
 
 
             $sql3="CREATE TABLE IF NOT EXISTS pedido (
-                id_pedido INTEGER(5) NOT NULL AUTO_INCREMENT PRIMARY KEY,        
+                id_pedido VARCHAR(30) PRIMARY KEY,        
                 nif_cliente VARCHAR(9),
                 total_precio DECIMAL(7),
                 total_kg DECIMAL (5),
                 forma_pago ENUM ('bizum', 'transferencia'),
-                estado_pago VARCHAR(20),
-                estado_pedido VARCHAR(20),
+                estado_pago ENUM ('pendiente', 'recibido', 'devuelto') DEFAULT 'pendiente',
+                estado_pedido ENUM ('procesando', 'enviado', 'recibido') DEFAULT 'procesando',
                 creado_fecha DATETIME DEFAULT NOW(),
-                enviado_fecha DATETIME,
-                entregado_fecha DATETIME,
+                enviado_fecha DATETIME DEFAULT NULL,
+                entregado_fecha DATETIME DEFAULT NULL,
                 notas VARCHAR (500)
 
                 )";
@@ -75,17 +75,15 @@
 
 
 
-            $sql4="CREATE TABLE IF NOT EXISTS albaran (
-                id_pedido INTEGER(5) NOT NULL PRIMARY KEY,      
+            $sql4="CREATE TABLE IF NOT EXISTS pedido_productos (
+                id_pedido VARCHAR(30) PRIMARY KEY,      
                 id_prod INTEGER NOT NULL,
-                cantidad DECIMAL(5),
-                total_kg DECIMAL(5),
-                notas VARCHAR (500)
+                cantidad DECIMAL(5)
                 )";
                                     
             if($bd->query($sql4)){
-                echo "Tabla ALBARAN creada con éxito<br>";
-            }else echo "Error creando tabla ALBARAN";
+                echo "Tabla PEDIDO_PRODUCTOS creada con éxito<br>";
+            }else echo "Error creando tabla PEDIDO_PRODUCTOS";
 
 
                     
@@ -122,9 +120,9 @@
 
 
 
-            //Insertar datos iniciales tabla PEDIDO
-            $sql7= "INSERT INTO pedido (nif_cliente, total_precio, forma_pago, estado_pago, estado_pedido, enviado_fecha, entregado_fecha, notas)
-                    VALUES('53665340S', 355.68, 'bizum', 'pendiente', 'preparando', '2023-07-26 10:30:00', '2023-07-28 12:00:00', 'Entregar antes del lunes 30/07'                        
+            //Insertar datos iniciales tabla PEDIDO (los 2 valores NULL corresponden a los datetime que quiero esten vacios por defecto)
+            $sql7= "INSERT INTO pedido (id_pedido, nif_cliente, total_precio, total_kg, forma_pago, enviado_fecha, entregado_fecha, notas)
+                    VALUES('ajkp', '53665340S', 355.68, 3.0, 'bizum', NULL, NULL, 'Entregar antes del lunes 30/07'                        
             
             )";
 
@@ -133,15 +131,15 @@
             }else echo "Error insertando datos en tabla PEDIDO<br>";
                     
 
-            //Insertar datos iniciales tabla ALBARAN
-            $sql8= "INSERT INTO albaran (id_pedido, id_prod, cantidad, total_kg, notas)
-                    VALUES(1, 5, 3.0, 'Caja', 'Entregar antes del lunes 30/07'
+            //Insertar datos iniciales tabla PEDIDO_PRODUCTOS
+            $sql8= "INSERT INTO pedido_productos (id_pedido, id_prod, cantidad)
+                    VALUES('ajkp', 5, 3.0
 
             )";
 
             if($bd->query($sql8)){
-            echo "Datos insertados con éxito en tabla ALBARAN<br>";
-            }else echo "Error insertando datos en tabla ALBARAN<br>";
+            echo "Datos insertados con éxito en tabla PEDIDO_PRODUCTOS<br>";
+            }else echo "Error insertando datos en tabla PEDIDO_PRODUCTOS<br>";
 
 
 
@@ -154,16 +152,16 @@
                 echo "FOREIGN KEY FK_cliente_pedido añadido con éxito<br>";
                 }else echo "Error insertando FOREIGN KEY FK_cliente_pedido<br>";
 
-            $sqlFK2 = "ALTER TABLE albaran ADD CONSTRAINT FK_pedido_albaran FOREIGN KEY (id_pedido) REFERENCES pedido (id_pedido) ON DELETE CASCADE ON UPDATE NO ACTION";
+            $sqlFK2 = "ALTER TABLE pedido_productos ADD CONSTRAINT FK_pedido_productos FOREIGN KEY (id_pedido) REFERENCES pedido (id_pedido) ON DELETE CASCADE ON UPDATE NO ACTION";
             if($bd->query($sqlFK2)){
-                echo "FOREIGN KEY FK_pedido_albaran añadido con éxito<br>";
-                }else echo "Error insertando FOREIGN KEY FK_pedido_albaran<br>";
+                echo "FOREIGN KEY FK_pedido_productos añadido con éxito<br>";
+                }else echo "Error insertando FOREIGN KEY FK_pedido_productos<br>";
 
 
 
             }else echo "Error creando BD";   
 
-            $pdo = null;
+            $bd = null;
         
 }
 catch(PDOException $e){
