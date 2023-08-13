@@ -75,15 +75,16 @@
 
 
 
-            $sql4="CREATE TABLE IF NOT EXISTS pedido_productos (
+            $sql4="CREATE TABLE IF NOT EXISTS PRODUCTOS_PEDIDO (
                 id_pedido VARCHAR(30) PRIMARY KEY,      
                 id_prod INTEGER NOT NULL,
+                nombre VARCHAR(25),
                 cantidad DECIMAL(5)
                 )";
                                     
             if($bd->query($sql4)){
-                echo "Tabla PEDIDO_PRODUCTOS creada con éxito<br>";
-            }else echo "Error creando tabla PEDIDO_PRODUCTOS";
+                echo "Tabla PRODUCTOS_PEDIDO creada con éxito<br>";
+            }else echo "Error creando tabla PRODUCTOS_PEDIDO";
 
 
                     
@@ -131,15 +132,15 @@
             }else echo "Error insertando datos en tabla PEDIDO<br>";
                     
 
-            //Insertar datos iniciales tabla PEDIDO_PRODUCTOS
-            $sql8= "INSERT INTO pedido_productos (id_pedido, id_prod, cantidad)
-                    VALUES('ajkp', 5, 3.0
+            //Insertar datos iniciales tabla PRODUCTOS_PEDIDO
+            $sql8= "INSERT INTO productos_pedido (id_pedido, id_prod, nombre, cantidad)
+                    VALUES('ajkp', 5, 'Aguacate Nacional', 3.0
 
             )";
 
             if($bd->query($sql8)){
-            echo "Datos insertados con éxito en tabla PEDIDO_PRODUCTOS<br>";
-            }else echo "Error insertando datos en tabla PEDIDO_PRODUCTOS<br>";
+            echo "Datos insertados con éxito en tabla PRODUCTOS_PEDIDO<br>";
+            }else echo "Error insertando datos en tabla PRODUCTOS_PEDIDO<br>";
 
 
 
@@ -152,10 +153,10 @@
                 echo "FOREIGN KEY FK_cliente_pedido añadido con éxito<br>";
                 }else echo "Error insertando FOREIGN KEY FK_cliente_pedido<br>";
 
-            $sqlFK2 = "ALTER TABLE pedido_productos ADD CONSTRAINT FK_pedido_productos FOREIGN KEY (id_pedido) REFERENCES pedido (id_pedido) ON DELETE CASCADE ON UPDATE NO ACTION";
+            $sqlFK2 = "ALTER TABLE productos_pedido ADD CONSTRAINT FK_productos_pedido FOREIGN KEY (id_pedido) REFERENCES pedido (id_pedido) ON DELETE CASCADE ON UPDATE NO ACTION";
             if($bd->query($sqlFK2)){
-                echo "FOREIGN KEY FK_pedido_productos añadido con éxito<br>";
-                }else echo "Error insertando FOREIGN KEY FK_pedido_productos<br>";
+                echo "FOREIGN KEY FK_productos_pedido añadido con éxito<br>";
+                }else echo "Error insertando FOREIGN KEY FK_productos_pedido<br>";
 
 
 

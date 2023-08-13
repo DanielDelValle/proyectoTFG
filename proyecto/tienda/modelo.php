@@ -15,7 +15,7 @@ try {
 //Conexión PDO
     $cadenaConexion="mysql:host=localhost;dbname=tienda;charset=utf8";
     $pdo = new PDO($cadenaConexion, 'daniel', 'Daniel88!',    
-	array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8", PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION)); 
+	array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8", PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, PDO::MYSQL_ATTR_FOUND_ROWS => true)); 
 	//PDO::ATTR_EMULATE_PREPARES, false   desactivar emulacion
 	//PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_OBJ) para devolver objetos, pero fetchObject ya lo hace
     return $pdo;
@@ -23,8 +23,8 @@ try {
 	
 catch (PDOException $e) {
     return null;
-	die(json_encode(array('outcome' => false, 'message' => 'Conexión a BD no conseguida')));
-    }
+	die(json_encode(array('resultado' => false, 'mensaje' => 'Conexión a BD no conseguida')));
+    }return $pdo;
 }
 
 /**
@@ -39,19 +39,22 @@ catch (PDOException $e) {
 function conexion_mysqli(){
 
 $servername = "localhost";
-$username = "daniel";
-$password = "Daniel88!";
+$username = 'daniel';
+$password = 'Daniel88!';
+$DB = 'tienda';
 
 // Create connection
-$mysqli = mysqli_connect($servername, $username, $password);
+
+mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+$mysqli = new mysqli($servername, $username, $password, $DB);
 
 // Check connection
 if (!$mysqli) {
-	die("Connection failed: " . mysqli_connect_error());
+	die("Fallo en la conexión a BD: " . mysqli_connect_error());
 }
-echo "Connected successfully";
+else echo "Conectado con éxito a BD";
 
-
+return $mysqli;
 }
 
 
@@ -199,21 +202,23 @@ function datos_cliente($email)
 }		
 
 function insert_productos_pedido($id_pedido, $cesta){
-
+		$sql = "";
 		$mysqli = conexion_mysqli();
 		if($mysqli){
 			try{
 				foreach($cesta as $producto){
 
 					//$sql .= "INSERT INTO pedido_productos (id_pedido, id_prod, cantidad) VALUES ('".$id_pedido."', '".$producto['id_prod']."', '".$producto['cantidad']."');";
-					$sql = "INSERT INTO pedido_productos (id_pedido, id_prod, cantidad) 
-					VALUES ('".$id_pedido."', '".$producto['id_prod']."', '".$producto['cantidad']."');";
+					$sql .= "INSERT INTO productos_pedido (id_pedido, id_prod, nombre, cantidad) 
+					VALUES ('".$id_pedido."', '".$producto['id_prod']."', '".$producto['nombre']."', '".$producto['cantidad']."');";
 
 				}
 
 				
-			$insertarProductosCesta = $mysqli->multi_query($sql);
-			$mysqli.close();
+			$insertarProductosPedido = $mysqli->multi_query($sql);
+			if($insertarProductosPedido) echo $mysqli->affected_rows;
+			else echo 'ERROR AL INSERTAR PRODUCTOS';
+		//	$mysqli.close();
 			return true;
 		}	
 		
@@ -228,7 +233,6 @@ function insert_productos_pedido($id_pedido, $cesta){
 function insert_pedido($id_pedido, $nif, $total_precio, $total_kg, $forma_pago, $notas){
 
 	$pdo = conexion();
-	$sql = '';
 	if($pdo){
 		try{
 
@@ -237,6 +241,8 @@ function insert_pedido($id_pedido, $nif, $total_precio, $total_kg, $forma_pago, 
 
 
 			$insertarPedido = $pdo->query($sql);
+		//	if($insertarPedido){ echo $insertarPedido.rowCount();} 
+		//	else echo 'ERROR AL INSERTAR PEDIDO';
 		$pdo = null;
 		return true;
 	}	

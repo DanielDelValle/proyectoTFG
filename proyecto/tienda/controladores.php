@@ -13,7 +13,6 @@ require_once 'validadores.php';
 //include 'Cesta.php';
 //include 'cartAction.php';
 
-//session_destroy();
 /*$tel_ok = false;
 $email_ok = false;
 $usuario = "";
@@ -246,8 +245,10 @@ function controlador_confirmar_pedido(){
             $id_pedido = $cliente->nif.strval($contador);
             $forma_pago = $_SESSION['pedido']['forma_pago'];
             $notas = $_POST['notas'];
-            echo  insert_productos_pedido($id_pedido, $cesta);
+
             echo  insert_pedido($id_pedido, $cliente->nif, $total_precio, $total_kg, $forma_pago, $notas);
+            echo  insert_productos_pedido($id_pedido, $cesta);
+
          //if(insert_productos_pedido($id_pedido, $cesta) && (insert_pedido($id_pedido, $cliente->nif, $total_precio, $total_kg, $forma_pago, $notas)))
             $contador +=1;
     
@@ -257,7 +258,6 @@ function controlador_confirmar_pedido(){
             }
 
         }else $mensaje = "Por favor, seleccione una forma de pago";
-
 
     if (isset($_POST["cerrar_sesion"])){
         exit(header('location:adios'));
