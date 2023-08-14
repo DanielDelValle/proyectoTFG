@@ -10,6 +10,18 @@ $twig = new \Twig\Environment($loader);
 require_once 'funciones_sesion.php';
 require_once "modelo.php";
 require_once 'validadores.php';
+
+function get_URI(){
+    $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+    $segments = explode('/', $path);
+    $URI = $segments[count($segments)-1];  
+    //Adaptamos URI al usuario: 
+    if($URI === "index.php") $URI = "nuestros productos";
+    return $URI;
+}
+
+
+
 //include 'Cesta.php';
 //include 'cartAction.php';
 
@@ -44,22 +56,39 @@ descomentar y poner a continuacion de la linea "$twig=....($loader," para habili
 }*/
 
 function controlador_index()
-{
+{ $URI = get_URI();
+    session_start();
+    $logged = isset($_SESSION['usuario']) ? "cerrar_sesion" : "iniciar_sesion";
+    $logged_legible = isset($_SESSION['usuario']) ? "Cerrar Sesión" : "Iniciar Sesión";
+    
+
     // Petición al modelo para que retorne la lista de productos de la BD
     $productos = lista_productos();
-
+    $total_prods = isset($_SESSION['usuario']) ? count($_SESSION['cesta']) : "";
+    
     // Carga la plantilla que se mostrará al usuario con los datos recuperados del modelo
 	global $twig;
     // Carga la plantilla que se mostrará al usuario con los datos recuperados 
     // del modelo
     $template = $twig->load('productos.html');
-	echo $template->render(array ( 'productos' => $productos));
+	echo $template->render(array ('URI'=>$URI, 'logged'=>$logged, 'logged_legible'=>$logged_legible, 'productos' => $productos, 'total_prods'=>$total_prods));
 }
 
+
 function controlador_detalle($id)
-{   $producto = get_object_vars(detalle_producto($id));  //transformo el objeto que devuelve el modelo en array asociativo
+{   session_start();
+    $URI = get_URI();    
+    // Petición al modelo para que retorne la lista de productos de la BD
+    $productos = lista_productos();
+    $total_prods = isset($_SESSION['usuario']) ? count($_SESSION['cesta']) : "";
+    $_SESSION['cesta'] = checkCesta();
+    $producto = get_object_vars(detalle_producto($id));  //transformo el objeto que devuelve el modelo en array asociativo
+    $total_prods = isset($_SESSION['cesta']) ? count($_SESSION['cesta']) : "";
+    $mensaje = "";
 
     if (isset($_POST["anadir_producto"])) {
+        $mensaje = 'Producto añadido a la cesta';
+        $URI = get_URI();
         $usuario = checkSession();
         $_SESSION['cesta'] = checkCesta();
         $prod_add = array();  //$prod_add = new ArrayObject(); 
@@ -89,13 +118,14 @@ function controlador_detalle($id)
         
     global $twig;
     $template = $twig->load('detalle_producto.html');  
-	echo $template->render(array ( 'producto' => $producto));
+	echo $template->render(array ('URI'=>$URI, 'producto' => $producto, 'total_prods'=>$total_prods, 'mensaje'=> $mensaje));
     return $producto;
     
 }
 
 function controlador_cesta()
-{$usuario = checkSession();
+{   $URI = get_URI();
+    $usuario = checkSession();
     $cliente = datos_cliente($usuario);
     $_SESSION['cesta'] = checkCesta();
     $cesta = $_SESSION['cesta'];
@@ -176,16 +206,17 @@ function vaciar_cesta(){
     }
    
     if (isset($_POST["cerrar_sesion"])){
-        exit(header('location:adios'));
+        exit(header('location:cerrar_sesion'));
     }
 
     $template = $twig->load('cesta.html');
-	echo $template->render(array ( 'usuario' =>$usuario, 'cliente'=> $cliente, 'cesta' => $cesta, 'mensaje' =>$mensaje, 'total_kg'=> $total_kg, 'total_prods'=> $total_prods, 'total_precio' => $total_precio));
+	echo $template->render(array ('URI'=>$URI, 'usuario' =>$usuario, 'cliente'=> $cliente, 'cesta' => $cesta, 'mensaje' =>$mensaje, 'total_kg'=> $total_kg, 'total_prods'=> $total_prods, 'total_precio' => $total_precio));
 
 
 }
 
 function controlador_datos_envio(){
+    $URI = get_URI();
     $usuario = checkSession();
     $cliente = datos_cliente($usuario);
     $mensaje="";
@@ -203,17 +234,18 @@ function controlador_datos_envio(){
 
 
     if (isset($_POST["cerrar_sesion"])){
-        exit(header('location:adios'));
+        exit(header('location:cerrar_sesion'));
     }
 
 
     global $twig;
     $template = $twig->load('datos_envio.html');
-	echo $template->render(array ( 'usuario' =>$usuario, 'cliente'=>$cliente, 'mensaje' => $mensaje, 'total_prods'=>$total_prods, 'total_kg'=> $total_kg, 'total_precio'=>$total_precio));
+	echo $template->render(array ('URI'=>$URI, 'usuario' =>$usuario, 'cliente'=>$cliente, 'mensaje' => $mensaje, 'total_prods'=>$total_prods, 'total_kg'=> $total_kg, 'total_precio'=>$total_precio));
 
 }
 
 function controlador_confirmar_pedido(){ 
+    $URI = get_URI();
     $usuario = checkSession();
     $cliente = datos_cliente($usuario);
     $_SESSION['cesta'] = checkCesta();
@@ -222,8 +254,10 @@ function controlador_confirmar_pedido(){
     $total_kg = $_SESSION['total_kg'];
     $total_prods = $_SESSION['total_prods'];
     $mensaje="";
+    $id_pedido="";
    // unset($_SESSION['cesta']);     // DESCOMENTAR CUANDO YA NO NECESITE HACER PRUEBAS  //eliminamos cesta pues ya se ha transformado en pedido
-   $contador = 0;
+   
+   $forma_pago = "";
     if(isset($_POST["volver_cesta"])){
         exit(header("location:cesta"));
     }
@@ -241,36 +275,37 @@ function controlador_confirmar_pedido(){
                     $_SESSION['pedido']['forma_pago'] = 'transferencia_bancaria';                 
             }
             if(isset($_POST["confirmar_pedido"])){
- 
-            $id_pedido = $cliente->nif.strval($contador);
+            $fecha = date('dm_Hms');
+            //El ID_PEDIDO contiene información relevante: el COD_POSTAL para facilitar agrupación de pedidos en almacén y transporte eficiente.
+                                                        // el NIF para agrupar pedidos por empresa o titular 
+                                                        // la fecha y hora en que se hizo para obtener siempre un número único (necesario para que sea PRIMARY KEY).
+
+            $id_pedido = $cliente->cod_postal."/".$cliente->nif."/".($fecha); 
             $forma_pago = $_SESSION['pedido']['forma_pago'];
             $notas = $_POST['notas'];
 
-            echo  insert_pedido($id_pedido, $cliente->nif, $total_precio, $total_kg, $forma_pago, $notas);
-            echo  insert_productos_pedido($id_pedido, $cesta);
-
-         //if(insert_productos_pedido($id_pedido, $cesta) && (insert_pedido($id_pedido, $cliente->nif, $total_precio, $total_kg, $forma_pago, $notas)))
-            $contador +=1;
+          if(insert_pedido($id_pedido, $cliente->nif, $total_precio, $total_kg, $forma_pago, $notas) && (insert_productos_pedido($id_pedido, $cesta))){
+            exit(header("location:pedido_realizado"));
+          }
     
-          //  exit(header("location:pedido_realizado"));
-
-            //    else $mensaje= "error al grabar el pedido - por favor, repita el proceso de nuevo";
+          else $mensaje= "Error al grabar el pedido - por favor, repita el proceso de nuevo";
             }
 
         }else $mensaje = "Por favor, seleccione una forma de pago";
 
     if (isset($_POST["cerrar_sesion"])){
-        exit(header('location:adios'));
+        exit(header('location:cerrar_sesion'));
     }
 
     global $twig;
     $template = $twig->load('confirmar_pedido.html');
-    echo $template->render(array ( 'usuario' =>$usuario, 'cliente'=>$cliente, 'cesta' => $cesta, 'mensaje' => $mensaje, 'total_prods'=>$total_prods, 'total_kg'=> $total_kg, 'total_precio'=>$total_precio));
+    echo $template->render(array ('URI'=>$URI, 'usuario' =>$usuario, 'cliente'=>$cliente, 'cesta' => $cesta, 'mensaje' => $mensaje, 'id_pedido'=>$id_pedido, 'total_prods'=>$total_prods, 'total_kg'=> $total_kg, 'total_precio'=>$total_precio));
 }
 
 
 
 function controlador_pedido_realizado(){
+    $URI = get_URI();
     $usuario = checkSession();
     $cliente = datos_cliente($usuario);
     $mensaje="";
@@ -283,24 +318,24 @@ function controlador_pedido_realizado(){
     }
 
     if(isset($_POST["volver_home"])){
-        exit(header("location:home"));
+        exit(header("location:cuenta"));
     }
 
     if (isset($_POST["cerrar_sesion"])){
-        exit(header('location:adios'));
+        exit(header('location:cerrar_sesion'));
     }
 
 
     global $twig;
     $template = $twig->load('pedido_realizado.html');
-	echo $template->render(array ( 'usuario' =>$usuario, 'cliente'=>$cliente, 'mensaje' => $mensaje, 'total_prods'=>$total_prods, 'total_kg'=> $total_kg, 'total_precio'=>$total_precio));
+	echo $template->render(array ('URI'=>$URI, 'usuario' =>$usuario, 'cliente'=>$cliente, 'mensaje' => $mensaje, 'total_prods'=>$total_prods, 'total_kg'=> $total_kg, 'total_precio'=>$total_precio));
 
 }
 
 
-function controlador_login(){
+function controlador_iniciar_sesion(){
     session_start();
-
+    $URI = get_URI();
     if (isset($_POST["entrar"])) {
         //Procesar formulario
         //Obtener contraseña codificada de bd, por ejemplo:
@@ -324,7 +359,8 @@ function controlador_login(){
                 $_SESSION["usuario"] = $usuario;    
                 //$_SESSION["contrasena"] = $contrasena;  
                 session_regenerate_id(); //para evitar ataque de fijacion de sesion (en redes compartidas)
-                exit(header("location:home"));
+                $previa = $_SERVER['HTTP_REFERER'];
+                exit(header("location:cuenta"));
             } else {
                 $mensaje = "Usuario y/o contraseña incorrectos";                
         //      $delay=2;
@@ -344,15 +380,17 @@ function controlador_login(){
     }    
 
 	global $twig;
-    $template = $twig->load('login.html');
-    echo $template->render(array ( 'usuario' => $usuario, 'mensaje' =>$mensaje));
+    $template = $twig->load('iniciar_sesion.html');
+    echo $template->render(array ('URI'=>$URI, 'usuario' => $usuario, 'mensaje' =>$mensaje));
 }
 
 
 
-function controlador_home()
-{$usuario = checkSession();
+function controlador_datos()   /// PENDIENTE REASIGNAR A OTRA VISTA, OBSOLETO (SUSTITUIDO POR "CUENTA")
+{   $URI = get_URI();
+    $usuario = checkSession();
     $cliente = datos_cliente($usuario);
+    $total_prods = isset($_SESSION['cesta']) ? count($_SESSION['cesta']) : "";
     // Petición al modelo para que retorne la lista de productos de la BD
     $productos = lista_productos();
     // Carga la plantilla que se mostrará al usuario con los datos recuperados del modelo
@@ -365,11 +403,11 @@ function controlador_home()
     if (isset($_POST["ver_productos"])) exit(header("location:index.php"));
    
     if (isset($_POST["cerrar_sesion"])){
-        exit(header('location:adios'));
+        exit(header('location:cerrar_sesion'));
     }
     
     $template = $twig->load('home.html');
-	echo $template->render(array ( 'productos' => $productos, 'usuario' =>$usuario, 'cliente'=> $cliente));
+	echo $template->render(array ('URI'=>$URI, 'productos' => $productos, 'usuario' =>$usuario, 'cliente'=> $cliente, 'total_prods'=>$total_prods));
 
 
 
@@ -377,9 +415,11 @@ function controlador_home()
 
 
 
-function controlador_perfil()
-{$usuario = checkSession();
+function controlador_cuenta()
+{   $URI = get_URI();
+    $usuario = checkSession();
     $cliente = datos_cliente($usuario);
+    $total_prods = isset($_SESSION['cesta']) ? count($_SESSION['cesta']) : "";
     // Petición al modelo para que retorne la lista de productos de la BD
     // Carga la plantilla que se mostrará al usuario con los datos recuperados del modelo
 	global $twig;
@@ -389,11 +429,11 @@ function controlador_perfil()
 
 
     if (isset($_POST["cerrar_sesion"])){
-        exit(header('location:adios'));
+        exit(header('location:cerrar_sesion'));
     }
     
-    $template = $twig->load('perfil.html');
-	echo $template->render(array ( 'usuario' =>$usuario, 'cliente'=>$cliente));
+    $template = $twig->load('cuenta.html');
+	echo $template->render(array ('URI'=>$URI, 'usuario' =>$usuario, 'cliente'=>$cliente, 'total_prods'=>$total_prods));
 
 
 
@@ -403,7 +443,7 @@ function controlador_perfil()
 
 
 
-function controlador_adios()
+function controlador_cerrar_sesion()
 {
 
     // Carga la plantilla que se mostrará al usuario con los datos recuperados del modelo
@@ -411,7 +451,7 @@ function controlador_adios()
     closeSession();
     killCookie();
  
-    $template = $twig->load('adios.html');
+    $template = $twig->load('cerrar_sesion.html');
     echo $template->render(array());  //array vacio obligatorio (aunque no se mande info)
 
 }

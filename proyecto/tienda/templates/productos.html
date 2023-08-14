@@ -25,12 +25,14 @@ $(document).ready(function(){
 });
 </script>
 
+
 {% endblock %}
 
 {% block login %}
 
-<a href = "http://localhost/proyecto/tienda/index.php/login">Login</a><br>
+<a href = "http://localhost/proyecto/tienda/index.php/{{logged}}">{{logged_legible}}</a><br>
 
+<a href = "http://localhost/proyecto/tienda/index.php/crear_cuenta">Crear Cuenta</a><br>
 
 {% endblock %}
 

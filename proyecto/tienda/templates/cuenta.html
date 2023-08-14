@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block stylesheets %}
+<link rel="stylesheet" type="text/css" href="css/tarea8.css">
+{% endblock %}
+
+
+{% block content %}		
+
+
+<body>
+        <p>
+            
+
+        <h3 class='titulo'>BIENVENIDO {{cliente.nombre}}</h3>
+
+        <div>
+            <form method="POST"  action="" autocomplete>
+
+
+                <nav>
+                    <!-- Menú de navegación -->
+                    <div>
+                        <ul class="menu">
+                    
+                                <li><a href="index.php/datos">Mis Datos</a></li>    
+                                <li><a href="index.php/pedidos" >Mis Pedidos</a></li>        
+                                <li><a href="index.php/cesta" >Mi Cesta ( {{total_prods}} )</a></li>        
+                                
+                                
+                        </ul>        
+                    </div>
+                </nav>    
+                
+                <!--  el botón "Cerrar Sesion" da la orden de borrar datos de sesión y elimina cookie-->
+
+                    <button type="submit" name="cerrar_sesion" method="POST">Cerrar Sesion</button>
+                </fieldset>
+            </form>
+        </div>
+
+</body>
+
+</html>
+{% endblock %}	

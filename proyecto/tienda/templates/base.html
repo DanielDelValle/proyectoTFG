@@ -16,8 +16,10 @@
     {% block script %}
 
     {% endblock %}
-
-
+    
+    {% block migas_pan %}
+    <p>Estás en: <u><b>{{URI}}</b> </u> </p>
+    {% endblock %}
 
 </head>
 
@@ -31,8 +33,8 @@
                 <ul class="sidemenu">
             
                         <li><a href="index.php">Nuestos Productos</a></li>    
-                        <li><a href="index.php/perfil" >Mi perfil</a></li>        
-                        <li><a href="index.php/cesta" >Mi Cesta</a>{{cart.total_items}}</li>        
+                        <li><a href="index.php/cuenta" >Mi Cuenta</a></li>        
+                        <li><a href="index.php/cesta" >Mi Cesta ( {{total_prods}} )</a></li>        
                         <li><a href="index.php/contacto">Contacto</a></li>
                         
                         

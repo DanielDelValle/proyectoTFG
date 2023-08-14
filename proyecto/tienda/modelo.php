@@ -202,7 +202,10 @@ function datos_cliente($email)
 }		
 
 function insert_productos_pedido($id_pedido, $cesta){
+
+	//En esta operacion usaré un conector mysqli para poder usar su multy_query y simplificar el proceso (en el resto uso PDO)
 		$sql = "";
+		$mensaje = "";
 		$mysqli = conexion_mysqli();
 		if($mysqli){
 			try{
@@ -216,7 +219,7 @@ function insert_productos_pedido($id_pedido, $cesta){
 
 				
 			$insertarProductosPedido = $mysqli->multi_query($sql);
-			if($insertarProductosPedido) echo $mysqli->affected_rows;
+			if($insertarProductosPedido) $mensaje = $mysqli->affected_rows;
 			else echo 'ERROR AL INSERTAR PRODUCTOS';
 		//	$mysqli.close();
 			return true;
@@ -226,7 +229,7 @@ function insert_productos_pedido($id_pedido, $cesta){
 			echo 'Excepción: ', $e->getMessage();
 			return null;
 			}
-		}  
+		} return $mensaje; 
 		
 }
 

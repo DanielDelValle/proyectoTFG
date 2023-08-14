@@ -5,7 +5,7 @@ function checkSession(){
      //crear sesión, y si hay usuario logeado, recoge el usuario en una variable.
       if (!isset($_SESSION["usuario"])) {
          // $usuario = "";
-            exit(header("location:login"));   // si no hay un usuario correctamente identificado, se redirige al login.
+            exit(header("location:iniciar_sesion"));   // si no hay un usuario correctamente identificado, se redirige al login.
             //exit;     // evita seguir ejecutando código de ésta página 
         }else{ 
         echo session_id();
@@ -27,7 +27,7 @@ function closeSession() //elimina la sesión sin borrar los datos de la cesta
     
 
 
-function closeSession2() //elimina la sesión totalmente
+function deleteSession() //elimina la sesión totalmente
 {
     if ((session_status() === PHP_SESSION_ACTIVE)) {
         //echo "<p>Cerrando sesión</p>";

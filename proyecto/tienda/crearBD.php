@@ -76,7 +76,7 @@
 
 
             $sql4="CREATE TABLE IF NOT EXISTS PRODUCTOS_PEDIDO (
-                id_pedido VARCHAR(30) PRIMARY KEY,      
+                id_pedido VARCHAR(30),      
                 id_prod INTEGER NOT NULL,
                 nombre VARCHAR(25),
                 cantidad DECIMAL(5)

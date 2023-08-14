@@ -3,7 +3,6 @@ require_once 'controladores.php';
 
 
 // Recogemos la uri insertada
-//$URI = $_SERVER['REQUEST_URI'];
 
 $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $segments = explode('/', $path);
@@ -29,9 +28,9 @@ elseif ($URI == 'detalle_producto' && isset($_GET['id']))
 
 
 
-elseif ($URI == 'login')
+elseif ($URI == 'iniciar_sesion')
 {      
-		controlador_login(); 
+		controlador_iniciar_sesion(); 
 }
 
 
@@ -50,9 +49,9 @@ elseif (($URI == 'home') && ($URI2 == 'empleado.php'))
 }**/
 
 
-elseif ($URI == 'perfil')
+elseif ($URI == 'cuenta')
 {      
-		controlador_perfil(); 
+		controlador_cuenta(); 
 }
 
 
@@ -81,9 +80,9 @@ elseif ($URI == 'pedido_realizado')
 
 
 
-elseif ($URI == 'adios')
+elseif ($URI == 'cerrar_sesion')
 {
-		controlador_adios(); 
+		controlador_cerrar_sesion(); 
 }
 
 

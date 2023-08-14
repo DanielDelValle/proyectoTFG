@@ -6,7 +6,11 @@
 
 
 
-{% block content %}		
+{% block content %}	
+				
+{% block mensaje %}
+<p class='mensaje'>{{mensaje}}</p><br>
+{% endblock %}	
 
 			<!-- Mostramos una lista de los artículos-->
 			Detalles Producto ID: {{producto.id_prod}}
@@ -16,10 +20,7 @@
 				<h2>STOCK DISPONIBLE: {{producto.stock}} Kilo(s)</h2>
 				<h3>DESCRIPCION: {{producto.descripcion}}</h3>
 
-				
-		 {% block mensaje %}
-		 <p class='mensaje'>{{mensaje}}</p><br>
-		 {% endblock %}
+
 				<form action="" method="POST">
 					<button type="submit" name="anadir_producto" value="Volver"/>Añadir Producto a la Cesta</button>
 				</form>
