@@ -20,6 +20,7 @@ function closeSession() //elimina la sesión sin borrar los datos de la cesta
     {  
             session_start();
             unset($_SESSION['usuario']);
+            unset($_SESSION['pedido']);
             session_write_close();
            // session_destroy();  //destruye sesion
         }
@@ -69,9 +70,7 @@ function checkCookie(){
 
 function checkCesta(){    
 
-       if (!isset($_SESSION['cesta'])) $cesta = array();
-       else $cesta = $_SESSION['cesta'];
-    
+    $cesta = isset($_SESSION['cesta']) ? $_SESSION['cesta'] : array();
        return $cesta;
     
     }

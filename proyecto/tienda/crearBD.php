@@ -44,9 +44,12 @@
                 cod_postal INTEGER(5),
                 provincia VARCHAR(25),
                 creado_fecha DATETIME DEFAULT NOW(),
-                estado_usuario ENUM ('activo', 'inactivo', 'baja', 'bloqueado', 'pendiente') DEFAULT 'activo'     
-                
+                estado_cuenta ENUM ('activo', 'inactivo', 'pendiente', 'bloqueado') DEFAULT 'activo'
+               
                 )";
+
+              //  total_pedidos INTEGER(3) DEFAULT 0,     PARA LLEVAR CONTEO GASTO CLIENTE (POSIBLES GRADOS MEMBRESIA, RECOMPENSAS, DESCUENTOS)
+           //     total_gasto FLOAT(10) DEFAULT 0.0
 
                 if($bd->query($sql2)){
                     echo "Tabla CLIENTE creada con éxito<br>";
@@ -58,7 +61,7 @@
                 nif_cliente VARCHAR(9),
                 total_precio DECIMAL(7),
                 total_kg DECIMAL (5),
-                forma_pago ENUM ('bizum', 'transferencia'),
+                forma_pago ENUM ('bizum', 'transferencia bancaria'),
                 estado_pago ENUM ('pendiente', 'recibido', 'devuelto') DEFAULT 'pendiente',
                 estado_pedido ENUM ('procesando', 'enviado', 'recibido') DEFAULT 'procesando',
                 creado_fecha DATETIME DEFAULT NOW(),

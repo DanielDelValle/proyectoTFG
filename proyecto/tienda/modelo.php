@@ -146,6 +146,7 @@ function lista_productos()
 			echo 'Excepción: ', $e->getMessage();
 			return null;
 		  }
+		  
 		}  
 		
 	return $lista_productos;
@@ -186,10 +187,12 @@ function datos_cliente($email)
 		if($pdo){
 			try{
 			//La búsqueda se realiza en mysql con el comando LIKE
-			$sql = "SELECT c.nif, c.nombre, c.apellidos, c.email, c.telefono, c.direccion, c.localidad, c.cod_postal, c.provincia FROM cliente c WHERE email ='$email'";		
+			$sql = "SELECT c.nif, c.nombre, c.apellidos, c.email, c.telefono, c.direccion, c.localidad, c.cod_postal, c.provincia, c.creado_fecha, c.estado_cuenta
+					FROM cliente c WHERE email ='$email'";		
 			$lectura = $pdo->query($sql);
 			$cliente= $lectura->fetchObject();
 			$pdo = null;
+			//c.total_pedidos, c.total_gasto SI SE LLEGAN A INCORPORAR DICHAS COLUMNAS
 		}	
 		
 		catch(PDOException $e){
@@ -243,23 +246,51 @@ function insert_pedido($id_pedido, $nif, $total_precio, $total_kg, $forma_pago, 
 						VALUES ('".$id_pedido."', '".$nif."', '".$total_precio."', '".$total_kg."', '".$forma_pago."', NULL, NULL, '".$notas."');";
 
 
-			$insertarPedido = $pdo->query($sql);
-		//	if($insertarPedido){ echo $insertarPedido.rowCount();} 
+		$insertarPedido = $pdo->query($sql);
+		//return 	$insertarPedido->rowCount();
+		if($insertarPedido){
 		//	else echo 'ERROR AL INSERTAR PEDIDO';
 		$pdo = null;
-		return true;
+		return true;}
 	}	
 	
 	catch(PDOException $e){
 		echo 'Excepción: ', $e->getMessage();
 		return null;
 		}
+
 	}  
+
+}
+function datos_pedido($usuario){
+
+	$email = isset($_SESSION['usuario']) ? $_SESSION['usuario'] : "";
+		$pdo = conexion();
+		if($pdo){
+			try{
+			//La búsqueda se realiza en mysql con el comando LIKE
+			$sql = "SELECT * FROM pedido WHERE id_pedido = '28701/53665340S/1508_040812'";
+		//	$sql2 = "SELECT * FROM pedido p JOIN cliente c WHERE c.email ='$email' AND p.id_pedido = '$id_pedido";		
+			$lectura = $pdo->query($sql);
+			$pedido = $lectura->fetchObject();
+			$pdo = null;
+			return true;
+			//c.total_pedidos, c.total_gasto SI SE LLEGAN A INCORPORAR DICHAS COLUMNAS
+		}	
+		
+		catch(PDOException $e){
+			echo 'Excepción: ', $e->getMessage();
+			return null;
+		  }
+		}  
+		
+	return $pedido;
+	}		
 
 
 	
 
-	}
+
 	
 
 

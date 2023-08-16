@@ -49,17 +49,25 @@ elseif (($URI == 'home') && ($URI2 == 'empleado.php'))
 }**/
 
 
-elseif ($URI == 'cuenta')
+elseif ($URI == 'mi_cuenta')
 {      
-		controlador_cuenta(); 
+		controlador_mi_cuenta(); 
+}
+
+elseif ($URI == 'mis_datos')
+{      
+		controlador_mis_datos(); 
+}
+
+elseif ($URI == 'mis_pedidos')
+{      
+		controlador_mis_pedidos(); 
 }
 
 
-
-
-elseif ($URI == 'cesta')
+elseif ($URI == 'mi_cesta')
 {      
-		controlador_cesta(); 
+		controlador_mi_cesta(); 
 }
 
 elseif ($URI == 'datos_envio')
@@ -76,6 +84,7 @@ elseif ($URI == 'pedido_realizado')
 {      
 		controlador_pedido_realizado(); 
 }
+
 
 
 
