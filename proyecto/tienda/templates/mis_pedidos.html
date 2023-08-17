@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block stylesheets %}
-<link rel="stylesheet" type="text/css" href="css/tarea8.css">
+<link rel="stylesheet" type="text/css" href="css/tarea6.css">
 {% endblock %}
 
 {% block content %}
@@ -10,77 +10,35 @@
 {% endblock %}
 
 <form method="POST" action="" autocomplete>
+
     <fieldset>
     <div>
-    <h2 class='titulo'>MIS DATOS PERSONALES</h2>
+    <h2 class='titulo'>MIS PEDIDOS</h2>
 
     <table id="datos_cliente">
-            <tr>
-                <th>NIF</th>
-                <th>Nombre</th>
-                <th>Apellidos</th>
-            </tr>
-            <tr>
-                <td>{{cliente.nif}}</td>
-                <td>{{cliente.nombre}}</td>
-                <td>{{cliente.apellidos}}</td>
-            </tr>
+        <th>Id Pedido</th>
+        <th>Nif Cliente</th>
+        <th>Total Precio</th>
+        <th>Total Peso</th>
+    {% for key, pedido in pedidosArray %}
+    <tr>
+        <td><a href="http://localhost/proyecto/tienda/index.php/detalle_pedido?id_pedido={{pedido.id_pedido}}">{{pedido.id_pedido}}</a></td>
+        <td>{{pedido.nif_cliente}}</td>
+        <td>{{pedido.total_precio}}</td>
+        <td>{{pedido.total_kg}} Kilo(s)</td>
+    </tr>
+    {% endfor %}
     </table>
-    </div>
-</fieldset>     
-<fieldset>   
     <div>
-    <h2 class='titulo'>MIS DATOS DE CONTACTO</h2>
-    <table id="datos_cliente">
-            <tr>
-                <th>Email</th>
-                <th>Telefono</th>
-            </tr>
-            <tr>
-                <td>{{cliente.email}}</td>
-                <td>{{cliente.telefono}}</td>
-            </tr>
-            <tr>
-                <th>Direccion</th>
-                <th>Localidad</th>
-                <th>Codigo Postal</th>
-                <th>Provincia</th>
-            </tr>
-            <tr>
-                <td>{{cliente.direccion}}</td>
-                <td>{{cliente.localidad}}</td>
-                <td>{{cliente.cod_postal}}</td>
-                <td>{{cliente.provincia}}</td>
-            </tr>
+    </fieldset>
 
-
-        </table>
-    </div>
-</fieldset>
-<fieldset>   
-    <div>
-    <h2 class='titulo'>OTROS DATOS</h2>
-    <table id="datos_cliente">
-            <tr>
-                <th>Fecha Creación de la Cuenta</th>
-                <th>Estado de la Cuenta</th>
-            </tr>
-            <tr>
-                <td>{{cliente.creado_fecha}}</td>
-                <td>{{cliente.estado_cuenta}}</td>
-            </tr>
-
-
-        </table>
-    </div>
-</fieldset>
 
 <fieldset>
     <div>
 
         <!--   el botón "Cerrar Sesion" da la orden de borrar datos de sesión y elimina cookie-->
 
-        <button type="submit" name="volver_cuenta" method="POST">Volver a Mi Cuenta</button>
+        <button type="submit" name="volver_cuenta" method="POST">Ir a Mi Cuenta</button>
 
         <button type="submit" name="mis_pedidos" method="POST">Ver Mis Pedidos</button>
 

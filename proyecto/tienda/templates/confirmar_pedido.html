@@ -109,12 +109,13 @@
         <br> Si se trata de una emergencia, puede escribir a nuestro whatsapp: 666555444</span>
         <br>
     </fieldset>
+
+
   <!--  <input type="submit" value="Guardar y enviar" />-->
     <input type="reset" value="Borrar texto" />
 
 
     <div>
-
         <!--   el botón "Cerrar Sesion" da la orden de borrar datos de sesión y elimina cookie-->
 
         <button type="submit" name="volver_cesta" method="POST">Volver a la Cesta</button>
@@ -124,11 +125,14 @@
         <button type="submit" name="confirmar_pedido" method="POST">Confirmar Pedido</button>
 
         <button type="submit" name="cerrar_sesion" method="POST">Cerrar Sesion</button>
-
-
-
     </div>
 </form>
+
+<form method = "GET">   
+
+    <input  type="hidden" name="id_pedido" value="{{id_pedido}}">
+</form>
+
 
 
 

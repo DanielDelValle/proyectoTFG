@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block stylesheets %}
+<link rel="stylesheet" type="text/css" href="css/tarea8.css">
+{% endblock %}
+
+
+
+{% block content %}	
+				
+{% block mensaje %}
+<p class='mensaje'>{{mensaje}}</p><br>
+{% endblock %}	
+
+			<table id="datos_cliente">
+			<th>Id Producto</th>
+			<th>Nombre</th>
+			<th>Cantidad</th>
+			<th>Total Peso </th>
+			<!-- pedido.o.id_pedido para acceder a la id_pedido del primer producto ( está en todos pero sólo la necesito 1 vez)-->
+			<h2>Detalles Pedido {{pedido.0.id_pedido}}</h2>   
+			{% for key, producto in pedido %}
+			<tr>	
+			<td>	{{producto.id_prod}}</td>	
+			<td>	{{producto.nombre}}</td>	
+			<td>	{{producto.cantidad}} Kilo(s)</td>	
+			</tr>
+			{% endfor %}
+		</table>
+
+
+				<form action="index.php/mis_pedidos" method="POST">
+					<button type="submit" name="mis_pedidos"/>Volver a Mis Pedidos</button>
+				</form>
+{% endblock %}	

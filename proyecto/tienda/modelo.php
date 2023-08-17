@@ -262,19 +262,30 @@ function insert_pedido($id_pedido, $nif, $total_precio, $total_kg, $forma_pago, 
 	}  
 
 }
-function datos_pedido($usuario){
+function pedidos_usuario($nif){
 
-	$email = isset($_SESSION['usuario']) ? $_SESSION['usuario'] : "";
 		$pdo = conexion();
 		if($pdo){
 			try{
 			//La búsqueda se realiza en mysql con el comando LIKE
-			$sql = "SELECT * FROM pedido WHERE id_pedido = '28701/53665340S/1508_040812'";
-		//	$sql2 = "SELECT * FROM pedido p JOIN cliente c WHERE c.email ='$email' AND p.id_pedido = '$id_pedido";		
-			$lectura = $pdo->query($sql);
-			$pedido = $lectura->fetchObject();
-			$pdo = null;
-			return true;
+			$sql = "SELECT *
+					FROM pedido p JOIN cliente c ON p.nif_cliente = c.nif
+					WHERE nif = '$nif'";
+
+
+			$resultado = $pdo->query($sql);
+			$pedidosArray = $resultado->fetchAll(PDO::FETCH_OBJ);
+
+		/*	foreach($pedidosArray as $i => $pedido) {   
+
+
+			}*/
+			
+			$mensaje = "Se han encontrado <b>" . $resultado->rowCount() . "</b> libro(s) <br><br>"; 
+			if ($resultado->rowCount()==0) echo "No se han encontrado pedidos";
+
+			$pdo = null;  //cierro conexion para no mantener BD en espera
+
 			//c.total_pedidos, c.total_gasto SI SE LLEGAN A INCORPORAR DICHAS COLUMNAS
 		}	
 		
@@ -284,41 +295,35 @@ function datos_pedido($usuario){
 		  }
 		}  
 		
-	return $pedido;
+	return $pedidosArray;
 	}		
 
+	function detalle_pedido($id_pedido)
+	{	
+		$id_pedido = isset($_REQUEST["id_pedido"]) ? $_REQUEST["id_pedido"] : "";
+			$pdo = conexion();
+			if($pdo){
+				try{
+				//La búsqueda se realiza en mysql con el comando LIKE
+				$sql = "SELECT * FROM productos_pedido p WHERE id_pedido ='$id_pedido'";		
 
-	
-
-
-	
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+				$resultado = $pdo->query($sql);
+				$productosArray = $resultado->fetchAll(PDO::FETCH_OBJ);
+				$pdo = null;
+			}	
+			
+			catch(PDOException $e){
+				echo 'Excepción: ', $e->getMessage();
+				return null;
+			  }
+			}  
+			
+		return $productosArray;
+							
+	}
 
 
-
-
-
-
-function opiniones()
+	function opiniones()
 {
 	//Obtener usuario y sugerencia
 		$listaOpiniones = array(

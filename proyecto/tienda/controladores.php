@@ -60,6 +60,7 @@ descomentar y poner a continuacion de la linea "$twig=....($loader," para habili
 function controlador_index()
 { $URI = get_URI();
     session_start();
+    //estas variables son necesarias para variar el texto de los links, dependiendo de si está el usuario logeado o no
     $logged = isset($_SESSION['usuario']) ? "cerrar_sesion" : "iniciar_sesion";
     $logged_legible = isset($_SESSION['usuario']) ? "Cerrar Sesión" : "Iniciar Sesión";
     $crear_cuenta = isset($_SESSION['usuario']) ? "" : "crear_cuenta";
@@ -76,15 +77,14 @@ function controlador_index()
 	global $twig;
     // Carga la plantilla que se mostrará al usuario con los datos recuperados 
     // del modelo
-    var_dump($_SESSION);
     $template = $twig->load('productos.html');
 	echo $template->render(array ('URI'=>$URI, 'logged'=>$logged, 'logged_legible'=>$logged_legible, 'crear_cuenta' => $crear_cuenta, 'crear_cuenta_legible'=> $crear_cuenta_legible, 'productos' => $productos, 'total_prods'=>$total_prods));
 }
 
 
-function controlador_detalle($id)
+function controlador_detalle_producto($id)
 {   
-     $URI = get_URI();    
+    $URI = get_URI();    
     // Petición al modelo para que retorne la lista de productos de la BD
     $productos = lista_productos();
     $_SESSION['cesta'] = checkCesta();
@@ -95,6 +95,7 @@ function controlador_detalle($id)
     $mensaje = "";
 
     if (isset($_POST["anadir_producto"])) {
+       // session_start();    PARA PERMITIR AÑADIR PRODUCTOS SIN HABER INICIADO SESION (CESTA SOLO ACCESIBLE TRAS LOGIN)
         $URI = get_URI();
         $usuario = checkSession();
         $_SESSION['cesta'] = checkCesta();
@@ -102,7 +103,7 @@ function controlador_detalle($id)
 
         $prod_add = array();  //$prod_add = new ArrayObject(); 
         $mensaje = 'Producto añadido a la cesta';
-        //header("Refresh:1");
+
         
         $prod_add['id_prod'] = (int)$producto['id_prod'];
         $prod_add['nombre'] = $producto['nombre'];
@@ -114,19 +115,22 @@ function controlador_detalle($id)
         if(count($_SESSION['cesta']) != 0){
             if(in_array($prod_add['id_prod'], array_keys($_SESSION['cesta']))){
                 $_SESSION['cesta'][$prod_add['id_prod']]['cantidad'] +=1;
+
             } 
             else {
                 //Si ninguno de los productos de la cesta es el que vamos a introducir, se introduce el mismo
                 $_SESSION['cesta'][$prod_add['id_prod']] = $prod_add;
+                header("Refresh:1");
             }
         
         }else{
             // Si la cesta esta vacia se introduce directamente el producto, dandole como indice la ID del mismo para mas facil identificacion.
             $_SESSION['cesta'][$prod_add['id_prod']] = $prod_add;
+            header("Refresh:1");
         }
 
         }
-        echo session_status();
+    
     global $twig;
     $template = $twig->load('detalle_producto.html');  
 	echo $template->render(array ('URI'=>$URI, 'producto' => $producto, 'total_prods'=>$total_prods, 'mensaje'=> $mensaje));
@@ -265,7 +269,7 @@ function controlador_confirmar_pedido(){
     $total_kg = $_SESSION['total_kg'];
     $total_prods = $_SESSION['total_prods'];
     $mensaje="";
-    $id_pedido="";
+    $id_pedido=$_POST['id_pedido'];
     $forma_pago='';
     
 
@@ -297,12 +301,12 @@ function controlador_confirmar_pedido(){
                                                         // el NIF para agrupar pedidos por empresa o titular 
                                                         // la fecha y hora en que se hizo para obtener siempre un número único (necesario para que sea PRIMARY KEY).
 
-            $id_pedido = $cliente->cod_postal."/".$cliente->nif."/".($fecha); 
+            $id_pedido = $cliente->cod_postal."-".$cliente->nif."-".($fecha); 
             $notas = $_POST['notas'];
-
+            //si ambas operaciones insert retornan TRUE
           if(insert_pedido($id_pedido, $cliente->nif, $total_precio, $total_kg, $forma_pago, $notas) && (insert_productos_pedido($id_pedido, $cesta))){
 
-            exit(header("location:pedido_realizado"));
+            exit(header("location:pedido_realizado?id_pedido=pedido.$id_pedido"));
           } else $mensaje= "Error al grabar el pedido - por favor, repita el proceso de nuevo";
               
 
@@ -318,16 +322,16 @@ function controlador_confirmar_pedido(){
 }
 
 
-
-function controlador_pedido_realizado(){
+function controlador_pedido_realizado($id_pedido){
     $URI = get_URI();
     $usuario = checkSession();
-    $cliente = datos_cliente($usuario);
     $cesta = checkCesta();
-    $pedido = datos_pedido($usuario);
+    $cliente = datos_cliente($usuario);
+    $id_pedido= $_GET['id_pedido'];
+    $nif = $cliente->nif;
     $mensaje="";
-    $total_precio = $_SESSION['total_precio'];
-    $total_kg = $_SESSION['total_kg'];
+    //$total_precio = $_SESSION['total_precio'];
+    //$total_kg = $_SESSION['total_kg'];
     $total_prods = $_SESSION['total_prods'];
     // unset($_SESSION['cesta']);     // DESCOMENTAR CUANDO YA NO NECESITE HACER PRUEBAS  //eliminamos cesta pues ya se ha transformado en pedido
     if(isset($_POST["ver_productos"])){
@@ -342,10 +346,61 @@ function controlador_pedido_realizado(){
         exit(header('location:cerrar_sesion'));
     }
 
-
     global $twig;
     $template = $twig->load('pedido_realizado.html');
-	echo $template->render(array ('URI'=>$URI, 'usuario' =>$usuario, 'cliente'=>$cliente, 'cesta' => $cesta, 'pedido'=> $pedido, 'mensaje' => $mensaje, 'total_prods'=>$total_prods, 'total_kg'=> $total_kg, 'total_precio'=>$total_precio));
+	echo $template->render(array ('URI'=>$URI, 'usuario' =>$usuario, 'nif'=>$nif,'cliente'=>$cliente, 'cesta' => $cesta, 'id_pedido'=> $id_pedido, 'mensaje' => $mensaje, 'total_prods'=>$total_prods));
+
+}
+
+
+function controlador_detalle_pedido($id_pedido)
+{   
+    $URI = get_URI();    
+    // Petición al modelo para que retorne la lista de productos de la BD
+    $productos = lista_productos();
+    $_SESSION['cesta'] = checkCesta();
+    
+    $total_prods = (isset($_SESSION['usuario']) && isset($_SESSION['cesta'])) ? count($_SESSION['cesta']) : 0;
+   
+    $pedido = detalle_pedido($id_pedido);  //transformo el objeto que devuelve el modelo en array asociativo
+    
+    $mensaje = "";
+
+    var_dump($pedido);
+    global $twig;
+    $template = $twig->load('detalle_pedido.html');  
+	echo $template->render(array ('URI'=>$URI, 'pedido' => $pedido, 'total_prods'=>$total_prods, 'mensaje'=> $mensaje));
+    return $pedido;
+
+
+}
+
+function controlador_mis_pedidos()   /// PENDIENTE REASIGNAR A OTRA VISTA, OBSOLETO (SUSTITUIDO POR "CUENTA")
+{   $URI = get_URI();
+    $usuario = checkSession();
+    $cliente = datos_cliente($usuario);
+    $nif = $cliente->nif;
+    $total_prods = isset($_SESSION['cesta']) ? count($_SESSION['cesta']) : 0;
+
+    $pedidosArray = pedidos_usuario($nif);
+  
+    // Petición al modelo para que retorne la lista de productos de la BD
+    $productos = lista_productos();
+    // Carga la plantilla que se mostrará al usuario con los datos recuperados del modelo
+	global $twig;
+    // Carga la plantilla que se mostrará al usuario con los datos recuperados 
+    // del modelo
+
+    if (isset($_POST["volver_cuenta"])) exit(header("location:mi_cuenta"));
+    if (isset($_POST["ver_pedidos"])) exit(header("location:mis_pedidos"));
+   
+    if (isset($_POST["cerrar_sesion"])){
+        exit(header('location:cerrar_sesion'));
+    }
+    $template = $twig->load('mis_pedidos.html');
+	echo $template->render(array ('URI'=>$URI, 'productos' => $productos, 'usuario' =>$usuario, 'cliente'=> $cliente, 'total_prods'=>$total_prods, 'pedidosArray' => $pedidosArray));
+
+
 
 }
 
@@ -376,7 +431,7 @@ function controlador_iniciar_sesion(){
                 $_SESSION["usuario"] = $usuario;    
                 //$_SESSION["contrasena"] = $contrasena;  
                 session_regenerate_id(); //para evitar ataque de fijacion de sesion (en redes compartidas)
-                $previa = $_SERVER['HTTP_REFERER'];
+               // $previa = $_SERVER['HTTP_REFFERER'];
                 exit(header("location:mi_cuenta"));
             } else {
                 $mensaje = "Usuario y/o contraseña incorrectos";                
@@ -416,7 +471,7 @@ function controlador_mis_datos()   /// PENDIENTE REASIGNAR A OTRA VISTA, OBSOLET
     // del modelo
 
     if (isset($_POST["volver_cuenta"])) exit(header("location:mi_cuenta"));
-    if (isset($_POST["ver_pedidos"])) exit(header("location:mis_pedidos"));
+    if (isset($_POST["mis_pedidos"])) exit(header("location:mis_pedidos"));
 
     if (isset($_POST["eliminar_cuenta"])) exit(header("location:eliminar_cuenta"));
    
@@ -430,6 +485,9 @@ function controlador_mis_datos()   /// PENDIENTE REASIGNAR A OTRA VISTA, OBSOLET
 
 
 }
+
+
+
 
 
 

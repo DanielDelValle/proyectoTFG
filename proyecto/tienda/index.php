@@ -23,7 +23,15 @@ elseif ($URI == 'detalle_producto' && isset($_GET['id']))
 {
     // Se ejecuta el controlador específico que muestra los detalles de un 
     // articulo específico
-    controlador_detalle($_GET['id']); 
+    controlador_detalle_producto($_GET['id']); 
+}
+
+
+elseif ($URI == 'detalle_pedido' && isset($_GET['id_pedido'])) 
+{
+    // Se ejecuta el controlador específico que muestra los detalles de un 
+    // articulo específico
+    controlador_detalle_pedido($_GET['id_pedido']); 
 }
 
 
@@ -80,9 +88,9 @@ elseif ($URI == 'confirmar_pedido')
 		controlador_confirmar_pedido(); 
 }
 
-elseif ($URI == 'pedido_realizado')
+elseif ($URI == 'pedido_realizado' && isset($_GET['id_pedido']))
 {      
-		controlador_pedido_realizado(); 
+		controlador_pedido_realizado($_GET['id_pedido']); 
 }
 
 
