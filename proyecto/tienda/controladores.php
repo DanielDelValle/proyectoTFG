@@ -70,42 +70,46 @@ function controlador_index()
 
     // Petición al modelo para que retorne la lista de productos de la BD
     $productos = lista_productos();
-    $total_prods = isset($_SESSION['usuario']) && isset($_SESSION['cesta']) ? count($_SESSION['cesta']) : count(array());
+    $total_prods = (isset($_SESSION['usuario']) && isset($_SESSION['cesta'])) ? count($_SESSION['cesta']) : 0;
     
     // Carga la plantilla que se mostrará al usuario con los datos recuperados del modelo
 	global $twig;
     // Carga la plantilla que se mostrará al usuario con los datos recuperados 
     // del modelo
+    var_dump($_SESSION);
     $template = $twig->load('productos.html');
 	echo $template->render(array ('URI'=>$URI, 'logged'=>$logged, 'logged_legible'=>$logged_legible, 'crear_cuenta' => $crear_cuenta, 'crear_cuenta_legible'=> $crear_cuenta_legible, 'productos' => $productos, 'total_prods'=>$total_prods));
 }
 
 
 function controlador_detalle($id)
-{   session_start();
-    $URI = get_URI();    
+{   
+     $URI = get_URI();    
     // Petición al modelo para que retorne la lista de productos de la BD
     $productos = lista_productos();
-    $total_prods = isset($_SESSION['usuario'])&& isset($_SESSION['cesta']) ? count($_SESSION['cesta']) : count(array());
     $_SESSION['cesta'] = checkCesta();
+    $cesta = $_SESSION['cesta'];
+    $total_prods = (isset($_SESSION['usuario']) && isset($_SESSION['cesta'])) ? count($_SESSION['cesta']) : 0;
+   
     $producto = get_object_vars(detalle_producto($id));  //transformo el objeto que devuelve el modelo en array asociativo
-    $total_prods = isset($_SESSION['cesta']) ? count($_SESSION['cesta']) : "";
     $mensaje = "";
 
     if (isset($_POST["anadir_producto"])) {
         $URI = get_URI();
         $usuario = checkSession();
         $_SESSION['cesta'] = checkCesta();
+        $total_prods = (isset($_SESSION['usuario']) && isset($_SESSION['cesta'])) ? count($_SESSION['cesta']) : 0;
+
         $prod_add = array();  //$prod_add = new ArrayObject(); 
         $mensaje = 'Producto añadido a la cesta';
-        header("Refresh:1");
+        //header("Refresh:1");
         
         $prod_add['id_prod'] = (int)$producto['id_prod'];
         $prod_add['nombre'] = $producto['nombre'];
         $prod_add['precio'] = (float)$producto['precio'];
         $prod_add['cantidad'] = (float)1.0;
         
-        //si el array "cesta" dentro de SESSION tiene alguna entrada, se compara la id del producto a introductir con los KEYS .
+        //si el array "cesta" dentro de SESSION tiene alguna entrada, se compara la id del producto a introductir con los KEYS ( ya que lo diseñé así) .
         //Si ya está dentro, sólo se actualiza la cantidad.
         if(count($_SESSION['cesta']) != 0){
             if(in_array($prod_add['id_prod'], array_keys($_SESSION['cesta']))){
@@ -122,7 +126,7 @@ function controlador_detalle($id)
         }
 
         }
-        
+        echo session_status();
     global $twig;
     $template = $twig->load('detalle_producto.html');  
 	echo $template->render(array ('URI'=>$URI, 'producto' => $producto, 'total_prods'=>$total_prods, 'mensaje'=> $mensaje));
@@ -403,7 +407,7 @@ function controlador_mis_datos()   /// PENDIENTE REASIGNAR A OTRA VISTA, OBSOLET
 {   $URI = get_URI();
     $usuario = checkSession();
     $cliente = datos_cliente($usuario);
-    $total_prods = isset($_SESSION['cesta']) ? count($_SESSION['cesta']) : "";
+    $total_prods = isset($_SESSION['cesta']) ? count($_SESSION['cesta']) : 0;
     // Petición al modelo para que retorne la lista de productos de la BD
     $productos = lista_productos();
     // Carga la plantilla que se mostrará al usuario con los datos recuperados del modelo
@@ -433,7 +437,7 @@ function controlador_mi_cuenta()
 {   $URI = get_URI();
     $usuario = checkSession();
     $cliente = datos_cliente($usuario);
-    $total_prods = isset($_SESSION['cesta']) ? count($_SESSION['cesta']) : "";
+    $total_prods = isset($_SESSION['cesta']) ? count($_SESSION['cesta']) : 0;
     // Petición al modelo para que retorne la lista de productos de la BD
     // Carga la plantilla que se mostrará al usuario con los datos recuperados del modelo
 	global $twig;

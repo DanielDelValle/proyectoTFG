@@ -1,6 +1,6 @@
 <?php
 function checkSession(){
-    if(session_status() !== PHP_SESSION_ACTIVE){
+    if(session_status() !== 2){
         session_start();
      //crear sesión, y si hay usuario logeado, recoge el usuario en una variable.
       if (!isset($_SESSION["usuario"])) {
@@ -20,7 +20,6 @@ function closeSession() //elimina la sesión sin borrar los datos de la cesta
     {  
             session_start();
             unset($_SESSION['usuario']);
-            unset($_SESSION['pedido']);
             session_write_close();
            // session_destroy();  //destruye sesion
         }
@@ -30,7 +29,7 @@ function closeSession() //elimina la sesión sin borrar los datos de la cesta
 
 function deleteSession() //elimina la sesión totalmente
 {
-    if ((session_status() === PHP_SESSION_ACTIVE)) {
+    if ((session_status() === 2)) {
         //echo "<p>Cerrando sesión</p>";
         //Si hay sesión abierta, se define como array vacío el contenido de la misma
         //$_SESSION['usuario'] = "";
@@ -70,7 +69,7 @@ function checkCookie(){
 
 function checkCesta(){    
 
-    $cesta = isset($_SESSION['cesta']) ? $_SESSION['cesta'] : array();
+    $cesta = (isset($_SESSION['cesta']))  ? $_SESSION['cesta'] : array();
        return $cesta;
     
     }
