@@ -1,21 +1,35 @@
+.banner {
+	height: 160px;
+	/*background-image: '../imagenes/banner.png' no-repeat #7cac2e;*/
+	background-position: center center;
+	background-color: #7cac2e;
+	margin-top:0; 
+}
+#banner img {
+	float:left; 
+	margin-left:1%;  
+	margin-top:4px; 
+	transition: transform 1s;
+		
+}
 body {
 	background-color: #dee6b0;
 	font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
 	margin-top: 0px;
 	text-align: center;
+
 }
 
 h1 {
 	font-size: 32px;
 	color: #8b4513;
 	font-weight: bold;
-	margin-top: 40px;
-	text-decoration: underline;
+	padding:2em;
 }
 
 h2 {
 	color: #8b4513;
-	margin-top: 30px;
+	margin-top: 20px;
 	font-weight: bold;
 	font-size: 25px;
 }
@@ -28,20 +42,17 @@ h3 {
 	margin-bottom: 2px;
 }
 
-/*.banner {
-	height: 160px;
-	background-image: 'imagenes/banner.png' no-repeat #7cac2e;
-}*/
-
 
 .descrip {
-	color: #8b4513;
+
 	font-size: 20px;
 	/*font-weight: bold;*/
-	width: 50%;
+
+
 	margin-left: auto;
 	margin-right: auto;
 	padding:25px;
+	
 	
 
 }
@@ -50,32 +61,48 @@ table {
 	color: #8b4513;
 	font-size: 20px;
 	font-weight: bold;
-	width: 100%;
+	width:50%;
 	margin-left: auto;
 	margin-right: auto;
+	margin-top: 25px;
+	margin-bottom: 25px;
 	border-radius: 20px;
-	border: solid 3px #b68b2e;
-	border-collapse: collapse;    /*necesario para que tr pueda tener borde*/
-	padding:25px;
+	border: double 3px #b68b2e;
+	padding: 20px;
+	border-collapse: collapse;
+	position:relative;
+	border-radius: 20px;
+	border-style: hidden; /* hide standard table (collapsed) border */
+	box-shadow: 3 0 0 3px; /* this draws the table border  */   /*si pongo 0 0 0 3, los bordes son redondos a pesar de ser collapsed TRUCO*/
+	position:relative;
 
 }
+
 
 th{
 	color: #8b4513;
 	font-size: 23px;
 	font-weight: bold;
 	margin-bottom:2em;
-	border: solid 3px #b68b2e;
+	border: double 3px ;
 	border-collapse: collapse;
+	border-radius: 20px;
 	
 
 }
 tr {
-	border-bottom: 1px solid #b68b2e;  /*separadores entre filas*/
+	border-bottom: 3px double ;  /*separadores entre filas*/
+	border:3px double rgb(124, 71, 71);
+	
+}
+td {
+	border-bottom: 3px double ;  /*separadores entre filas*/
+	border: 3px double rgb(124, 71, 71);
+	
 }
 
 
-.content a {
+/*.content a {
 	text-decoration: none;
 	color: #8b4513;
 	font-size: 20px;
@@ -84,60 +111,80 @@ tr {
 	border-color: #e7a109;
 	background-color: #d3d01b;
 
-}
+}*/
 
-img {
+/*img {
 	border-radius: 20px;
 	border: solid 3px #b68b2e;
-}
+}*/
 
 		ul {
 	list-style: none;
 }
 
 
-.menu li {
+ li {
 	border-radius: 10px;
 	border: 4px double;
-	border-color: #e7a109;
-	background-color: #d3d01b;
+	/*border-color: #e7a109;
+	*/background-color: #d8d65ae1;
 	text-align: center;
-	padding-top: 10px;
-	padding-bottom: 10px;
-	padding-left: 15px;
-	padding-right: 15px;
-	height: 25px;
+	padding:8px;
 	display: inline-flex;
 }
 
+
 a {
 	text-decoration: none;
-	color: #8b4513;
+	color: #8b6b13;
 	font-size: 20px;
 	font-weight: bold;
-	border-radius: 10px;
-	padding:1px;
 
 }
 
+#titular {
+	color:#aa702e;
+	float:left;
+	margin-left: 5%;
+	margin-top: 25px;
+	margin-bottom: 25px;
+	width:auto;
+	position:relative;
+	border-collapse: collapse;
+
+}
+#titular th, #titular td, #titular tr{
+border:none;
+text-align: left;
+}
+
+#titular td{
+	border:3px double;
+	padding-inline-end: 10px;
+	padding-inline-start: 10px;
+
+	}
+	
 a:hover {
-	font-size: 150%;
+	font-size: 130%;
+	/*text-decoration: underline;*/
+	background-color:#89ad506e;
 }
 
 
-form{
+/*form{
 	border-radius: 10px;
 	border: 2px solid;
 	border-color: #00806bc9;
 	padding: 5px;
 	background-color: #bac47e85;
-	width:50%;
+	width:25%;
 	margin-left: auto;
 	margin-right: auto;
 
 }
 
-/*fieldset {
+fieldset {
 	border-radius: 20px;
 	border: 2px solid;
 	border-color: #00806bc9;
@@ -146,7 +193,7 @@ form{
 	margin: auto;
 	padding: 15px;
 
-}*/
+}
 
 legend {
 	position: absolute;
@@ -172,7 +219,7 @@ input {
 	width: auto;
 	background-color: #dee6b0;
 }
-
+*/
 
 /*button {
 	padding: 0.75em;
@@ -186,7 +233,7 @@ input {
 
 }*/
 
-input:hover {
+/*input:hover {
 	background-color: #97be8b;
 }
 
@@ -200,13 +247,12 @@ select:hover {
 
 select:focus {
 	outline: 2px dashed #ff8c00;
-}
+}*/
 
 footer {
 	width: 100%;
 	margin-left: auto;
 	margin-right: auto;
-	margin-top:auto;
 	font-weight: bold;
 	color: #8b4513;
 	margin-top:5%;

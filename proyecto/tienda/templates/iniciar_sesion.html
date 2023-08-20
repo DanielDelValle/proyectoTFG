@@ -4,11 +4,13 @@
 <link rel="stylesheet" type="text/css" href="css/tarea4.css">
 {% endblock %}
 
-{% block content %}		
-<!-- indicando el block en vacio, anulo la herencia de base.html (en la pantalla login, no conviene ni es necesario que haya toolbar) -->
 {% block toolbar %}      
-
+<!-- indicando el block en vacio, anulo la herencia de base.html (en la pantalla login, no conviene ni es necesario que haya toolbar) -->
 {% endblock %}
+
+{% block content %}		
+
+
 			
 
 		 <h1>Inicio de Sesión</h1>
@@ -34,7 +36,7 @@
 					 <button type="submit" name="olvido" method="POST">Olvidé mi Contraseña</button>	 
 			 </form>
 
-	<form action="crear_cuenta" method="POST">
+	<form action="index.php/crear_cuenta" method="POST">
 		<button type="submit" name="volver" value="Volver"/>Crear Cuenta</button>
 	</form>
 

@@ -7,22 +7,17 @@
 
 
 {% block content %}	
-				
-{% block mensaje %}
-<p class='mensaje'>{{mensaje}}</p><br>
-{% endblock %}	
 
 			<table id="datos_cliente">
 			<th>Id Producto</th>
 			<th>Nombre</th>
 			<th>Cantidad</th>
-			<th>Total Peso </th>
 			<!-- pedido.o.id_pedido para acceder a la id_pedido del primer producto ( está en todos pero sólo la necesito 1 vez)-->
-			<h2>Detalles Pedido {{pedido.0.id_pedido}}</h2>   
+			<h2>Detalles Pedido Nº &nbsp&nbsp {{pedido.0.id_pedido}}</h2>   
 			{% for key, producto in pedido %}
 			<tr>	
 			<td>	{{producto.id_prod}}</td>	
-			<td>	{{producto.nombre}}</td>	
+			<td><a href="http://localhost/proyecto/tienda/index.php/detalle_producto?id={{producto.id_prod}}">{{producto.nombre}}</a></td>	
 			<td>	{{producto.cantidad}} Kilo(s)</td>	
 			</tr>
 			{% endfor %}

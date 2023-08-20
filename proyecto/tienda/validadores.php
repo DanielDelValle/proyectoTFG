@@ -13,6 +13,8 @@ function es_texto($cadena) {
     return (preg_match($patron, $cadena));	
 }
 
+
+
 /**
 * Comprueba que el teléfono tenga 9 cifras y comience por 6, 7, 8 ó 9.
 *
@@ -47,20 +49,20 @@ function valid_email($email) {
 
 
 /**
-* Comprueba que una contraseña (cadena) tenga el formato exigido: 6 caracteres incluyendo mayusc., minusc., cifras y signos especiales.
+* Comprueba que una contraseña (cadena) tenga el formato exigido: 8 caracteres incluyendo mayusc., minusc., cifras y signos especiales.
 *
 * @param string $clave Cadena que se va a comprobar.
 *
 * @return bool Retorna true si cumple con los requisitos: 6 caracteres incluyendo mayusc., minusc., cifras y signos especiales
 */
 
-function valid_clave($clave) {
+function valid_contrasena($contrasena) {
     //convertimos el texto a minúsculas
 
     //definimos el patrón
-    $patron = '/^.*(?=.{6,})(?=.*\d)(?=.*[A-Z])(?=.*[a-z]).*$/';
+    $patron = '/^.*(?=.{8,})(?=.*\d)(?=.*[A-Z])(?=.*[a-z]).*$/';
  
-    return (preg_match($patron, $clave));
+    return (preg_match($patron, $contrasena));
 }
 
 

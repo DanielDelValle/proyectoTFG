@@ -281,11 +281,9 @@ function pedidos_usuario($nif){
 
 			}*/
 			
-			$mensaje = "Se han encontrado <b>" . $resultado->rowCount() . "</b> libro(s) <br><br>"; 
-			if ($resultado->rowCount()==0) echo "No se han encontrado pedidos";
-
+			$mensaje = "Se han encontrado <b>" . $resultado->rowCount() . "</b> pedido(s) <br><br>"; 
+			if ($resultado->rowCount()==0) $mensaje = "No se han encontrado pedidos";
 			$pdo = null;  //cierro conexion para no mantener BD en espera
-
 			//c.total_pedidos, c.total_gasto SI SE LLEGAN A INCORPORAR DICHAS COLUMNAS
 		}	
 		

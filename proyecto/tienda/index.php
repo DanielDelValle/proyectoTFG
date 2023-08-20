@@ -8,9 +8,10 @@ $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $segments = explode('/', $path);
 $URI = $segments[count($segments)-1];
 
+//$URI2 = $segments[count($segments)-2];**/
 
-/**si quisiera distinguir entre misma extension "home" por ejemplo, precedida de "empleado" o "cliente" para aplicar una u otra plantilla(vista) y controlador
-$URI2 = $segments[count($segments)-2];**/
+//si quisiera distinguir entre misma extension "home" por ejemplo, seguida de "empleado" o "cliente" para aplicar una u otra plantilla(vista) y controlador
+
 
 //echo ">>>$URI<br>";  //para mostrar la URI actual
 
@@ -21,19 +22,16 @@ if ($URI == 'index.php')
 
 elseif ($URI == 'detalle_producto' && isset($_GET['id'])) 
 {
-    // Se ejecuta el controlador específico que muestra los detalles de un 
-    // articulo específico
+    // Se ejecuta el controlador específico que muestra los detalles de un articulo específico
     controlador_detalle_producto($_GET['id']); 
 }
 
 
 elseif ($URI == 'detalle_pedido' && isset($_GET['id_pedido'])) 
 {
-    // Se ejecuta el controlador específico que muestra los detalles de un 
-    // articulo específico
+    // Se ejecuta el controlador específico que muestra los detalles de un  pedido específico
     controlador_detalle_pedido($_GET['id_pedido']); 
 }
-
 
 
 elseif ($URI == 'iniciar_sesion')
@@ -41,20 +39,16 @@ elseif ($URI == 'iniciar_sesion')
 		controlador_iniciar_sesion(); 
 }
 
-
+elseif ($URI == 'crear_cuenta')
+{      
+		controlador_crear_cuenta(); 
+}
 
 
 elseif ($URI == 'home')
 {
 		controlador_home(); 
 }
-
-
-
-/**si quisiera distinguir entre misma extension "home" porejemplo, precedida de "empleado" o "cliente" para aplicar una u otra plantilla(vista) y controlador
-elseif (($URI == 'home') && ($URI2 == 'empleado.php'))
-{
-}**/
 
 
 elseif ($URI == 'mi_cuenta')
@@ -94,20 +88,15 @@ elseif ($URI == 'pedido_realizado' && isset($_GET['id_pedido']))
 }
 
 
-
-
-
 elseif ($URI == 'cerrar_sesion')
 {
 		controlador_cerrar_sesion(); 
 }
 
-
-
-elseif ($URI == 'registro') 
+elseif ($URI == 'registro_correcto') 
 {
     // Se ejecuta el controlador específico de registro
-    controlador_registro(); 
+    controlador_registro_correcto(); 
 }
 
 

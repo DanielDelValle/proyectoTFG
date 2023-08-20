@@ -78,6 +78,13 @@ a{
 	display: flex;
 }
 
+.info{
+	font-size:15;
+	color:red;
+
+
+}
+
 .sidemenu ul{
     list-style: none;
     padding: 5px;

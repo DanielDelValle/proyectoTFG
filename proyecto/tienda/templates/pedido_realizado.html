@@ -6,13 +6,11 @@
 
 
 {% block content %}
-{% block mensaje %}
-<p class='mensaje'>{{mensaje}}</p><br>
-{% endblock %}
+
 
 <form method="POST" action="" autocomplete>
 
-    <h3 class='titulo'>PEDIDO Nº {{id_pedido}} REALIZADO CON ÉXITO</h3>
+    <h3 class='titulo'>Pedido Nº &nbsp&nbsp <u><a href="http://localhost/proyecto/tienda/index.php/detalle_pedido?id_pedido={{id_pedido}}"></a>{{id_pedido}} </u>  &nbsp&nbsp realizado con éxito</h3>
     <div>
         <table id="datos_cliente">
             <tr>
@@ -71,6 +69,8 @@
             <!--   el botón "Cerrar Sesion" da la orden de borrar datos de sesión y elimina cookie-->
 
             <button type="submit" name="ver_productos" method="POST">Ver Productos</button>
+            
+            <button type="submit" name="mis_pedidos" method="POST">Ver Mis Pedidos</button>
 
             <button type="submit" name="volver_home" method="POST">Volver a mi Cuenta</button>
 

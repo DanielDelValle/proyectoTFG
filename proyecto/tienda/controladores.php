@@ -306,7 +306,7 @@ function controlador_confirmar_pedido(){
             //si ambas operaciones insert retornan TRUE
           if(insert_pedido($id_pedido, $cliente->nif, $total_precio, $total_kg, $forma_pago, $notas) && (insert_productos_pedido($id_pedido, $cesta))){
 
-            exit(header("location:pedido_realizado?id_pedido=pedido.$id_pedido"));
+            exit(header("location:pedido_realizado?id_pedido=$id_pedido"));
           } else $mensaje= "Error al grabar el pedido - por favor, repita el proceso de nuevo";
               
 
@@ -336,6 +336,10 @@ function controlador_pedido_realizado($id_pedido){
     // unset($_SESSION['cesta']);     // DESCOMENTAR CUANDO YA NO NECESITE HACER PRUEBAS  //eliminamos cesta pues ya se ha transformado en pedido
     if(isset($_POST["ver_productos"])){
         exit(header("location:index.php"));
+    }
+
+    if(isset($_POST["mis_pedidos"])){
+        exit(header("location:mis_pedidos"));
     }
 
     if(isset($_POST["volver_home"])){
@@ -558,46 +562,109 @@ function controlador_busqueda()
 	echo $template->render(array ( 'resultado' => $resultado));
 }
 
-function controlador_registro()
-{
-	require 'validadores.php';
-	
-    $formulario = array(
-        array('Nombre: ', 'text', 'nombre', ''),
-        array('Apellidos: ', 'text', 'apellidos', ''),
-        array('Direccion: ', 'text', 'direccion', ''),
-        array('Email: ', 'email', 'email', ''),
-        array('Contraseña: ', 'password', 'contrasena', ''),
-        array('', 'submit', 'registrar', 'Registrarme')
-    );
-    if(isset($_POST['registrar']))
-    {
-        if( es_texto($_POST['nombre']) && es_texto($_POST['apellidos']) &&                  
-            es_texto($_POST['direccion']) && es_email($_POST['email']) && 
-            es_texto($_POST['contrasena']))
-        {
-            //Envío de datos al modelo y redirección
-            registrar($_POST['nombre'], $_POST['apellidos'], 
-                      $_POST['direccion'], $_POST['email'], 
-                      $_POST['contrasena']);
-			
-			global $twig;
-			$template = $twig->load('registro_correcto.twig');
-			echo $template->render();	
-        }
-		else 
-		{
-			global $twig;
-			$template = $twig->load('registro_no_correcto.twig');
-			echo $template->render();	
-		}
-    }
-	else
-    {
-		global $twig;
-		$template = $twig->load('registro.twig');
-		echo $template->render(array ('formulario' => $formulario));	
-	}
 
+function controlador_crear_cuenta()
+{   $URI = get_URI();
+
+    $validaciones = array('nif'=> '', 'nombre'=> '', 'apellido'=>'', 'telefono'=>'', 'email'=>'', 'direccion'=>'',
+                        'localidad'=>'','cod_postal'=>'', 'provincia'=>'','contrasena'=>'');
+             
+    $datos = [];
+    
+    foreach($_POST as $key => $value){
+        if(!isset($datos[$key])){
+            $datos[$key] = htmlspecialchars($value);
+        }
+    }
+
+    $validaciones= (object) $validaciones; //CONVIERTO A OBJETOS PARA MAYOR FACILIDAD DE USO EN LA PLANTILLA TWIG
+    $datos = (object)$datos;
+
+    /*$datos->nif = isset($_POST['nif']) ? $_POST['nif']:'';
+    $datos->nombre = isset($_POST['nombre']) ? $_POST['nombre']:''; 
+    $datos->apellidos = isset($_POST['apellidos'])? $_POST['apellidos']:''; 
+    $datos->telefono = isset($_POST['telefono'])? $_POST['telefono']:''; 
+    $datos->email= isset($_POST['email'])? $_POST['email']:''; 
+    $datos->direccion = isset($_POST['direccion'])? $_POST['direccion']:'';
+    $datos->localidad = isset($_POST['localidad'])? $_POST['localidad']:''; 
+    $datos->cod_postal = isset($_POST['cod_postal'])? $_POST['cod_postal']:''; 
+    $datos->provincia = isset($_POST['provincia'])? $_POST['provincia']:''; 
+    $datos->contrasena = isset($_POST['contrasena'])? $_POST['contrasena']:'';*/
+     
+    if(isset($_POST['crear_cuenta'])){   
+
+        if(//valid_nif($_POST['nif']) && 
+        (es_texto($_POST['nombre'])) && (es_texto($_POST['apellidos'])) && 
+        (!empty($_POST['direccion'])) && (es_texto($_POST['localidad'])) &&(!empty($_POST['cod_postal'])) &&
+        (es_texto($_POST['provincia'])) && (valid_tel($_POST['telefono'])) && (valid_email($_POST['email'])) && 
+        (valid_contrasena($_POST['contrasena'])) && ($_POST['contrasena'] === $_POST['rep_contrasena'])) {
+
+                 /*   crear_cuenta($_POST['nif'], $_POST['nombre'], $_POST['apellidos'], 
+                                 $_POST['email'], $_POST['telefono'], $_POST['direccion'], $_POST['localidad'], $_POST['cod_postal'], $_POST['provincia'],
+                                 $_POST['contrasena']);    NO OLVIDAR EN MODELO, CREAR TODAS LAS COLUMNAS INCLUIDO LAS NULL POR DAFECTO (DATE, ETC)*/     
+ 
+        exit(header('location:registro_correcto'));        
+        }       
+        else{  //reviso los posibles errores de 1 en 1, para poder modificar su validacion individualmente (ya que pueden darse varios fallos simultaneos)
+            //PENDIENTE VALIDADOR DE NIF
+      /*      if (!es_texto($datos->nif)){
+                $validaciones->val_nif = "ERROR en NIF - Debe incluir 8 cifras + 1 letra, sin espacios";
+            }*/
+
+            if (!es_texto($datos->nombre)){
+                $validaciones->val_nom = "ERROR en NOMBRE - Sólo puede incluir caracteres del alfabeto";
+            }
+            if (!es_texto($datos->apellidos)){
+                $validaciones->val_ape="ERROR en APELLIDOS - Sólo puede incluir caracteres del alfabeto";
+            }
+            if (!valid_tel($datos->telefono)){
+                $validaciones->val_tel ="ERROR en TELEFONO - Debe tener una longitud de 9 cifras, sin prefijo internacional ni separaciones";
+            }
+            //PENDIENTE VALIDADOR DE cod_postal
+      /*      if (!valid_cod_postal($datos->cod_postal)){
+                $validaciones->val_cod="ERROR en CÓDIGO POSTAL - Debe tener una longitud de 5 cifras";
+            }*/
+
+          /*if (!valid_prov($datos['provincia'])){
+                $validaciones->$val_prov="ERROR en PROVINCIA - Debe seleccionar una del menú desplegable";
+            }*/
+
+            if (!valid_email($datos->email)){
+                $validaciones->val_email="ERROR en EMAIL - Debe incluir una dirección de mail válida";
+            }
+
+            if (!valid_contrasena($datos->contrasena)){
+                $validaciones->val_contrasena ="ERROR en CONTRASEÑA- Debe tener al menos 8 caracteres, incluyendo mayúsculas, minúsculas, cifras y signos especiales.";
+            }
+            if($_POST['contrasena'] != $_POST['rep_contrasena']){
+                $validaciones->val_contrasena ="Las contraseñas no coinciden - por favor, revíselo";
+            }
+
+        }
+   
+    }
+
+    if(isset($_POST['volver_productos'])){  exit(header('location:index.php'));}
+
+    var_dump($datos);
+    global $twig;
+    $template = $twig->load('crear_cuenta.html');
+    echo $template->render(array ('URI'=>$URI, 'validaciones'=>$validaciones, 'datos'=>$datos));	
+}
+
+
+function controlador_registro_correcto(){
+
+    global $twig;
+    $template = $twig->load('registro_correcto.html');
+    echo $template->render(array ());               //obligatorio incluso aunque esté vacío.
     
 }
+
+
+
+
+        
+    
+ 
+    
