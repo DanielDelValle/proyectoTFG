@@ -176,20 +176,26 @@ function detalle_producto($id)
 			
 		
 }
-function insert_cliente($nif, $nombre, $apellidos, $email, $telefono, $cod_postal, $provincia, $contrasena, $creado_fecha){
+function insert_cliente($nif, $nombre, $apellidos, $email, $telefono, $direccion, $localidad, $cod_postal, $provincia, $contrasena, $creado_fecha){
 
 	$pdo = conexion();
 	if($pdo){
-		try{
+		try{//normalizo datos a minisculas para homogeneizar posibles errores al insertar datos.
+		/*	$nif = strtolower($nif); $nombre = strtolower($nombre); $apellidos = strtolower($apellidos); $direccion = strtolower($direccion);
+			$localidad = strtolower($localidad); $provincia = strtolower($provincia);*/
+			$email = strtolower($email);
+			$telefono = intval($telefono);
+			$cod_postal = intval($cod_postal);
 
-			$sql = "INSERT INTO cliente(nif, nombre, apellidos, email, telefono, direccion, localidad, cod_postal, provincia, contrasena) 
-						VALUES ('".$nif."', '".$nombre."', '".$apellidos."', '".$email."', '".$telefono."', '".$cod_postal."', '".$provincia."', '".$contrasena."', '".$creado_fecha."');";
+			$hash_passwd = password_hash($contrasena, PASSWORD_ARGON2ID);
+			$sql = "INSERT INTO cliente(nif, nombre, apellidos, email, telefono, direccion, localidad, cod_postal, provincia, contrasena, creado_fecha) 
+						VALUES ('".$nif."', '".$nombre."', '".$apellidos."', '".$email."', '".$telefono."', '".$direccion."', '".$localidad."', '".$cod_postal."', '".$provincia."', '".$hash_passwd."', '".$creado_fecha."');";
 
 
 		$insertarCliente = $pdo->query($sql);
 		//return 	$insertarPedido->rowCount();
 		if($insertarCliente) return $insertarCliente->rowCount();
-		else echo 'ERROR AL INSERTAR CLIENTE';
+		else {echo 'ERROR AL INSERTAR CLIENTE'; return null;}
 		}	
 	
 	catch(PDOException $e){
@@ -203,16 +209,15 @@ function insert_cliente($nif, $nombre, $apellidos, $email, $telefono, $cod_posta
 
 function datos_cliente($email)
 {	
-	$email = isset($_SESSION['usuario']) ? $_SESSION['usuario'] : "";
 		$pdo = conexion();
 		if($pdo){
 			try{
 			//La búsqueda se realiza en mysql con el comando LIKE
-			$sql = "SELECT c.nif, c.nombre, c.apellidos, c.email, c.telefono, c.direccion, c.localidad, c.cod_postal, c.provincia, c.creado_fecha, c.estado_cuenta
+			$sql = "SELECT c.nif, c.nombre, c.apellidos, c.email, c.telefono, c.direccion, c.localidad, c.cod_postal, c.provincia, c.contrasena, c.creado_fecha, c.estado_cuenta
 					FROM cliente c WHERE email ='$email'";		
 			$lectura = $pdo->query($sql);
 			$cliente= $lectura->fetchObject();
-
+			return $cliente;
 			//c.total_pedidos, c.total_gasto SI SE LLEGAN A INCORPORAR DICHAS COLUMNAS
 		}	
 		
@@ -220,9 +225,9 @@ function datos_cliente($email)
 			echo 'Excepción: ', $e->getMessage();
 			return null;
 		  }
-		}  	$pdo = null;
-		
-	return $cliente;
+		}  	
+		$pdo = null;
+	
 }		
 
 function insert_productos_pedido($id_pedido, $cesta){

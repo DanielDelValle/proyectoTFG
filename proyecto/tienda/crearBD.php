@@ -43,7 +43,7 @@
                 localidad VARCHAR(50),
                 cod_postal INTEGER(5),
                 provincia VARCHAR(25),
-                contrasena VARCHAR(30),
+                contrasena VARCHAR(255),
                 creado_fecha DATETIME,
                 estado_cuenta ENUM ('activo', 'inactivo', 'pendiente', 'bloqueado') DEFAULT 'activo'
                
@@ -101,7 +101,7 @@
                         ('Fresón de Palos', 5.50, 20.0, 'Caja de 2Kg de fresón de Palos de la Frontera'),
                         ('Plátano de Canarias', 2.19, 50.5, 'El auténtico plátano de Canarias'),
                         ('Aguacate Nacional', 4.50, 30.0, 'Aguacate cultivado en la Axarquía (España)'),
-                        ('Limón', 1.99, 20, 'Limón nacional procedente de cultivo sostenible'),
+                        ('Limón', 1.99, 20.0, 'Limón nacional procedente de cultivo sostenible'),
                         ('Tomate Cherry', 1.99, 15.0, 'Envase de 1Kg de tomate cherry'),
                         ('Tomate Pera', 2.25, 35.5, 'Tomate pera de origen canario, perfecto para salsas, gazpacho, sofritos y todo tipo de preparados.'),
                         ('Tomate RAF', 3.09, 15.0, 'Tomate RAF de calidad, máximo sabor, perfecto para ensaladas.'),

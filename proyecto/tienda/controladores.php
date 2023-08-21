@@ -295,7 +295,7 @@ function controlador_confirmar_pedido(){
     }
         if(isset($_POST["confirmar_pedido"]) && ($forma_pago !='')){
 
-            $creado_fecha = date_create()->format('Y-m-d H:i:s'); //hora y fecha actuales
+            $creado_fecha = date('Y-m-d H:i:s'); //hora y fecha actuales
             $fecha = date('dm_his');
             //El ID_PEDIDO contiene información relevante: el COD_POSTAL para facilitar agrupación de pedidos en almacén y transporte eficiente.
                                                         // el NIF para agrupar pedidos por empresa o titular 
@@ -330,8 +330,8 @@ function controlador_pedido_realizado($id_pedido){
     $id_pedido= $_GET['id_pedido'];
     $nif = $cliente->nif;
     $mensaje="";
-    //$total_precio = $_SESSION['total_precio'];
-    //$total_kg = $_SESSION['total_kg'];
+    $total_precio = $_SESSION['total_precio'];
+    $total_kg = $_SESSION['total_kg'];
     $total_prods = $_SESSION['total_prods'];
     // unset($_SESSION['cesta']);     // DESCOMENTAR CUANDO YA NO NECESITE HACER PRUEBAS  //eliminamos cesta pues ya se ha transformado en pedido
     if(isset($_POST["ver_productos"])){
@@ -352,7 +352,7 @@ function controlador_pedido_realizado($id_pedido){
 
     global $twig;
     $template = $twig->load('pedido_realizado.html');
-	echo $template->render(array ('URI'=>$URI, 'usuario' =>$usuario, 'nif'=>$nif,'cliente'=>$cliente, 'cesta' => $cesta, 'id_pedido'=> $id_pedido, 'mensaje' => $mensaje, 'total_prods'=>$total_prods));
+	echo $template->render(array ('URI'=>$URI, 'usuario' =>$usuario, 'nif'=>$nif,'cliente'=>$cliente, 'cesta' => $cesta, 'id_pedido'=> $id_pedido, 'mensaje' => $mensaje, 'total_prods'=>$total_prods, 'total_precio'=>$total_precio, 'total_kg'=>$total_kg));
 
 }
 
@@ -370,7 +370,6 @@ function controlador_detalle_pedido($id_pedido)
     
     $mensaje = "";
 
-    var_dump($pedido);
     global $twig;
     $template = $twig->load('detalle_pedido.html');  
 	echo $template->render(array ('URI'=>$URI, 'pedido' => $pedido, 'total_prods'=>$total_prods, 'mensaje'=> $mensaje));
@@ -414,22 +413,23 @@ function controlador_iniciar_sesion(){
     $URI = get_URI();
     if (isset($_POST["entrar"])) {
         //Procesar formulario
-        //Obtener contraseña codificada de bd, por ejemplo:
-        $user = "danimolar@hotmail.com";
-        $pass = crypt('daniel', '$1$somethin$');
-        //&pass = md5('daniel')
         $mensaje = "";
         //Comprobar que el nombre y contrasena no están vacíos
-        if (isset($_POST["usuario"])) $usuario = $_POST["usuario"];
+        if (isset($_POST["usuario"])) $usuario = htmlspecialchars($_POST["usuario"]);
         else $usuario = "";
     
         if (isset($_POST["contrasena"])) $contrasena = $_POST["contrasena"];
         else $contrasena = "";
     
         if ($usuario != "" && $contrasena != "") {
+            $user = $usuario;
+            $cliente = datos_cliente($user);
+            $pass = $cliente->contrasena;
+
             //Comprobar credenciales
             //if ($usuario == "admin" && md5($contrasena) == $pass)
-            if (($usuario == $user) && (crypt($contrasena, '$1$somethin$')) == $pass ) {  //&& $estado== 'activo'
+           // if (($usuario == $user) && (crypt($contrasena, '$1$somethin$')) == $pass ) {  //&& $estado== 'activo'
+            if (($usuario == $user)  && (password_verify($contrasena, $pass))){
                 //Login correcto
                 //Establecer sesion autentificada
                 $_SESSION["usuario"] = $usuario;    
@@ -486,13 +486,7 @@ function controlador_mis_datos()   /// PENDIENTE REASIGNAR A OTRA VISTA, OBSOLET
     $template = $twig->load('mis_datos.html');
 	echo $template->render(array ('URI'=>$URI, 'productos' => $productos, 'usuario' =>$usuario, 'cliente'=> $cliente, 'total_prods'=>$total_prods));
 
-
-
 }
-
-
-
-
 
 
 function controlador_mi_cuenta()
@@ -515,12 +509,7 @@ function controlador_mi_cuenta()
     $template = $twig->load('mi_cuenta.html');
 	echo $template->render(array ('URI'=>$URI, 'usuario' =>$usuario, 'cliente'=>$cliente, 'total_prods'=>$total_prods));
 
-
-
 }
-
-
-
 
 
 function controlador_cerrar_sesion()
@@ -551,10 +540,8 @@ function controlador_crear_cuenta()
         }
     }
 
-    $validaciones= (object) $validaciones; //CONVIERTO A OBJETOS PARA MAYOR FACILIDAD DE USO EN LA PLANTILLA TWIG
-    $datos = (object)$datos;
-
-    /*$datos->nif = isset($_POST['nif']) ? $_POST['nif']:'';
+    /*EL BUCLE FOREACH ANTERIOR, SUSTITUYE A TODO EL CODIGO SIGUIENTE:
+    $datos->nif = isset($_POST['nif']) ? $_POST['nif']:'';
     $datos->nombre = isset($_POST['nombre']) ? $_POST['nombre']:''; 
     $datos->apellidos = isset($_POST['apellidos'])? $_POST['apellidos']:''; 
     $datos->telefono = isset($_POST['telefono'])? $_POST['telefono']:''; 
@@ -564,6 +551,11 @@ function controlador_crear_cuenta()
     $datos->cod_postal = isset($_POST['cod_postal'])? $_POST['cod_postal']:''; 
     $datos->provincia = isset($_POST['provincia'])? $_POST['provincia']:''; 
     $datos->contrasena = isset($_POST['contrasena'])? $_POST['contrasena']:'';*/
+
+    $validaciones= (object) $validaciones; //CONVIERTO A OBJETOS PARA MAYOR FACILIDAD DE USO EN LA PLANTILLA TWIG
+    $datos = (object)$datos;
+
+
      
     if(isset($_POST['crear_cuenta'])){   
 
@@ -571,15 +563,18 @@ function controlador_crear_cuenta()
         (es_texto($_POST['nombre'])) && (es_texto($_POST['apellidos'])) && 
         (!empty($_POST['direccion'])) && (es_texto($_POST['localidad'])) &&(!empty($_POST['cod_postal'])) &&
         (es_texto($_POST['provincia'])) && (valid_tel($_POST['telefono'])) && (valid_email($_POST['email'])) && 
-        (valid_contrasena($_POST['contrasena'])) && ($_POST['contrasena'] === $_POST['rep_contrasena'])) {
-            $creado_fecha = date_create()->format('Y-m-d H:i:s');
+        (valid_contrasena($_POST['contrasena'])) && ($_POST['contrasena'] === $_POST['rep_contrasena'])) 
+            {
+            $creado_fecha = date('Y-m-d H:i:s');
+            echo $creado_fecha;
+            $mensaje = insert_cliente($_POST['nif'], $_POST['nombre'], $_POST['apellidos'], 
+            $_POST['email'], $_POST['telefono'], $_POST['direccion'], $_POST['localidad'], $_POST['cod_postal'], $_POST['provincia'],
+            $_POST['contrasena'], $creado_fecha); 
+            if ($mensaje != null) { echo $mensaje; exit(header('location:registro_correcto')); }     
+                
+            else $mensaje= "Error al grabar el pedido - por favor, repita el proceso de nuevo";
+        }
 
-                 /*   crear_cuenta($_POST['nif'], $_POST['nombre'], $_POST['apellidos'], 
-                                 $_POST['email'], $_POST['telefono'], $_POST['direccion'], $_POST['localidad'], $_POST['cod_postal'], $_POST['provincia'],
-                                 $_POST['contrasena']);    NO OLVIDAR EN MODELO, CREAR TODAS LAS COLUMNAS INCLUIDO LAS NULL POR DAFECTO (DATE, ETC)*/     
- 
-        exit(header('location:registro_correcto'));        
-        }       
         else{  //reviso los posibles errores de 1 en 1, para poder modificar su validacion individualmente (ya que pueden darse varios fallos simultaneos)
             //PENDIENTE VALIDADOR DE NIF
       /*      if (!es_texto($datos->nif)){
@@ -624,7 +619,7 @@ function controlador_crear_cuenta()
     var_dump($datos);
     global $twig;
     $template = $twig->load('crear_cuenta.html');
-    echo $template->render(array ('URI'=>$URI, 'validaciones'=>$validaciones, 'datos'=>$datos));	
+    echo $template->render(array ('URI'=>$URI, 'validaciones'=>$validaciones, 'datos'=>$datos, 'mensaje'=>$mensaje));	
 }
 
 
