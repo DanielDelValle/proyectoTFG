@@ -134,7 +134,6 @@ function lista_productos()
 		$pdo = conexion();
 		if($pdo){
 			try{
-			//La búsqueda se realiza en mysql con el comando LIKE
 			$sql = ("SELECT * FROM producto");		
 			$lectura = $pdo->query($sql);
 			$lista_productos= $lectura->fetchAll(PDO::FETCH_OBJ);
@@ -161,7 +160,6 @@ function detalle_producto($id)
 		$pdo = conexion();
 		if($pdo){
 			try{
-			//La búsqueda se realiza en mysql con el comando LIKE
 			$sql = "SELECT p.id_prod, p.nombre, p.precio, p.stock, p.descripcion FROM producto p WHERE id_prod ='$id'";		
 			$lectura = $pdo->query($sql);
 			$producto= $lectura->fetchObject();
@@ -178,7 +176,30 @@ function detalle_producto($id)
 			
 		
 }
+function insert_cliente($nif, $nombre, $apellidos, $email, $telefono, $cod_postal, $provincia, $contrasena, $creado_fecha){
 
+	$pdo = conexion();
+	if($pdo){
+		try{
+
+			$sql = "INSERT INTO cliente(nif, nombre, apellidos, email, telefono, direccion, localidad, cod_postal, provincia, contrasena) 
+						VALUES ('".$nif."', '".$nombre."', '".$apellidos."', '".$email."', '".$telefono."', '".$cod_postal."', '".$provincia."', '".$contrasena."', '".$creado_fecha."');";
+
+
+		$insertarCliente = $pdo->query($sql);
+		//return 	$insertarPedido->rowCount();
+		if($insertarCliente) return $insertarCliente->rowCount();
+		else echo 'ERROR AL INSERTAR CLIENTE';
+		}	
+	
+	catch(PDOException $e){
+		echo 'Excepción: ', $e->getMessage();
+		return null;
+		}
+
+	}  $pdo = null;
+
+}
 
 function datos_cliente($email)
 {	
@@ -191,7 +212,7 @@ function datos_cliente($email)
 					FROM cliente c WHERE email ='$email'";		
 			$lectura = $pdo->query($sql);
 			$cliente= $lectura->fetchObject();
-			$pdo = null;
+
 			//c.total_pedidos, c.total_gasto SI SE LLEGAN A INCORPORAR DICHAS COLUMNAS
 		}	
 		
@@ -199,7 +220,7 @@ function datos_cliente($email)
 			echo 'Excepción: ', $e->getMessage();
 			return null;
 		  }
-		}  
+		}  	$pdo = null;
 		
 	return $cliente;
 }		
@@ -236,14 +257,15 @@ function insert_productos_pedido($id_pedido, $cesta){
 		
 }
 
-function insert_pedido($id_pedido, $nif, $total_precio, $total_kg, $forma_pago, $notas){
+
+function insert_pedido($id_pedido, $nif, $total_precio, $total_kg, $forma_pago, $creado_fecha, $notas){
 
 	$pdo = conexion();
 	if($pdo){
 		try{
 
-			$sql = "INSERT INTO pedido(id_pedido, nif_cliente, total_precio, total_kg, forma_pago, enviado_fecha, entregado_fecha, notas) 
-						VALUES ('".$id_pedido."', '".$nif."', '".$total_precio."', '".$total_kg."', '".$forma_pago."', NULL, NULL, '".$notas."');";
+			$sql = "INSERT INTO pedido(id_pedido, nif_cliente, total_precio, total_kg, forma_pago, creado_fecha, enviado_fecha, entregado_fecha, notas) 
+						VALUES ('".$id_pedido."', '".$nif."', '".$total_precio."', '".$total_kg."', '".$forma_pago."', '".$creado_fecha."', NULL, NULL, '".$notas."');";
 
 
 		$insertarPedido = $pdo->query($sql);
@@ -277,8 +299,6 @@ function pedidos_usuario($nif){
 			$pedidosArray = $resultado->fetchAll(PDO::FETCH_OBJ);
 
 		/*	foreach($pedidosArray as $i => $pedido) {   
-
-
 			}*/
 			
 			$mensaje = "Se han encontrado <b>" . $resultado->rowCount() . "</b> pedido(s) <br><br>"; 

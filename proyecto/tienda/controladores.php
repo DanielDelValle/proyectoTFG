@@ -295,7 +295,7 @@ function controlador_confirmar_pedido(){
     }
         if(isset($_POST["confirmar_pedido"]) && ($forma_pago !='')){
 
-
+            $creado_fecha = date_create()->format('Y-m-d H:i:s'); //hora y fecha actuales
             $fecha = date('dm_his');
             //El ID_PEDIDO contiene información relevante: el COD_POSTAL para facilitar agrupación de pedidos en almacén y transporte eficiente.
                                                         // el NIF para agrupar pedidos por empresa o titular 
@@ -304,7 +304,7 @@ function controlador_confirmar_pedido(){
             $id_pedido = $cliente->cod_postal."-".$cliente->nif."-".($fecha); 
             $notas = $_POST['notas'];
             //si ambas operaciones insert retornan TRUE
-          if(insert_pedido($id_pedido, $cliente->nif, $total_precio, $total_kg, $forma_pago, $notas) && (insert_productos_pedido($id_pedido, $cesta))){
+          if(insert_pedido($id_pedido, $cliente->nif, $total_precio, $total_kg, $forma_pago, $creado_fecha, $notas) && (insert_productos_pedido($id_pedido, $cesta))){
 
             exit(header("location:pedido_realizado?id_pedido=$id_pedido"));
           } else $mensaje= "Error al grabar el pedido - por favor, repita el proceso de nuevo";
@@ -537,32 +537,6 @@ function controlador_cerrar_sesion()
 }
 
 
-function controlador_contacto()
-{
-    // Carga la plantilla que se mostrará al usuario con los datos recuperados del modelo
-	global $twig;
-    // Carga la plantilla que se mostrará al usuario con los datos recuperados 
-    // del modelo
-
-    $template = $twig->load('contacto.html');
-	echo $template->render(array ( 'productos' => $productos));
-}
-
-
-function controlador_busqueda()
-{
-    // Petición al modelo para que retorne la lista de productos de la BD
-    $resultado = buscar_producto();
-    // Carga la plantilla que se mostrará al usuario con los datos recuperados del modelo
-	global $twig;
-    // Carga la plantilla que se mostrará al usuario con los datos recuperados 
-    // del modelo
-
-    $template = $twig->load('busqueda.html');
-	echo $template->render(array ( 'resultado' => $resultado));
-}
-
-
 function controlador_crear_cuenta()
 {   $URI = get_URI();
 
@@ -598,6 +572,7 @@ function controlador_crear_cuenta()
         (!empty($_POST['direccion'])) && (es_texto($_POST['localidad'])) &&(!empty($_POST['cod_postal'])) &&
         (es_texto($_POST['provincia'])) && (valid_tel($_POST['telefono'])) && (valid_email($_POST['email'])) && 
         (valid_contrasena($_POST['contrasena'])) && ($_POST['contrasena'] === $_POST['rep_contrasena'])) {
+            $creado_fecha = date_create()->format('Y-m-d H:i:s');
 
                  /*   crear_cuenta($_POST['nif'], $_POST['nombre'], $_POST['apellidos'], 
                                  $_POST['email'], $_POST['telefono'], $_POST['direccion'], $_POST['localidad'], $_POST['cod_postal'], $_POST['provincia'],
@@ -660,7 +635,30 @@ function controlador_registro_correcto(){
     echo $template->render(array ());               //obligatorio incluso aunque esté vacío.
     
 }
+function controlador_contacto()
+{
+    // Carga la plantilla que se mostrará al usuario con los datos recuperados del modelo
+	global $twig;
+    // Carga la plantilla que se mostrará al usuario con los datos recuperados 
+    // del modelo
 
+    $template = $twig->load('contacto.html');
+	echo $template->render(array ( 'productos' => $productos));
+}
+
+
+function controlador_busqueda()
+{
+    // Petición al modelo para que retorne la lista de productos de la BD
+    $resultado = buscar_producto();
+    // Carga la plantilla que se mostrará al usuario con los datos recuperados del modelo
+	global $twig;
+    // Carga la plantilla que se mostrará al usuario con los datos recuperados 
+    // del modelo
+
+    $template = $twig->load('busqueda.html');
+	echo $template->render(array ( 'resultado' => $resultado));
+}
 
 
 

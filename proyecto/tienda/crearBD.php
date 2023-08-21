@@ -43,7 +43,8 @@
                 localidad VARCHAR(50),
                 cod_postal INTEGER(5),
                 provincia VARCHAR(25),
-                creado_fecha DATETIME DEFAULT NOW(),
+                contrasena VARCHAR(30),
+                creado_fecha DATETIME,
                 estado_cuenta ENUM ('activo', 'inactivo', 'pendiente', 'bloqueado') DEFAULT 'activo'
                
                 )";
@@ -64,7 +65,7 @@
                 forma_pago ENUM ('bizum', 'transferencia bancaria'),
                 estado_pago ENUM ('pendiente', 'recibido', 'devuelto') DEFAULT 'pendiente',
                 estado_pedido ENUM ('procesando', 'enviado', 'recibido') DEFAULT 'procesando',
-                creado_fecha DATETIME DEFAULT NOW(),
+                creado_fecha DATETIME,
                 enviado_fecha DATETIME DEFAULT NULL,
                 entregado_fecha DATETIME DEFAULT NULL,
                 notas VARCHAR (500)
@@ -115,8 +116,8 @@
                                     
             
             //Insertar datos iniciales tabla CLIENTE
-            $sql6 = "INSERT INTO cliente (nif, nombre, apellidos, email, telefono, direccion, localidad, cod_postal, provincia)
-                        VALUES('53665340S', 'Daniel', 'Del Valle Gonzalez', 'danimolar@hotmail.com', 657056073, 'Avenida Colmenar Viejo', 'San Sebastián de los Reyes', 28701, 'Madrid')";
+            $sql6 = "INSERT INTO cliente (nif, nombre, apellidos, email, telefono, direccion, localidad, cod_postal, provincia, contrasena, creado_fecha)
+                        VALUES('53665340S', 'Daniel', 'Del Valle Gonzalez', 'danimolar@hotmail.com', 657056073, 'Avenida Colmenar Viejo', 'San Sebastián de los Reyes', 28701, 'Madrid', 'Marico', '2023-08-21 02:55:00' )";
 
             if($bd->query($sql6)){
             echo "Datos insertados con éxito en tabla CLIENTE<br>";
@@ -125,8 +126,8 @@
 
 
             //Insertar datos iniciales tabla PEDIDO (los 2 valores NULL corresponden a los datetime que quiero esten vacios por defecto)
-            $sql7= "INSERT INTO pedido (id_pedido, nif_cliente, total_precio, total_kg, forma_pago, enviado_fecha, entregado_fecha, notas)
-                    VALUES('ajkp', '53665340S', 355.68, 3.0, 'bizum', NULL, NULL, 'Entregar antes del lunes 30/07'                        
+            $sql7= "INSERT INTO pedido (id_pedido, nif_cliente, total_precio, total_kg, forma_pago, creado_fecha, enviado_fecha, entregado_fecha, notas)
+                    VALUES('ajkp', '53665340S', 355.68, 3.0, 'bizum', '2023-08-21 02:55:00' ,NULL, NULL, 'Entregar antes del lunes 30/07'                        
             
             )";
 

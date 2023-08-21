@@ -15,7 +15,7 @@
         {% for key, producto in cesta %}
         <tr>
         <td><input type="checkbox" name="productos_borrar[]" class="checkbox"  value= {{producto.id_prod}}>
-            <a href="http://localhost/proyecto/tienda/index.php/detalle_producto?id={{producto.id_prod}}">{{producto.nombre}}</a></td><td>{{producto.id}}</td><td>{{producto.cantidad}}</td><td>{{producto.precio}}</td><td>{{ producto.cantidad * producto.precio}}€</td>
+            <a href="http://localhost/proyecto/tienda/index.php/detalle_producto?id={{producto.id_prod}}">{{producto.nombre}}</a></td><td>{{producto.id_prod}}</td><td>{{producto.cantidad}}</td><td>{{producto.precio}}</td><td>{{ producto.cantidad * producto.precio}}€</td>
         <td></td>
         </tr>
 
