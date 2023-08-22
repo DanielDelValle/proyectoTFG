@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "base_empl.html" %}
 
 {% block stylesheets %}
 <link rel="stylesheet" type="text/css" href="css/tarea7.css">
@@ -13,7 +13,7 @@
         <legend>Busqueda</legend>
 
         <label for="cliente">Cliente</label>
-        <input type="text" name="nif" id="nif" value= {{nif}}  >
+        <input type="text" name="nif" id="nif" value="{{nif}}" >
 
         <label for="creado_fecha">Fecha Creación</label>
         <input type="text" name="creado_fecha" id="creado_fecha" value= {{creado_fecha}}  ><br>

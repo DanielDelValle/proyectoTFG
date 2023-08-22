@@ -165,6 +165,37 @@ function get_sugerencias_ajax($busqueda){
 			
 	}
 
+	function lista_pedidos(){
+
+		$pdo = conexion();
+		if($pdo){
+			try{
+			$sql = "SELECT *
+					FROM pedido
+					ORDER BY creado_fecha DESC";
+	
+	
+			$resultado = $pdo->query($sql);
+			$pedidosArray = $resultado->fetchAll(PDO::FETCH_OBJ);
+	
+		/*	foreach($pedidosArray as $i => $pedido) {   
+			}*/
+			
+			$mensaje = "Se han encontrado <b>" . $resultado->rowCount() . "</b> pedido(s) <br><br>"; 
+			if ($resultado->rowCount()==0) $mensaje = "No se han encontrado pedidos";
+			$pdo = null;  //cierro conexion para no mantener BD en espera
+			//c.total_pedidos, c.total_gasto SI SE LLEGAN A INCORPORAR DICHAS COLUMNAS
+		}	
+		
+		catch(PDOException $e){
+			echo 'Excepción: ', $e->getMessage();
+			return null;
+		  }
+		}  
+		
+	return $pedidosArray;
+	}
+
 	
 
 function lista_productos()
@@ -470,36 +501,7 @@ function insert_pedido($id_pedido, $nif, $total_precio, $total_kg, $forma_pago, 
 	}  
 	$pdo=null;
 }
-function lista_pedidos(){
 
-	$pdo = conexion();
-	if($pdo){
-		try{
-		$sql = "SELECT *
-				FROM pedido
-				ORDER BY creado_fecha DESC";
-
-
-		$resultado = $pdo->query($sql);
-		$pedidosArray = $resultado->fetchAll(PDO::FETCH_OBJ);
-
-	/*	foreach($pedidosArray as $i => $pedido) {   
-		}*/
-		
-		$mensaje = "Se han encontrado <b>" . $resultado->rowCount() . "</b> pedido(s) <br><br>"; 
-		if ($resultado->rowCount()==0) $mensaje = "No se han encontrado pedidos";
-		$pdo = null;  //cierro conexion para no mantener BD en espera
-		//c.total_pedidos, c.total_gasto SI SE LLEGAN A INCORPORAR DICHAS COLUMNAS
-	}	
-	
-	catch(PDOException $e){
-		echo 'Excepción: ', $e->getMessage();
-		return null;
-	  }
-	}  
-	
-return $pedidosArray;
-}
 
 
 function pedidos_usuario($nif){ //añadir argumento "orden" para añadir opcion en base a qué ordenarlo

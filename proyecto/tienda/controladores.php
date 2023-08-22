@@ -171,11 +171,12 @@ function controlador_detalle_mercancia($id)
     
 }
 
-function controlador_detalle_cliente($email)
+function controlador_detalle_cliente($nif)
 {   $URI = get_URI();
     $usuario = checkSession();
     $empleado = datos_empleado($usuario);
     $cliente= datos_cliente($email); 
+    
     $mensaje = "";
 
     
@@ -204,7 +205,7 @@ function controlador_mis_datos()   /// PENDIENTE REASIGNAR A OTRA VISTA, OBSOLET
     }
     global $twig;
     $template = $twig->load('mis_datos.html');
-	echo $template->render(array ('URI'=>$URI, 'productos' => $productos, 'usuario' =>$usuario, 'cliente'=> $cliente, 'logged'=>$logged, 'logged_legible'=>$logged_legible, 'total_prods'=>$total_prods));
+	echo $template->render(array ('URI'=>$URI, 'usuario' =>$usuario, 'cliente'=> $cliente, 'logged'=>$logged, 'logged_legible'=>$logged_legible, 'total_prods'=>$total_prods));
 
 }
 
@@ -483,12 +484,15 @@ function controlador_mis_pedidos()   /// PENDIENTE REASIGNAR A OTRA VISTA, OBSOL
 function controlador_pedidos()   /// PENDIENTE REASIGNAR A OTRA VISTA, OBSOLETO (SUSTITUIDO POR "CUENTA")
 {   $URI = get_URI();
     $usuario = checkSession();
-    $lista_pedidos = lista_pedidos();
-    $cliente= isset($_POST['nif']) ? datos_cliente($cliente->email) : array();
-    $pedidosArray = isset($_POST['nif']) ? pedidos_usuario($nif) : array();
     $empleado = datos_empleado($usuario);
+    $lista_pedidos = lista_pedidos();
+    $nif= isset($_POST['nif']) ? $_POST['nif'] : '';
 
- 
+
+    if (isset($_POST["buscar"]) && $_POST['nif']!="") {
+        $lista_pedidos = pedidos_usuario($_POST['nif']); 
+        $mensaje = "Encontrados ".count($lista_pedidos). " pedidos del usuario ".$nif;} 
+   
 
 
     if (isset($_POST["volver_home"])) exit(header("location:home_".$empleado->tipo_cuenta));
@@ -498,7 +502,7 @@ function controlador_pedidos()   /// PENDIENTE REASIGNAR A OTRA VISTA, OBSOLETO 
     }
     global $twig;
     $template = $twig->load('pedidos.html');
-	echo $template->render(array ('URI'=>$URI, 'usuario' =>$usuario, 'empleado'=>$empleado, 'cliente'=> $cliente, 'lista_pedidos'=>$lista_pedidos, 'pedidosArray' => $pedidosArray));
+	echo $template->render(array ('URI'=>$URI, 'usuario' =>$usuario, 'empleado'=>$empleado, 'nif'=> $nif, 'lista_pedidos'=>$lista_pedidos, 'mensaje'=>$mensaje));
 
 }
 
