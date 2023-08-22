@@ -70,7 +70,9 @@ function get_sugerencias_ajax($busqueda){
 		//$coincidencias = "";
 		try{
 		//La búsqueda se realiza en mysql con el comando LIKE
-		$sql = "SELECT nombre, id_prod FROM producto WHERE nombre LIKE '%$busqueda%'";
+		$sql = "SELECT nombre, id_prod 
+				FROM producto 
+				WHERE nombre LIKE '%$busqueda%'";
 	
 		$resultado = $pdo->query($sql);
 		
@@ -126,6 +128,42 @@ function get_sugerencias_ajax($busqueda){
 	//echo $sugerencias === "" ? "<br> no se encuentran sugerencias" : $sugerencias;
 	echo $sugerencias;
 
+	function lista_users()
+	{	
+			$pdo = conexion();
+			if($pdo){
+				try{
+				$pdo->beginTransaction();
+				//con esta query recupero todos los mails de ambas tablas, osea todos los usuarios existentes
+				$sql = ("SELECT email FROM cliente UNION ALL
+						SELECT email FROM empleado
+				 ");	
+	
+				$lectura = $pdo->prepare($sql);
+	
+				if(($lectura->execute())>0){ //si la consulta ha retornado algún resultado ---          
+					$pdo->commit();
+					$resultado = $lectura->rowCount(); // --- entonces retorno el número de clientes encontrados)
+					$lista_users= $lectura->fetchAll(PDO::FETCH_OBJ);
+				}
+	
+				else {
+					$resultado=false;
+					echo "No se encontraron usuarios";
+					$pdo->rollback();		
+					}	
+				}	
+		catch(PDOException $e){
+			echo 'Excepción: ', $e->getMessage();
+			$resultado = false;				
+			}
+			$pdo = null;
+			return $lista_users;
+	
+	 }else{  return null; die("error en la conexión a la BD");} //en caso de no haber conexión, directamente se para el proceso
+				
+			
+	}
 
 	
 
@@ -134,21 +172,34 @@ function lista_productos()
 		$pdo = conexion();
 		if($pdo){
 			try{
-			$sql = ("SELECT * FROM producto");		
-			$lectura = $pdo->query($sql);
-			$lista_productos= $lectura->fetchAll(PDO::FETCH_OBJ);
-			$pdo = null;
+			$pdo->beginTransaction();
+			$sql = ("SELECT * FROM producto 
+					 ORDER BY nombre");	
 
-		}	
-		
-		catch(PDOException $e){
-			echo 'Excepción: ', $e->getMessage();
-			return null;
-		  }
-		  
-		}  
-		
-	return $lista_productos;
+			$lectura = $pdo->prepare($sql);
+
+			if(($lectura->execute())>0){ //si la consulta ha retornado algún resultado ---          
+				$pdo->commit();
+				$resultado = $lectura->rowCount(); // --- entonces retorno el número de autores afectados (borrados)
+
+				$lista_productos= $lectura->fetchAll(PDO::FETCH_OBJ);
+			//	echo 'Encontrados '. $resultado. ' productos';
+			}
+
+			else {
+				$resultado=false;
+				echo "No se encontraron productos - por favor, intentelo de nuevo";
+				$pdo->rollback();		
+				}	
+			}	
+	catch(PDOException $e){
+		echo 'Excepción: ', $e->getMessage();
+		$resultado = false;				
+		}
+		$pdo = null;
+		return $lista_productos;
+
+ }else{  return null; die("error en la conexión a la BD");} //en caso de no haber conexión, directamente se para el proceso
 			
 		
 }
@@ -160,7 +211,9 @@ function detalle_producto($id)
 		$pdo = conexion();
 		if($pdo){
 			try{
-			$sql = "SELECT p.id_prod, p.nombre, p.precio, p.stock, p.descripcion FROM producto p WHERE id_prod ='$id'";		
+			$sql = "SELECT id_prod, nombre, precio, stock, descripcion 
+					FROM producto
+					WHERE id_prod ='$id'";		
 			$lectura = $pdo->query($sql);
 			$producto= $lectura->fetchObject();
 			$pdo = null;
@@ -177,7 +230,7 @@ function detalle_producto($id)
 		
 }
 function insert_cliente($nif, $nombre, $apellidos, $email, $telefono, $direccion, $localidad, $cod_postal, $provincia, $contrasena, $creado_fecha){
-
+	$resultado = false;
 	$pdo = conexion();
 	if($pdo){
 		try{//normalizo datos a minisculas para homogeneizar posibles errores al insertar datos.
@@ -186,26 +239,133 @@ function insert_cliente($nif, $nombre, $apellidos, $email, $telefono, $direccion
 			$email = strtolower($email);
 			$telefono = intval($telefono);
 			$cod_postal = intval($cod_postal);
-
 			$hash_passwd = password_hash($contrasena, PASSWORD_ARGON2ID);
+
+			$pdo->beginTransaction();
+
 			$sql = "INSERT INTO cliente(nif, nombre, apellidos, email, telefono, direccion, localidad, cod_postal, provincia, contrasena, creado_fecha) 
-						VALUES ('".$nif."', '".$nombre."', '".$apellidos."', '".$email."', '".$telefono."', '".$direccion."', '".$localidad."', '".$cod_postal."', '".$provincia."', '".$hash_passwd."', '".$creado_fecha."');";
+					VALUES ('".$nif."', '".$nombre."', '".$apellidos."', '".$email."', '".$telefono."', '".$direccion."', '".$localidad."', '".$cod_postal."', '".$provincia."', '".$hash_passwd."', '".$creado_fecha."');";
 
 
-		$insertarCliente = $pdo->query($sql);
-		//return 	$insertarPedido->rowCount();
-		if($insertarCliente) return $insertarCliente->rowCount();
-		else {echo 'ERROR AL INSERTAR CLIENTE'; return null;}
-		}	
-	
+			$insertarCliente = $pdo->prepare($sql);
+
+			if(($insertarCliente->execute())>0){ //si la consulta ha retornado algún resultado ---          
+				$pdo->commit();
+				$resultado = $insertarCliente->rowCount(); // --- entonces retorno el número de autores afectados (borrados)
+			}
+
+			else {
+				$resultado=false;
+				echo "No pudo crearse su cuenta - por favor, intentelo de nuevo";
+				$pdo->rollback();		
+				}	
+			}	
 	catch(PDOException $e){
 		echo 'Excepción: ', $e->getMessage();
-		return null;
+		$resultado = false;				
 		}
+	$pdo = null;
+	return $resultado;
 
-	}  $pdo = null;
+ }else{  return null; die("error en la conexión a la BD");} //en caso de no haber conexión, directamente se para el proceso
+
 
 }
+
+
+function alta_empleado($nif, $nombre, $apellidos, $email, $telefono, $direccion, $localidad, $cod_postal, $provincia, $contrasena, $creado_fecha, $tipo_cuenta){
+	// select* from empleado para comparar por si duplicamos un DNI
+	$pdo = conexion();
+	if($pdo){
+		$resultado = false;
+		try{
+			$email = strtolower($email);
+			$telefono = intval($telefono);
+			$cod_postal = intval($cod_postal);
+			$hash_passwd = password_hash($contrasena, PASSWORD_ARGON2ID);
+			$tipo_cuenta = strtolower($tipo_cuenta);
+
+			$pdo->beginTransaction();
+
+			$sql = "INSERT INTO empleado(nif, nombre, apellidos, email, telefono, direccion, localidad, cod_postal, provincia, contrasena, creado_fecha, tipo_cuenta) 
+					VALUES ('".$nif."', '".$nombre."', '".$apellidos."', '".$email."', '".$telefono."', '".$direccion."', '".$localidad."', '".$cod_postal."', '".$provincia."', '".$hash_passwd."', '".$creado_fecha."', '".$tipo_cuenta."');";
+			$insertarEmpleado = $pdo->prepare($sql);
+
+			if(($insertarEmpleado->execute())>0){ //si la consulta ha retornado algún resultado ---          
+				$pdo->commit();
+				$resultado = $insertarEmpleado->rowCount(); // --- entonces retorno el número de autores afectados (borrados)
+			}
+
+			else {
+				$resultado=false;
+				echo "Ningún empleado dado de alta - intentelo de nuevo";
+				$pdo->rollback();		
+				}	
+			}	
+	catch(PDOException $e){
+		echo 'Excepción: ', $e->getMessage();
+		$resultado = false;				
+		}
+	$pdo = null;
+	return $resultado;
+
+ }else{  return null; die("error en la conexión a la BD");} //en caso de no haber conexión, directamente se para el proceso
+
+
+}
+
+
+		/*	try {
+			$email = strtolower($email);
+			$telefono = intval($telefono);
+			$cod_postal = intval($cod_postal);
+			$hash_passwd = password_hash($contrasena, PASSWORD_ARGON2ID);
+			$tipo_cuenta = strtolower($tipo_cuenta);
+
+			$sql="INSERT INTO empleado (nif, nombre, apellidos, email, telefono, direccion, localidad, cod_postal, provincia, contrasena, creado_fecha, tipo_cuenta) 
+			VALUES (:nif, :nombre, :apellidos, :email, :telefono, :direccion, :localidad, :cod_postal, :provincia, :contrasena, :creado_fecha, :tipo_cuenta)";
+
+
+		----	$dato = '';	
+			$datos = [$nif, $nombre, $apellidos, $email, $telefono, $direccion, $localidad, $cod_postal, $provincia, $hash_passwd, $creado_fecha, $tipo_cuenta];								
+			$stmt->bindParam(':?', $dato); 
+			foreach($datos as $key=>$dato){  				(OTRA OPCION)
+				$stmt->execute();
+			}	-----
+
+			$sentencia = $pdo->prepare($sql);     
+			$sentencia ->bindParam(":nif", $nif);
+			$sentencia ->bindParam(":nombre",$nombre);
+			$sentencia ->bindParam(":apellidos",$apellidos);
+			$sentencia ->bindParam(":email",$email);
+			$sentencia ->bindParam(":telefono",$telefono);
+			$sentencia ->bindParam(":direccion",$direccion);
+			$sentencia ->bindParam(":localidad",$localidad);
+			$sentencia ->bindParam(":cod_postal",$cod_postal);
+			$sentencia ->bindParam(":provincia",$provincia);
+			$sentencia ->bindParam(":contrasena",$hash_passwd);
+			$sentencia ->bindParam(":creado_fecha",$creado_fecha);
+			$sentencia ->bindParam(":tipo_cuenta",$tipo_cuenta);
+			
+			$Exec = $sentencia -> execute();
+
+			if ($Exec) {
+				echo "Empleado creado con éxito";
+				return true;
+
+			}else{				
+				echo "Ocurrio un error en el alta del empleado";
+
+			}
+		}
+			catch(PDOException $e){
+				echo 'Excepción: ', $e->getMessage();				
+				}
+		
+			} 
+		$pdo = null;*/
+
+
 
 function datos_cliente($email)
 {	
@@ -213,12 +373,12 @@ function datos_cliente($email)
 		if($pdo){
 			try{
 			//La búsqueda se realiza en mysql con el comando LIKE
-			$sql = "SELECT c.nif, c.nombre, c.apellidos, c.email, c.telefono, c.direccion, c.localidad, c.cod_postal, c.provincia, c.contrasena, c.creado_fecha, c.estado_cuenta
-					FROM cliente c WHERE email ='$email'";		
+			$sql = "SELECT nif, nombre, apellidos, email, telefono, direccion, localidad, cod_postal, provincia, contrasena, creado_fecha, estado_cuenta, tipo_cuenta
+					FROM cliente WHERE email ='$email'";		
 			$lectura = $pdo->query($sql);
 			$cliente= $lectura->fetchObject();
 			return $cliente;
-			//c.total_pedidos, c.total_gasto SI SE LLEGAN A INCORPORAR DICHAS COLUMNAS
+			//total_pedidos, c.total_gasto SI SE LLEGAN A INCORPORAR DICHAS COLUMNAS
 		}	
 		
 		catch(PDOException $e){
@@ -228,7 +388,31 @@ function datos_cliente($email)
 		}  	
 		$pdo = null;
 	
-}		
+}
+
+function datos_empleado($email)
+{		
+		$pdo = conexion();
+		if($pdo){
+			try{
+			//La búsqueda se realiza en mysql con el comando LIKE
+			$sql = "SELECT nif, nombre, apellidos, email, telefono, direccion, localidad, cod_postal, provincia, contrasena, creado_fecha, estado_cuenta, tipo_cuenta
+					FROM empleado WHERE email ='$email'";		
+			$lectura = $pdo->query($sql);
+			$empleado= $lectura->fetchObject();
+			return $empleado;
+
+		}	
+		
+		catch(PDOException $e){
+			echo 'Excepción: ', $e->getMessage();
+			return null;
+		  }
+		}  	
+		$pdo = null;
+	
+}
+
 
 function insert_productos_pedido($id_pedido, $cesta){
 
@@ -243,23 +427,20 @@ function insert_productos_pedido($id_pedido, $cesta){
 					//$sql .= "INSERT INTO pedido_productos (id_pedido, id_prod, cantidad) VALUES ('".$id_pedido."', '".$producto['id_prod']."', '".$producto['cantidad']."');";
 					$sql .= "INSERT INTO productos_pedido (id_pedido, id_prod, nombre, cantidad) 
 					VALUES ('".$id_pedido."', '".$producto['id_prod']."', '".$producto['nombre']."', '".$producto['cantidad']."');";
-
 				}
-
 				
 			$insertarProductosPedido = $mysqli->multi_query($sql);
-			if($insertarProductosPedido) $mensaje = $mysqli->affected_rows;
-			else echo 'ERROR AL INSERTAR PRODUCTOS';
-		//	$mysqli.close();
-			return true;
+			if($insertarProductosPedido) {echo $mysqli->affected_rows; return true;}
+			else {echo 'ERROR AL INSERTAR PRODUCTOS'; return false;}
+			
 		}	
 		
 		catch(Exception $e){
 			echo 'Excepción: ', $e->getMessage();
 			return null;
 			}
-		} return $mensaje; 
-		
+		} 
+		$mysqli.close();
 }
 
 
@@ -270,7 +451,7 @@ function insert_pedido($id_pedido, $nif, $total_precio, $total_kg, $forma_pago, 
 		try{
 
 			$sql = "INSERT INTO pedido(id_pedido, nif_cliente, total_precio, total_kg, forma_pago, creado_fecha, enviado_fecha, entregado_fecha, notas) 
-						VALUES ('".$id_pedido."', '".$nif."', '".$total_precio."', '".$total_kg."', '".$forma_pago."', '".$creado_fecha."', NULL, NULL, '".$notas."');";
+					VALUES ('".$id_pedido."', '".$nif."', '".$total_precio."', '".$total_kg."', '".$forma_pago."', '".$creado_fecha."', NULL, NULL, '".$notas."');";
 
 
 		$insertarPedido = $pdo->query($sql);
@@ -285,19 +466,52 @@ function insert_pedido($id_pedido, $nif, $total_precio, $total_kg, $forma_pago, 
 		echo 'Excepción: ', $e->getMessage();
 		return null;
 		}
-
+		
 	}  
-
+	$pdo=null;
 }
-function pedidos_usuario($nif){
+function lista_pedidos(){
+
+	$pdo = conexion();
+	if($pdo){
+		try{
+		$sql = "SELECT *
+				FROM pedido
+				ORDER BY creado_fecha DESC";
+
+
+		$resultado = $pdo->query($sql);
+		$pedidosArray = $resultado->fetchAll(PDO::FETCH_OBJ);
+
+	/*	foreach($pedidosArray as $i => $pedido) {   
+		}*/
+		
+		$mensaje = "Se han encontrado <b>" . $resultado->rowCount() . "</b> pedido(s) <br><br>"; 
+		if ($resultado->rowCount()==0) $mensaje = "No se han encontrado pedidos";
+		$pdo = null;  //cierro conexion para no mantener BD en espera
+		//c.total_pedidos, c.total_gasto SI SE LLEGAN A INCORPORAR DICHAS COLUMNAS
+	}	
+	
+	catch(PDOException $e){
+		echo 'Excepción: ', $e->getMessage();
+		return null;
+	  }
+	}  
+	
+return $pedidosArray;
+}
+
+
+function pedidos_usuario($nif){ //añadir argumento "orden" para añadir opcion en base a qué ordenarlo
 
 		$pdo = conexion();
 		if($pdo){
 			try{
 			//La búsqueda se realiza en mysql con el comando LIKE
-			$sql = "SELECT *
+			$sql = "SELECT p.id_pedido, p.nif_cliente, p.total_precio, p.total_kg, p.forma_pago, p.estado_pago, p.estado_pedido, p.creado_fecha, p.enviado_fecha, p.entregado_fecha, p.notas
 					FROM pedido p JOIN cliente c ON p.nif_cliente = c.nif
-					WHERE nif = '$nif'";
+					WHERE p.nif_cliente = '$nif'
+					ORDER BY p.creado_fecha DESC";
 
 
 			$resultado = $pdo->query($sql);
@@ -306,9 +520,8 @@ function pedidos_usuario($nif){
 		/*	foreach($pedidosArray as $i => $pedido) {   
 			}*/
 			
-			$mensaje = "Se han encontrado <b>" . $resultado->rowCount() . "</b> pedido(s) <br><br>"; 
-			if ($resultado->rowCount()==0) $mensaje = "No se han encontrado pedidos";
-			$pdo = null;  //cierro conexion para no mantener BD en espera
+			if($resultado->rowCount()>0) $mensaje = "Se han encontrado <b>" . $resultado->rowCount() . "</b> pedido(s) <br><br>"; 
+			else $mensaje = "No se han encontrado pedidos";
 			//c.total_pedidos, c.total_gasto SI SE LLEGAN A INCORPORAR DICHAS COLUMNAS
 		}	
 		
@@ -316,10 +529,13 @@ function pedidos_usuario($nif){
 			echo 'Excepción: ', $e->getMessage();
 			return null;
 		  }
-		}  
+		}  	
+		$pdo=null;
 		
 	return $pedidosArray;
-	}		
+	}
+	
+	
 
 	function detalle_pedido($id_pedido)
 	{	

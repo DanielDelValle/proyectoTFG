@@ -10,7 +10,7 @@
 
         //Crea DB si no existe (para no sobreescribir y perder info)
         $sql ="CREATE DATABASE IF NOT EXISTS `tienda` 
-        DEFAULT CHARACTER SET utf8 COLLATE utf8_spanish_ci;";
+        DEFAULT CHARACTER SET utf8 COLLATE utf8_spanish_ci;";  //CON utf8_general_ci si diese problema el spanish_ci
         //cotejamiento para mayor compatibilidad español
 
         if($bd->query($sql)){
@@ -21,23 +21,22 @@
 
             //Crear tablas producto, cliente, pedido, albaran
             
-            $sql1="CREATE TABLE IF NOT EXISTS producto (
+            $sql0="CREATE TABLE IF NOT EXISTS producto (
                 id_prod INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
                 nombre VARCHAR(25),
                 precio DECIMAL(5),
                 stock DECIMAL(10),
                 descripcion VARCHAR(250)
                 )";
-            if($bd->query($sql1)){
+            if($bd->query($sql0)){
                 echo "Tabla PRODUCTO creada con éxito<br>";
             }else echo "Error creando tabla PRODUCTO";
 
-
-            $sql2 ="CREATE TABLE IF NOT EXISTS cliente (
+            $sql1 ="CREATE TABLE IF NOT EXISTS empleado (
                 nif VARCHAR(9) PRIMARY KEY,
-                nombre VARCHAR(50),
-                apellidos VARCHAR(25),
-                email VARCHAR(25),
+                nombre VARCHAR(30),
+                apellidos VARCHAR(50),
+                email VARCHAR(50),
                 telefono INTEGER(9),
                 direccion VARCHAR(50),
                 localidad VARCHAR(50),
@@ -45,10 +44,37 @@
                 provincia VARCHAR(25),
                 contrasena VARCHAR(255),
                 creado_fecha DATETIME,
-                estado_cuenta ENUM ('activo', 'inactivo', 'pendiente', 'bloqueado') DEFAULT 'activo'
+                estado_cuenta ENUM ('activo', 'inactivo', 'pendiente', 'bloqueado') DEFAULT 'activo',
+                tipo_cuenta ENUM ('admon', 'almacen')
                
                 )";
 
+              //  total_pedidos INTEGER(3) DEFAULT 0,     PARA LLEVAR CONTEO GASTO CLIENTE (POSIBLES GRADOS MEMBRESIA, RECOMPENSAS, DESCUENTOS)
+           //     total_gasto FLOAT(10) DEFAULT 0.0
+
+                if($bd->query($sql1)){
+                    echo "Tabla EMPLEADO creada con éxito<br>";
+                }else echo "Error creando tabla EMPLEADO";
+
+
+            $sql2 ="CREATE TABLE IF NOT EXISTS cliente (
+                nif VARCHAR(9) PRIMARY KEY,
+                nombre VARCHAR(30),
+                apellidos VARCHAR(50),
+                email VARCHAR(50),
+                telefono INTEGER(9),
+                direccion VARCHAR(50),
+                localidad VARCHAR(50),
+                cod_postal INTEGER(5),
+                provincia VARCHAR(30),
+                contrasena VARCHAR(255),
+                creado_fecha DATETIME,
+                estado_cuenta ENUM ('activo', 'inactivo', 'pendiente', 'bloqueado') DEFAULT 'activo',
+                tipo_cuenta ENUM ('cliente') DEFAULT 'cliente'
+               
+                )";
+                // Con ENUM ('cliente') DEFAULT 'cliente' me aseguro de que nadie pueda crear una cuenta de tipo empleado a traves del formulario
+                
               //  total_pedidos INTEGER(3) DEFAULT 0,     PARA LLEVAR CONTEO GASTO CLIENTE (POSIBLES GRADOS MEMBRESIA, RECOMPENSAS, DESCUENTOS)
            //     total_gasto FLOAT(10) DEFAULT 0.0
 
@@ -63,7 +89,7 @@
                 total_precio DECIMAL(7),
                 total_kg DECIMAL (5),
                 forma_pago ENUM ('bizum', 'transferencia bancaria'),
-                estado_pago ENUM ('pendiente', 'recibido', 'devuelto') DEFAULT 'pendiente',
+                estado_pago ENUM ('pendiente', 'pagado', 'devuelto') DEFAULT 'pendiente',
                 estado_pedido ENUM ('procesando', 'enviado', 'recibido') DEFAULT 'procesando',
                 creado_fecha DATETIME,
                 enviado_fecha DATETIME DEFAULT NULL,
@@ -117,7 +143,7 @@
             
             //Insertar datos iniciales tabla CLIENTE
             $sql6 = "INSERT INTO cliente (nif, nombre, apellidos, email, telefono, direccion, localidad, cod_postal, provincia, contrasena, creado_fecha)
-                        VALUES('53665340S', 'Daniel', 'Del Valle Gonzalez', 'danimolar@hotmail.com', 657056073, 'Avenida Colmenar Viejo', 'San Sebastián de los Reyes', 28701, 'Madrid', 'Marico', '2023-08-21 02:55:00' )";
+                        VALUES('53665340S', 'Daniel', 'Del Valle Gonzalez', 'danimolar@hotmail.com', 657056073, 'Avenida Colmenar Viejo', 'San Sebastián de los Reyes', 28701, 'Madrid', 'Clave123!', '2023-08-21 02:55:00' )";
 
             if($bd->query($sql6)){
             echo "Datos insertados con éxito en tabla CLIENTE<br>";
@@ -145,6 +171,15 @@
             if($bd->query($sql8)){
             echo "Datos insertados con éxito en tabla PRODUCTOS_PEDIDO<br>";
             }else echo "Error insertando datos en tabla PRODUCTOS_PEDIDO<br>";
+
+            $sql9= "INSERT INTO empleado (nif, nombre, apellidos, email, telefono, direccion, localidad, cod_postal, provincia, contrasena, creado_fecha, tipo_cuenta)
+                        VALUES('53665340S', 'Daniel', 'Del Valle Gonzalez', 'daniel@frutasdelvalle.com', 657056073, 'Avenida Colmenar Viejo', 'San Sebastián de los Reyes', 28701, 'Madrid', 'Clave123!', '2023-08-21 02:55:00', 'admon' 
+                        )";
+
+            if($bd->query($sql9)){
+            echo "Datos insertados con éxito en tabla EMPLEADO<br>";
+            }else echo "Error insertando datos en tabla EMPLEADO<br>";
+
 
 
 

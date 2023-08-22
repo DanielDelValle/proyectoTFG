@@ -8,14 +8,28 @@
 
 
 <form method="POST" action="" autocomplete>
+    <form action="" method="POST">
+        <fieldset>
+        <legend>Busqueda</legend>
 
+        <label for="cliente">Cliente</label>
+        <input type="text" name="nif" id="nif" value= {{nif}}  >
+
+        <label for="creado_fecha">Fecha Creación</label>
+        <input type="text" name="creado_fecha" id="creado_fecha" value= {{creado_fecha}}  ><br>
+
+        <button type="submit" name="buscar" method="POST">Buscar</button>
+
+        </fieldset>
     <fieldset>
-    <div>
-    <h2 class='titulo'>MIS PEDIDOS</h2>
-    <h3 class='titulo'>{{mensaje}}</h2>
 
+
+    <div>
+    <h2 class='titulo'>PEDIDOS</h2>
+    <h3 class='titulo'>{{mensaje}}</h2>
     <table id="datos_cliente">
         <th>Id Pedido</th>
+        <th>Nif Cliente</th>
         <th>Total Peso</th>
         <th>Total Precio</th>
         <th>Forma Pago</th>
@@ -24,10 +38,10 @@
         <th>Fecha Creado</th>
         <th>Fecha Envío</th>
         <th>Fecha Entrega</th>
-        <th>Notas</th>
-    {% for key, pedido in pedidosArray %}
+    {% for key, pedido in lista_pedidos %}
     <tr>
-        <td><a href="http://localhost/proyecto/tienda/index.php/detalle_pedido?id_pedido={{pedido.id_pedido}}">{{pedido.id_pedido}}</a></td>
+        <td><a href="http://localhost/proyecto/tienda/index.php/detalle_pedido?id_pedido={{pedido.id_pedido}}">{{pedido.id_pedido}}</td>
+        <td><a href="http://localhost/proyecto/tienda/index.php/detalle_cliente?id_cliente={{pedido.nif_cliente}}">{{pedido.nif_cliente}}</a></td>
         <td>{{pedido.total_kg}} Kilo(s)</td>
         <td>{{pedido.total_precio}} €</td>
         <td>{{pedido.forma_pago}} </td>
@@ -36,7 +50,6 @@
         <td>{{pedido.creado_fecha}} </td>
         <td>{{pedido.enviado_fecha}} </td>
         <td>{{pedido.entregado_fecha}} </td>
-        <td>{{pedido.notas}} </td>
 
     </tr>
     {% endfor %}

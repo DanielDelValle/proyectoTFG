@@ -8,7 +8,8 @@
 */
 function es_texto($cadena) {
     //definimos el patrón
-    $patron = '/^[a-zA-ZñÑ\s?]+$/';
+    $patron = '/^[a-zA-Zá-úÁ-ÚñÑ\s?]+$/';
+	//$patron = '/^[a-zA-Z]+(\s*[a-zA-Z]*)*[a-zA-Z]+$/';
      
     return (preg_match($patron, $cadena));	
 }
@@ -39,7 +40,6 @@ function valid_tel($tel){
 */
 
 function valid_email($email) {
-    //convertimos el texto a minúsculas
     $email = strtolower($email);
     //definimos el patrón
     $patron = '/^[a-zA-Z0-9.!#$%&\'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/i';
@@ -57,7 +57,6 @@ function valid_email($email) {
 */
 
 function valid_contrasena($contrasena) {
-    //convertimos el texto a minúsculas
 
     //definimos el patrón
     $patron = '/^.*(?=.{8,})(?=.*\d)(?=.*[A-Z])(?=.*[a-z]).*$/';

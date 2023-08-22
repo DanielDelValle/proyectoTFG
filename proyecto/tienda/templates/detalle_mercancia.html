@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "base_empl.html" %}
 
 {% block stylesheets %}
 <link rel="stylesheet" type="text/css" href="css/tarea8.css">
@@ -16,11 +16,8 @@
 				<h3>DESCRIPCION: {{producto.descripcion}}</h3>
 
 
-				<form action="" method="POST">
-					<button type="submit" name="anadir_producto" value="Añadir a la Cesta"/>Añadir Producto a la Cesta</button>
+				<form action="index.php/mercancia" method="POST">
+					<button type="submit" name="volver" value="Volver"/>Volver a Mercancia</button>
 				</form>
 
-				<form action="index.php" method="POST">
-					<button type="submit" name="volver" value="Volver"/>Volver a Tienda</button>
-				</form>
 {% endblock %}	

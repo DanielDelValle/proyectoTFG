@@ -20,11 +20,31 @@ if ($URI == 'index.php')
     controlador_index(); // Se ejecuta el controlador específico de index
 }
 
+
+if ($URI == 'mercancia') 
+{
+    controlador_mercancia(); // Se ejecuta el controlador específico de index
+}
+
+
 elseif ($URI == 'detalle_producto' && isset($_GET['id'])) 
 {
     // Se ejecuta el controlador específico que muestra los detalles de un articulo específico
     controlador_detalle_producto($_GET['id']); 
 }
+
+elseif ($URI == 'detalle_mercancia' && isset($_GET['id'])) 
+{
+    // Se ejecuta el controlador específico que muestra los detalles de un  producto específico
+    controlador_detalle_mercancia($_GET['id']); 
+}
+elseif ($URI == 'detalle_cliente' && isset($_GET['email'])) 
+{
+    // Se ejecuta el controlador específico que muestra los detalles de un  pedido específico
+    controlador_detalle_cliente($_GET['email']); 
+}
+
+
 
 
 elseif ($URI == 'detalle_pedido' && isset($_GET['id_pedido'])) 
@@ -32,6 +52,7 @@ elseif ($URI == 'detalle_pedido' && isset($_GET['id_pedido']))
     // Se ejecuta el controlador específico que muestra los detalles de un  pedido específico
     controlador_detalle_pedido($_GET['id_pedido']); 
 }
+
 
 
 elseif ($URI == 'iniciar_sesion')
@@ -44,10 +65,21 @@ elseif ($URI == 'crear_cuenta')
 		controlador_crear_cuenta(); 
 }
 
+elseif ($URI == 'alta_empleado')
+{      
+		controlador_alta_empleado(); 
+}
 
-elseif ($URI == 'home')
+
+elseif ($URI == 'home_admon')
 {
-		controlador_home(); 
+		controlador_home_admon(); 
+}
+
+
+elseif ($URI == 'home_almacen')
+{
+		controlador_home_almacen(); 
 }
 
 
@@ -66,6 +98,10 @@ elseif ($URI == 'mis_pedidos')
 		controlador_mis_pedidos(); 
 }
 
+elseif ($URI == 'pedidos')
+{      
+		controlador_pedidos(); 
+}
 
 elseif ($URI == 'mi_cesta')
 {      
@@ -95,9 +131,16 @@ elseif ($URI == 'cerrar_sesion')
 
 elseif ($URI == 'registro_correcto') 
 {
-    // Se ejecuta el controlador específico de registro
+
     controlador_registro_correcto(); 
 }
+elseif ($URI == 'alta_correcta') 
+{
+
+    controlador_alta_correcta(); 
+}
+
+
 
 
 else 

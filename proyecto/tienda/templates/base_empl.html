@@ -32,22 +32,15 @@
 			<div>
                 <ul class="sidemenu">
             
-                        <li><a href="index.php">Nuestos Productos</a></li>    
-                        <li><a href="index.php/mi_cuenta" >Mi Cuenta</a></li>        
-                        <li><a href="index.php/mi_cesta" >Mi Cesta ( {{total_prods}} )</a></li>        
-                        <li><a href="index.php/contacto">Contacto</a></li>  
-                        <li><a href="index.php/{{logged}}">{{logged_legible}}</a></li>
-                        
-                        
+                        <li><a href="index.php/mercancia">Mercancía</a></li>     
+                        <li><a href="index.php/home_{{empleado.tipo_cuenta}}"> Home {{empleado.tipo_cuenta}}</a></li>
+                        <li><a href="index.php/cerrar_sesion">Cerrar Sesión</a></li>
+                                               
                 </ul>        
             </div>
         </nav>    
         {% endblock %}
         <div>  
-            {% block login %}
-        
-            {% endblock %}
-        </div>
 
         
         <!-- En este bloque se cargará el contenido -->
@@ -60,9 +53,11 @@
 
 		<div>
         {% block content %}
+
         {% block mensaje %}
         <p class='mensaje'>{{mensaje}}</p><br>
         {% endblock %}
+
         {% endblock %}
         </div>
 

@@ -1,0 +1,37 @@
+{% extends "base_empl.html" %}
+
+{% block stylesheets %}
+<link rel="stylesheet" type="text/css" href="css/tarea8.css">
+{% endblock %}
+
+{% block migas_pan %}
+{% endblock %}
+
+{% block toolbar %}
+{% endblock %}
+
+{% block content %}
+
+
+
+    <h3 class='titulo'>Se ha registrado el empleado con éxito</h3>
+    <div>
+
+    </div>
+
+
+    <form method="POST" action="index.php/home_admon">
+    <div>
+        <fieldset>
+            <!--   el botón "Cerrar Sesion" da la orden de borrar datos de sesión y elimina cookie-->
+
+            <button type="submit" method="POST">Continuar</button>
+
+
+        </fieldset>
+    </div>
+</form>
+
+
+
+{% endblock %}

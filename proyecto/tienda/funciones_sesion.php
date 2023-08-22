@@ -1,6 +1,6 @@
 <?php
 function checkSession(){
-    if(session_status() !== 2){
+    if(session_status() !== 2){   //si el status de la sesion es "inactivo"
         session_start();
      //crear sesión, y si hay usuario logeado, recoge el usuario en una variable.
       if (!isset($_SESSION["usuario"])) {
