@@ -34,6 +34,13 @@ h3 {
 	background: url("../imagenes/banner.png") no-repeat
 }
 
+.mensaje{	
+	padding:2px;
+	font-size: 20px;
+	color: #001aff;
+	
+}
+
 
 
 .descrip {

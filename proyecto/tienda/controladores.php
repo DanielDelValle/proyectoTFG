@@ -2,8 +2,6 @@
 // controladores.php
 require_once '../vendor/autoload.php';
 
-
-
 $loader = new \Twig\Loader\FilesystemLoader('templates');
 $twig = new \Twig\Environment($loader);
 
@@ -58,17 +56,13 @@ descomentar y poner a continuacion de la linea "$twig=....($loader," para habili
 function controlador_index()
 { $URI = get_URI();
     session_start();
+    $productos = lista_productos();
     //estas variables son necesarias para variar el texto de los links, dependiendo de si está el usuario logeado o no
     $logged = isset($_SESSION['usuario']) ? "cerrar_sesion" : "iniciar_sesion";
     $logged_legible = isset($_SESSION['usuario']) ? "Cerrar Sesión" : "Iniciar Sesión";
    /* $crear_cuenta = isset($_SESSION['usuario']) ? "" : "crear_cuenta";
     $crear_cuenta_legible = isset($_SESSION['usuario']) ? "" : "Crear Cuenta";*/
 
-
-    
-
-    // Petición al modelo para que retorne la lista de productos de la BD
-    $productos = lista_productos();
     $total_prods = (isset($_SESSION['usuario']) && isset($_SESSION['cesta'])) ? count($_SESSION['cesta']) : 0;
     
     // Carga la plantilla que se mostrará al usuario con los datos recuperados del modelo
@@ -216,8 +210,8 @@ function controlador_mi_cesta()
     $cliente = datos_cliente($usuario);
     $logged = isset($_SESSION['usuario']) ? "cerrar_sesion" : "iniciar_sesion";
     $logged_legible = isset($_SESSION['usuario']) ? "Cerrar Sesión" : "Iniciar Sesión";
-    $_SESSION['cesta'] = checkCesta();
-    $cesta = $_SESSION['cesta'];
+    $cesta = checkCesta();
+    $_SESSION['cesta'] = $cesta;
     $mensaje = "";
 
 	global $twig;
@@ -347,7 +341,7 @@ function controlador_confirmar_pedido(){
     $total_kg = $_SESSION['total_kg'];
     $total_prods = $_SESSION['total_prods'];
     $mensaje="";
-    $id_pedido=$_POST['id_pedido'];
+    $id_pedido= isset($_POST['id_pedido'])? $_POST['id_pedido']: '';
     $forma_pago='';
     
     if(isset($_POST["volver_cesta"])){
@@ -453,7 +447,7 @@ function controlador_detalle_pedido($id_pedido)
 
 }
 
-function controlador_mis_pedidos()   /// PENDIENTE REASIGNAR A OTRA VISTA, OBSOLETO (SUSTITUIDO POR "CUENTA")
+function controlador_mis_pedidos()   
 {   $URI = get_URI();
     $usuario = checkSession();
     $cliente = datos_cliente($usuario);
@@ -486,26 +480,42 @@ function controlador_pedidos()   /// PENDIENTE REASIGNAR A OTRA VISTA, OBSOLETO 
     $usuario = checkSession();
     $empleado = datos_empleado($usuario);
     $lista_pedidos = lista_pedidos();
+    $checked = isset($_POST['pedido_select']) ? $_POST['pedido_select'] : [];
     $nif= isset($_POST['nif']) ? $_POST['nif'] : '';
+    $mensaje = "";
 
+    var_dump($checked);
 
-    if (isset($_POST["buscar"]) && $_POST['nif']!="") {
+    if (isset($_POST["buscar"]) && $_POST['nif']!='') {
         $lista_pedidos = pedidos_usuario($_POST['nif']); 
-        $mensaje = "Encontrados ".count($lista_pedidos). " pedidos del usuario ".$nif;} 
+        $mensaje = "Encontrados ".count($lista_pedidos). " pedidos del usuario ".$nif;}     
    
 
+    if (isset($_POST["marcar_pagado"])) {
+            $contador = 0;
+            if(intval($checked) == 1){
+                foreach($checked as $val){
+                    $cuenta = pedido_pagado($val);
+                    $contador +=$cuenta;
+                }
 
-    if (isset($_POST["volver_home"])) exit(header("location:home_".$empleado->tipo_cuenta));
+                $delay=1;
+                header("Refresh:$delay");
+                $mensaje = "Se modificaron ".$contador. " pedidos modificados con Éxito";
+            }
+    else $mensaje = "Por favor, seleccione al menos un producto para modificar";
+
+        }
+
+    if (isset($_POST["marcar_enviado"])) $mensaje=pedido_enviado($pedido->id_pedido);
+    if (isset($_POST["eliminar_pedido"])) ;
    
-    if (isset($_POST["cerrar_sesion"])){
-        exit(header('location:cerrar_sesion'));
-    }
+    var_dump($checked);
     global $twig;
     $template = $twig->load('pedidos.html');
 	echo $template->render(array ('URI'=>$URI, 'usuario' =>$usuario, 'empleado'=>$empleado, 'nif'=> $nif, 'lista_pedidos'=>$lista_pedidos, 'mensaje'=>$mensaje));
 
 }
-
 
 function controlador_iniciar_sesion(){
     session_start();
@@ -532,14 +542,14 @@ function controlador_iniciar_sesion(){
                         $pass = $user->contrasena;
                         $estado = $user->estado_cuenta;
                         $tipo_cuenta = $user->tipo_cuenta;        
-                                
-                            if (($estado === 'activo')  && (password_verify($contrasena, $pass))){
+                        if ($estado === 'activo'){
+                          //  if (($estado === 'activo')  && (password_verify($contrasena, $pass))){
                             //Login correcto
                             //Establecer sesion autentificada
                             $_SESSION["usuario"] = $usuario;    
-                            //$_SESSION["contrasena"] = $contrasena;  
-
+                            //$_SESSION["contrasena"] = $contrasena;
                             session_regenerate_id(); //para evitar ataque de fijacion de sesion (en redes compartidas)
+
                             //Según tipo de cuenta, se redirecciona a una página u otra
                             switch($tipo_cuenta){
                                 case 'cliente': exit(header("location:mi_cuenta"));
@@ -637,10 +647,6 @@ function controlador_home_almacen()
     $empleado = datos_empleado($usuario);
     if ($empleado->tipo_cuenta != 'almacen'){exit(header('location:iniciar_sesion'));}
     $mensaje = "";
-
-
-
-
 
 
 
@@ -886,7 +892,7 @@ function controlador_busqueda()
 	echo $template->render(array ( 'resultado' => $resultado));
 }
 
-
+?>
 
         
     

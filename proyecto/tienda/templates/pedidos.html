@@ -8,7 +8,6 @@
 
 
 <form method="POST" action="" autocomplete>
-    <form action="" method="POST">
         <fieldset>
         <legend>Busqueda</legend>
 
@@ -26,7 +25,7 @@
 
     <div>
     <h2 class='titulo'>PEDIDOS</h2>
-    <h3 class='titulo'>{{mensaje}}</h2>
+
     <table id="datos_cliente">
         <th>Id Pedido</th>
         <th>Nif Cliente</th>
@@ -40,7 +39,8 @@
         <th>Fecha Entrega</th>
     {% for key, pedido in lista_pedidos %}
     <tr>
-        <td><a href="http://localhost/proyecto/tienda/index.php/detalle_pedido?id_pedido={{pedido.id_pedido}}">{{pedido.id_pedido}}</td>
+        <td><input type="checkbox" name="pedido_select[]" class="checkbox"  value= {{pedido.id_pedido}}>
+        <a href="http://localhost/proyecto/tienda/index.php/detalle_pedido?id_pedido={{pedido.id_pedido}}">{{pedido.id_pedido}}</td>
         <td><a href="http://localhost/proyecto/tienda/index.php/detalle_cliente?id_cliente={{pedido.nif_cliente}}">{{pedido.nif_cliente}}</a></td>
         <td>{{pedido.total_kg}} Kilo(s)</td>
         <td>{{pedido.total_precio}} €</td>
@@ -63,11 +63,14 @@
 
         <!--   el botón "Cerrar Sesion" da la orden de borrar datos de sesión y elimina cookie-->
 
-        <button type="submit" name="volver_cuenta" method="POST">Ir a Mi Cuenta</button>
 
-        <button type="submit" name="cerrar_sesion" method="POST">Cerrar Sesion</button>
+        <button type="submit" name="marcar_pagado" method="POST">Marcar Pagado</button>
 
-        <button type="submit" name="eliminar_cuenta" method="POST">Eliminar Mi Cuenta</button>
+        <button type="submit" name="marcar_enviado" method="POST">Marcar Enviado</button>
+        
+        <button type="submit" name="eliminar_pedido" method="POST">Eliminar Pedido</button>
+
+
 
 
     </fieldset>

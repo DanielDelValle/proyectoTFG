@@ -512,9 +512,9 @@ function pedidos_usuario($nif){ //añadir argumento "orden" para añadir opcion 
 			//La búsqueda se realiza en mysql con el comando LIKE
 			$sql = "SELECT p.id_pedido, p.nif_cliente, p.total_precio, p.total_kg, p.forma_pago, p.estado_pago, p.estado_pedido, p.creado_fecha, p.enviado_fecha, p.entregado_fecha, p.notas
 					FROM pedido p JOIN cliente c ON p.nif_cliente = c.nif
-					WHERE p.nif_cliente = '$nif'
+					WHERE p.nif_cliente LIKE '%$nif%'
 					ORDER BY p.creado_fecha DESC";
-
+			//USO LIKE PARA BUSCAR POR NIF SIN TENER QUE ESCRIBIRLO ENTERO, PARA MAYOR FACILIDAD
 
 			$resultado = $pdo->query($sql);
 			$pedidosArray = $resultado->fetchAll(PDO::FETCH_OBJ);
@@ -537,11 +537,46 @@ function pedidos_usuario($nif){ //añadir argumento "orden" para añadir opcion 
 	return $pedidosArray;
 	}
 	
-	
+function pedido_pagado($id_pedido){
+			
+		$pdo = conexion();
+		if($pdo){
+			try{				
+		$pdo->beginTransaction();
+
+		$sql = "UPDATE pedido 
+				SET estado_pago = 'pagado'
+				WHERE id_pedido = '$id_pedido'" ;
+
+
+		$pedido_pagado = $pdo->prepare($sql);
+
+		if(($pedido_pagado->execute())>0){ //si la consulta ha retornado algún resultado ---          
+			$pdo->commit();
+			$resultado = $pedido_pagado->rowCount(); // --- entonces retorno el número de autores afectados (borrados)
+		}
+
+		else {
+			$resultado=false;
+			echo "Ningún pedido modificado - intentelo de nuevo";
+			$pdo->rollback();		
+			}	
+		}	
+catch(PDOException $e){
+	echo 'Excepción: ', $e->getMessage();
+	$resultado = false;				
+	}
+$pdo = null;
+return $resultado;
+
+}else{  return null; die("error en la conexión a la BD");} //en caso de no haber conexión, directamente se para el proceso
+
+
+	}
 
 	function detalle_pedido($id_pedido)
 	{	
-		$id_pedido = isset($_REQUEST["id_pedido"]) ? $_REQUEST["id_pedido"] : "";
+		$id_pedido = isset($_GET["id_pedido"]) ? $_GET["id_pedido"] : "";
 			$pdo = conexion();
 			if($pdo){
 				try{

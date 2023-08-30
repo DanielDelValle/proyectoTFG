@@ -8,7 +8,7 @@ function checkSession(){
             exit(header("location:iniciar_sesion"));   // si no hay un usuario correctamente identificado, se redirige al login.
             //exit;     // evita seguir ejecutando código de ésta página 
         }else{ 
-        echo session_id();
+        //echo session_id();
         $usuario = $_SESSION["usuario"];
         return $usuario;}
     }

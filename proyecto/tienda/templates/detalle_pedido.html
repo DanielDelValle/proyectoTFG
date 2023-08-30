@@ -17,7 +17,7 @@
 			{% for key, producto in pedido %}
 			<tr>	
 			<td>	{{producto.id_prod}}</td>	
-			<td><a href="http://localhost/proyecto/tienda/index.php/detalle_producto?id={{producto.id_prod}}">{{producto.nombre}}</a></td>	
+			<td><a href="http://localhost/proyecto/tienda/index.php/detalle_mercancia?id={{producto.id_prod}}">{{producto.nombre}}</a></td>	
 			<td>	{{producto.cantidad}} Kilo(s)</td>	
 			</tr>
 			{% endfor %}
@@ -25,6 +25,6 @@
 
 
 				<form action="index.php/mis_pedidos" method="POST">
-					<button type="submit" name="mis_pedidos"/>Volver a Mis Pedidos</button>
+					<button type="submit" name="mis_pedidos"/>Ir a Mis Pedidos</button>
 				</form>
 {% endblock %}	

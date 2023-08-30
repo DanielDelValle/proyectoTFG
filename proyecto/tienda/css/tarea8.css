@@ -9,6 +9,13 @@ h3   {font-size:25px;color: #309c30; font-weight: bold; margin-top:25px;margin-b
 	background: url("../imagenes/banner.png") no-repeat #7968BB;
 }
 
+.mensaje{	
+	padding:2px;
+	font-size: 20px;
+	color: #001aff;
+	
+}
+
 div {
 	text-align:center;
 	margin-top:50px;

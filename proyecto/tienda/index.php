@@ -21,7 +21,7 @@ if ($URI == 'index.php')
 }
 
 
-if ($URI == 'mercancia') 
+elseif ($URI == 'mercancia') 
 {
     controlador_mercancia(); // Se ejecuta el controlador específico de index
 }
@@ -43,8 +43,6 @@ elseif ($URI == 'detalle_cliente' && isset($_GET['email']))
     // Se ejecuta el controlador específico que muestra los detalles de un  pedido específico
     controlador_detalle_cliente($_GET['email']); 
 }
-
-
 
 
 elseif ($URI == 'detalle_pedido' && isset($_GET['id_pedido'])) 
@@ -141,11 +139,9 @@ elseif ($URI == 'alta_correcta')
 }
 
 
-
-
 else 
 { //Podemos gestionar errores de URI de esta forma
-    header('Status: 404 Not Found');
+   // header('Status: 404 Not Found');
     echo '<html><body><h1>La página a la que intenta acceder no       
           existe</h1></body></html>';
 }

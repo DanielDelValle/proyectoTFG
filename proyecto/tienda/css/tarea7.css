@@ -5,6 +5,13 @@
 	background-color: #7cac2e;
 	margin-top:0; 
 }
+
+.mensaje{	
+	padding:2px;
+	font-size: 20px;
+	color: #001aff;
+	
+}
 #banner img {
 	float:left; 
 	margin-left:1%;  
