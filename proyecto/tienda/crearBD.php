@@ -89,11 +89,13 @@
                 total_precio DECIMAL(7),
                 total_kg DECIMAL (5),
                 forma_pago ENUM ('bizum', 'transferencia bancaria'),
-                estado_pago ENUM ('pendiente', 'pagado', 'devuelto') DEFAULT 'pendiente',
-                estado_pedido ENUM ('procesando', 'enviado', 'recibido') DEFAULT 'procesando',
+                estado_pago ENUM ('pendiente', 'pagado', 'devolución') DEFAULT 'pendiente',
+                estado_pedido ENUM ('procesando', 'enviado', 'entregado', 'devuelto', 'cancelado') DEFAULT 'procesando',
                 creado_fecha DATETIME,
+                pagado_fecha DATETIME DEFAULT NULL,
                 enviado_fecha DATETIME DEFAULT NULL,
                 entregado_fecha DATETIME DEFAULT NULL,
+                cancelado_fecha DATETIME DEFAULT NULL,
                 notas VARCHAR (500)
 
                 )";
@@ -152,8 +154,8 @@
 
 
             //Insertar datos iniciales tabla PEDIDO (los 2 valores NULL corresponden a los datetime que quiero esten vacios por defecto)
-            $sql7= "INSERT INTO pedido (id_pedido, nif_cliente, total_precio, total_kg, forma_pago, creado_fecha, enviado_fecha, entregado_fecha, notas)
-                    VALUES('ajkp', '53665340S', 355.68, 3.0, 'bizum', '2023-08-21 02:55:00' ,NULL, NULL, 'Entregar antes del lunes 30/07'                        
+            $sql7= "INSERT INTO pedido (id_pedido, nif_cliente, total_precio, total_kg, forma_pago, creado_fecha, pagado_fecha, enviado_fecha, entregado_fecha, notas)
+                    VALUES('ajkp', '53665340S', 355.68, 3.0, 'bizum', '2023-08-21 02:55:00' ,NULL, NULL, NULL, 'Entregar antes del lunes 30/07'                        
             
             )";
 

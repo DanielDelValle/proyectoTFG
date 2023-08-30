@@ -37,6 +37,8 @@
         <th>Fecha Creado</th>
         <th>Fecha Envío</th>
         <th>Fecha Entrega</th>
+        <th>Fecha Cancelación</th>
+        <th>Notas</th>
     {% for key, pedido in lista_pedidos %}
     <tr>
         <td><input type="checkbox" name="pedido_select[]" class="checkbox"  value= {{pedido.id_pedido}}>
@@ -50,25 +52,25 @@
         <td>{{pedido.creado_fecha}} </td>
         <td>{{pedido.enviado_fecha}} </td>
         <td>{{pedido.entregado_fecha}} </td>
-
+        <td>{{pedido.cancelado_fecha}} </td>
+        <td>{{pedido.notas}} </td>
     </tr>
     {% endfor %}
     </table>
     <div>
     </fieldset>
-
-
-<fieldset>
     <div>
 
-        <!--   el botón "Cerrar Sesion" da la orden de borrar datos de sesión y elimina cookie-->
+
 
 
         <button type="submit" name="marcar_pagado" method="POST">Marcar Pagado</button>
 
         <button type="submit" name="marcar_enviado" method="POST">Marcar Enviado</button>
+
+        <button type="submit" name="marcar_entregado" method="POST">Marcar Entregado</button>
         
-        <button type="submit" name="eliminar_pedido" method="POST">Eliminar Pedido</button>
+        <button type="submit" name="cancelar_pedido" method="POST">Cancelar Pedido</button>
 
 
 

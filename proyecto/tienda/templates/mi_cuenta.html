@@ -6,7 +6,7 @@
 
 
 {% block content %}	
-        <h3 class='titulo'>BIENVENIDO {{cliente.nombre}}</h3>
+        <h3 class='titulo'>Bienvenido {{cliente.nombre}}</h3>
 
         <div>
             <form method="POST"  action="" autocomplete>
@@ -19,7 +19,6 @@
                     
                                 <li><a href="index.php/mis_datos">Mis Datos</a></li>    
                                 <li><a href="index.php/mis_pedidos" >Mis Pedidos</a></li>        
-                                <li><a href="index.php/mi_cesta" >Mi Cesta ( {{total_prods}} )</a></li>        
                                 
                                 
                         </ul>        
@@ -27,8 +26,6 @@
                 </nav>    
                 
                 <!--  el botón "Cerrar Sesion" da la orden de borrar datos de sesión y elimina cookie-->
-
-                    <button type="submit" name="cerrar_sesion" method="POST">Cerrar Sesion</button>
                 </fieldset>
             </form>
         </div>

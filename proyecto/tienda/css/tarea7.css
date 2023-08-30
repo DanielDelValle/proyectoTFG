@@ -68,7 +68,7 @@ table {
 	color: #8b4513;
 	font-size: 20px;
 	font-weight: bold;
-	width:75%;
+	width:auto;
 	margin-left: auto;
 	margin-right: auto;
 	margin-top: 25px;
@@ -173,7 +173,7 @@ text-align: left;
 	}
 	
 a:hover {
-	font-size: 130%;
+	font-size: 120%;
 	/*text-decoration: underline;*/
 	background-color:#89ad506e;
 }
@@ -190,7 +190,7 @@ a:hover {
 	margin-right: auto;
 
 }
-
+*/
 fieldset {
 	border-radius: 20px;
 	border: 2px solid;
@@ -226,7 +226,7 @@ input {
 	width: auto;
 	background-color: #dee6b0;
 }
-*/
+
 
 /*button {
 	padding: 0.75em;
@@ -246,6 +246,16 @@ input {
 
 input:focus {
 	outline: 2px dashed #ff8c00;
+}*/
+select{
+	padding:.5em;
+	border-radius:10px;
+	border:1px solid;
+	border-color:#3678ce;
+	width: auto;
+	text-align:center;
+	margin-right: 15px;;
+	background-color: #b0e0e6;
 }
 
 select:hover {
@@ -254,7 +264,7 @@ select:hover {
 
 select:focus {
 	outline: 2px dashed #ff8c00;
-}*/
+}
 
 footer {
 	width: 100%;

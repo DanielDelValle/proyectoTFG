@@ -504,7 +504,7 @@ function insert_pedido($id_pedido, $nif, $total_precio, $total_kg, $forma_pago, 
 
 
 
-function pedidos_usuario($nif){ //añadir argumento "orden" para añadir opcion en base a qué ordenarlo
+function pedidos_usuario($nif, $orden){ //añado argumento "orden" para añadir opcion en base a qué ordenarlo
 
 		$pdo = conexion();
 		if($pdo){
@@ -513,7 +513,8 @@ function pedidos_usuario($nif){ //añadir argumento "orden" para añadir opcion 
 			$sql = "SELECT p.id_pedido, p.nif_cliente, p.total_precio, p.total_kg, p.forma_pago, p.estado_pago, p.estado_pedido, p.creado_fecha, p.enviado_fecha, p.entregado_fecha, p.notas
 					FROM pedido p JOIN cliente c ON p.nif_cliente = c.nif
 					WHERE p.nif_cliente LIKE '%$nif%'
-					ORDER BY p.creado_fecha DESC";
+					ORDER BY '%$orden%' DESC";
+
 			//USO LIKE PARA BUSCAR POR NIF SIN TENER QUE ESCRIBIRLO ENTERO, PARA MAYOR FACILIDAD
 
 			$resultado = $pdo->query($sql);
@@ -537,7 +538,7 @@ function pedidos_usuario($nif){ //añadir argumento "orden" para añadir opcion 
 	return $pedidosArray;
 	}
 	
-function pedido_pagado($id_pedido){
+function pedido_pagado($id_pedido, $pagado_fecha){
 			
 		$pdo = conexion();
 		if($pdo){
@@ -545,7 +546,7 @@ function pedido_pagado($id_pedido){
 		$pdo->beginTransaction();
 
 		$sql = "UPDATE pedido 
-				SET estado_pago = 'pagado'
+				SET estado_pago = 'pagado', pagado_fecha = '$pagado_fecha'
 				WHERE id_pedido = '$id_pedido'" ;
 
 
@@ -573,6 +574,118 @@ return $resultado;
 
 
 	}
+
+
+function pedido_enviado($id_pedido, $enviado_fecha){
+		
+	$pdo = conexion();
+	if($pdo){
+		try{				
+	$pdo->beginTransaction();
+
+	$sql = "UPDATE pedido 
+			SET estado_pedido = 'enviado', enviado_fecha = '$enviado_fecha'
+			WHERE id_pedido = '$id_pedido'" ;
+
+
+	$pedido_enviado = $pdo->prepare($sql);
+
+	if(($pedido_enviado->execute())>0){ //si la consulta ha retornado algún resultado ---          
+		$pdo->commit();
+		$resultado = $pedido_enviado->rowCount(); // --- entonces retorno el número de autores afectados (borrados)
+	}
+
+	else {
+		$resultado=false;
+		echo "Ningún pedido modificado - intentelo de nuevo";
+		$pdo->rollback();		
+		}	
+	}	
+catch(PDOException $e){
+echo 'Excepción: ', $e->getMessage();
+$resultado = false;				
+}
+$pdo = null;
+return $resultado;
+
+}else{  return null; die("error en la conexión a la BD");} //en caso de no haber conexión, directamente se para el proceso
+
+
+}
+
+function pedido_entregado($id_pedido, $entregado_fecha){
+		
+	$pdo = conexion();
+	if($pdo){
+		try{				
+	$pdo->beginTransaction();
+
+	$sql = "UPDATE pedido 
+			SET estado_pedido = 'entregado', entregado_fecha = '$entregado_fecha'
+			WHERE id_pedido = '$id_pedido'" ;
+
+
+	$pedido_entregado = $pdo->prepare($sql);
+
+	if(($pedido_entregado->execute())>0){ //si la consulta ha retornado algún resultado ---          
+		$pdo->commit();
+		$resultado = $pedido_entregado->rowCount(); // --- entonces retorno el número de autores afectados (borrados)
+	}
+
+	else {
+		$resultado=false;
+		echo "Ningún pedido modificado - intentelo de nuevo";
+		$pdo->rollback();		
+		}	
+	}	
+catch(PDOException $e){
+echo 'Excepción: ', $e->getMessage();
+$resultado = false;				
+}
+$pdo = null;
+return $resultado;
+
+}else{  return null; die("error en la conexión a la BD");} //en caso de no haber conexión, directamente se para el proceso
+
+
+}
+	
+function pedido_cancelado($id_pedido, $cancelado_fecha){
+		
+	$pdo = conexion();
+	if($pdo){
+		try{				
+	$pdo->beginTransaction();
+
+	$sql = "UPDATE pedido 
+			SET estado_pedido = 'cancelado', cancelado_fecha = '$cancelado_fecha'
+			WHERE id_pedido = '$id_pedido'" ;
+
+
+	$pedido_cancelado = $pdo->prepare($sql);
+
+	if(($pedido_cancelado->execute())>0){ //si la consulta ha retornado algún resultado ---          
+		$pdo->commit();
+		$resultado = $pedido_cancelado->rowCount(); // --- entonces retorno el número de autores afectados (borrados)
+	}
+
+	else {
+		$resultado=false;
+		echo "Ningún pedido modificado - intentelo de nuevo";
+		$pdo->rollback();		
+		}	
+	}	
+catch(PDOException $e){
+echo 'Excepción: ', $e->getMessage();
+$resultado = false;				
+}
+$pdo = null;
+return $resultado;
+
+}else{  return null; die("error en la conexión a la BD");} //en caso de no haber conexión, directamente se para el proceso
+
+
+}	
 
 	function detalle_pedido($id_pedido)
 	{	

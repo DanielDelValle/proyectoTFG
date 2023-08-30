@@ -15,6 +15,7 @@
 
     <table id="datos_cliente">
         <th>Id Pedido</th>
+        <th>Nif Cliente</th>
         <th>Total Peso</th>
         <th>Total Precio</th>
         <th>Forma Pago</th>
@@ -22,10 +23,12 @@
         <th>Estado Pedido</th>
         <th>Fecha Creado</th>
         <th>Fecha Envío</th>
-        <th>Fecha Entrega</th>
+        <th>Fecha Recibido</th>
+        <th>Fecha Cancelación</th>
         <th>Notas</th>
     {% for key, pedido in pedidosArray %}
     <tr>
+        <td><input type="checkbox" name="pedido_select[]" class="checkbox"  value= {{pedido.id_pedido}}>
         <td><a href="http://localhost/proyecto/tienda/index.php/detalle_pedido?id_pedido={{pedido.id_pedido}}">{{pedido.id_pedido}}</a></td>
         <td>{{pedido.total_kg}} Kilo(s)</td>
         <td>{{pedido.total_precio}} €</td>
@@ -35,6 +38,7 @@
         <td>{{pedido.creado_fecha}} </td>
         <td>{{pedido.enviado_fecha}} </td>
         <td>{{pedido.entregado_fecha}} </td>
+        <td>{{pedido.cancelado_fecha}} </td>
         <td>{{pedido.notas}} </td>
 
     </tr>
@@ -43,15 +47,30 @@
     <div>
     </fieldset>
 
+    <fieldset >
+        <label for='orden'>Ordenar por</label>
+        <select name='orden' id='orden'>
+            <option value = 'creado_fecha' > Fecha Creación</option>
+            <option value = 'enviado_fecha'> Fecha Envío</option>
+            <option value = 'entregado_fecha'> Fecha Recibido</option>
+            <option value = 'estado_pedido'> Estado del Pedido</option>
+            <option value = 'estado_pago'> Estado de Pago</option>
+            <option value = 'forma_pago'> Forma de Pago</option>
+            <option value= 'total_kg'> Total KG</option>
+            <option value = 'total_precio'> Total Precio</option>
+        </select>
+        <button type="submit" name="ordenar" method="POST">Ordenar</button>
 
-<fieldset>
+    </fieldset>
+
+    <fieldset >
     <div>
 
         <!--   el botón "Cerrar Sesion" da la orden de borrar datos de sesión y elimina cookie-->
 
-        <button type="submit" name="volver_cuenta" method="POST">Ir a Mi Cuenta</button>
 
-        <button type="submit" name="cerrar_sesion" method="POST">Cerrar Sesion</button>
+        <button type="submit" name="marcar_recibido" method="POST">Marcar Recibido</button>
+
 
         <button type="submit" name="eliminar_cuenta" method="POST">Eliminar Mi Cuenta</button>
 

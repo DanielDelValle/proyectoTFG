@@ -126,18 +126,15 @@ function controlador_detalle_producto($id)
         if(count($_SESSION['cesta']) != 0){
             if(in_array($prod_add['id_prod'], array_keys($_SESSION['cesta']))){
                 $_SESSION['cesta'][$prod_add['id_prod']]['cantidad'] +=1;
-
             } 
             else {
                 //Si ninguno de los productos de la cesta es el que vamos a introducir, se introduce el mismo
                 $_SESSION['cesta'][$prod_add['id_prod']] = $prod_add;
-                header("Refresh:1");
             }
         
         }else{
             // Si la cesta esta vacia se introduce directamente el producto, dandole como indice la ID del mismo para mas facil identificacion.
             $_SESSION['cesta'][$prod_add['id_prod']] = $prod_add;
-            header("Refresh:1");
         }
 
         }
@@ -169,7 +166,7 @@ function controlador_detalle_cliente($nif)
 {   $URI = get_URI();
     $usuario = checkSession();
     $empleado = datos_empleado($usuario);
-    $cliente= datos_cliente($email); 
+    $cliente= datos_cliente($usuario); 
     
     $mensaje = "";
 
@@ -356,7 +353,7 @@ function controlador_confirmar_pedido(){
         switch(($_POST['forma_pago'])){
             case "bizum":
                 $forma_pago = 'bizum';
-// cuidado con '' o "" - para SQL conviene usar ''
+// cuidado con '' y "" - para SQL conviene usar ''
             case "transferencia_bancaria":
                 $forma_pago = 'transferencia bancaria';                 
         }
@@ -401,7 +398,7 @@ function controlador_pedido_realizado($id_pedido){
     $total_precio = $_SESSION['total_precio'];
     $total_kg = $_SESSION['total_kg'];
     $total_prods = $_SESSION['total_prods'];
-    // unset($_SESSION['cesta']);     // DESCOMENTAR CUANDO YA NO NECESITE HACER PRUEBAS  //eliminamos cesta pues ya se ha transformado en pedido
+    unset($_SESSION['cesta']);     // DESCOMENTAR CUANDO YA NO NECESITE HACER PRUEBAS  //eliminamos cesta pues ya se ha transformado en pedido
     if(isset($_POST["ver_productos"])){
         exit(header("location:index.php"));
     }
@@ -453,25 +450,43 @@ function controlador_mis_pedidos()
     $cliente = datos_cliente($usuario);
     $logged = isset($_SESSION['usuario']) ? "cerrar_sesion" : "iniciar_sesion";
     $logged_legible = isset($_SESSION['usuario']) ? "Cerrar Sesión" : "Iniciar Sesión";
+    $checked = isset($_POST['pedido_select']) ? $_POST['pedido_select'] : [];
     $nif = $cliente->nif;
+    $orden = isset($_POST['orden']) ? htmlentities($_POST['orden'], ENT_QUOTES,'utf-8') : 'sin criterio';
     $total_prods = isset($_SESSION['cesta']) ? count($_SESSION['cesta']) : 0;
- 
-    $pedidosArray = pedidos_usuario($nif);
-  
+
+    $pedidosArray = pedidos_usuario($nif, $orden);
     // Petición al modelo para que retorne la lista de productos de la BD
-    $productos = lista_productos();
-    // Carga la plantilla que se mostrará al usuario con los datos recuperados del modelo
 	global $twig;
     // Carga la plantilla que se mostrará al usuario con los datos recuperados 
     // del modelo
 
-    if (isset($_POST["volver_cuenta"])) exit(header("location:mi_cuenta"));
+     echo $orden;
+    
+    if (isset($_POST["marcar_recibido"])) {
+        $contador = 0;
+        if(intval($checked) == 1){
+            $recibido_fecha = date('Y-m-d H:i:s');
+            foreach($checked as $val){
+                $cuenta = pedido_entregado($val, $recibido_fecha);
+                $contador +=$cuenta;
+            }
+            $delay=1;
+            header("Refresh:$delay");
+            $mensaje = $contador. " pedido(s) marcado(s) como 'Recibido'";
+        }
+    else $mensaje = "Por favor, seleccione al menos un producto para modificar";
+    }
+
+    if (isset($_POST["ordenar"])){
+        //aplicar algo que ordene, script o PHP
+    }
    
     if (isset($_POST["cerrar_sesion"])){
         exit(header('location:cerrar_sesion'));
     }
     $template = $twig->load('mis_pedidos.html');
-	echo $template->render(array ('URI'=>$URI, 'productos' => $productos, 'usuario' =>$usuario, 'cliente'=> $cliente, 'logged'=>$logged, 'total_prods'=>$total_prods, 'logged_legible'=>$logged_legible, 'pedidosArray' => $pedidosArray));
+	echo $template->render(array ('URI'=>$URI, 'usuario' =>$usuario, 'cliente'=> $cliente, 'logged'=>$logged, 'total_prods'=>$total_prods, 'logged_legible'=>$logged_legible, 'pedidosArray' => $pedidosArray));
 
 }
 
@@ -482,35 +497,82 @@ function controlador_pedidos()   /// PENDIENTE REASIGNAR A OTRA VISTA, OBSOLETO 
     $lista_pedidos = lista_pedidos();
     $checked = isset($_POST['pedido_select']) ? $_POST['pedido_select'] : [];
     $nif= isset($_POST['nif']) ? $_POST['nif'] : '';
+    $orden = isset($_POST['orden']) ? htmlentities($_POST['orden'],  ENT_QUOTES, "UTF-8") : '';
     $mensaje = "";
 
     var_dump($checked);
 
     if (isset($_POST["buscar"]) && $_POST['nif']!='') {
-        $lista_pedidos = pedidos_usuario($_POST['nif']); 
-        $mensaje = "Encontrados ".count($lista_pedidos). " pedidos del usuario ".$nif;}     
-   
+        $lista_pedidos = pedidos_usuario($_POST['nif'], $orden); 
+        $mensaje = "Encontrados ".count($lista_pedidos). " pedidos del usuario ".$nif;}  
+
+    /*if (isset($_POST["buscar"]) && $_POST['creado_fecha']!='') {
+        $lista_pedidos = pedidos_usuario($_POST['creado_fecha'], $orden); 
+        $mensaje = "Encontrados ".count($lista_pedidos). " pedidos del usuario ".$creado_fecha;}  */
 
     if (isset($_POST["marcar_pagado"])) {
             $contador = 0;
             if(intval($checked) == 1){
+                $pagado_fecha = date('Y-m-d H:i:s');
                 foreach($checked as $val){
-                    $cuenta = pedido_pagado($val);
+                    $cuenta = pedido_pagado($val, $pagado_fecha);
                     $contador +=$cuenta;
                 }
-
                 $delay=1;
                 header("Refresh:$delay");
-                $mensaje = "Se modificaron ".$contador. " pedidos modificados con Éxito";
+                $mensaje = $contador. " pedido(s) marcado(s) como 'Pagado'";
+            }
+    else $mensaje = "Por favor, seleccione al menos un producto para modificar";
+
+        }        
+
+    if (isset($_POST["marcar_enviado"])) {
+            $contador = 0;
+            if(intval($checked) == 1){
+                $enviado_fecha = date('Y-m-d H:i:s');
+                foreach($checked as $val){
+                    $cuenta = pedido_enviado($val, $enviado_fecha );
+                    $contador +=$cuenta;
+                }
+                $delay=1;
+                header("Refresh:$delay");
+                $mensaje = $contador. " pedido(s) marcado(s) como 'Enviado'";
             }
     else $mensaje = "Por favor, seleccione al menos un producto para modificar";
 
         }
 
-    if (isset($_POST["marcar_enviado"])) $mensaje=pedido_enviado($pedido->id_pedido);
-    if (isset($_POST["eliminar_pedido"])) ;
-   
-    var_dump($checked);
+    if (isset($_POST["marcar_entregado"])) {
+        $contador = 0;
+        if(intval($checked) == 1){
+            $entregado_fecha = date('Y-m-d H:i:s');
+            foreach($checked as $val){
+                $cuenta = pedido_entregado($val, $entregado_fecha);
+                $contador +=$cuenta;
+            }
+            $delay=1;
+            header("Refresh:$delay");
+            $mensaje = $contador. " pedido(s) marcado(s) como 'Entregado'";
+        }
+    else $mensaje = "Por favor, seleccione al menos un producto para modificar";
+    }
+
+    if (isset($_POST["cancelar_pedido"])) {
+        $contador = 0;
+        if(intval($checked) == 1){
+            $cancelado_fecha = date('Y-m-d H:i:s');
+            foreach($checked as $val){
+                $cuenta = pedido_cancelado($val, $cancelado_fecha );
+                $contador +=$cuenta;
+            }
+            $delay=1;
+            header("Refresh:$delay");
+            $mensaje = $contador. " pedido(s) cancelado(s)";
+        }
+    else $mensaje = "Por favor, seleccione al menos un producto para modificar";
+
+    }
+
     global $twig;
     $template = $twig->load('pedidos.html');
 	echo $template->render(array ('URI'=>$URI, 'usuario' =>$usuario, 'empleado'=>$empleado, 'nif'=> $nif, 'lista_pedidos'=>$lista_pedidos, 'mensaje'=>$mensaje));
@@ -702,7 +764,7 @@ function controlador_crear_cuenta()
         (valid_contrasena($_POST['contrasena'])) && ($_POST['contrasena'] === $_POST['rep_contrasena'])) 
             {
             $creado_fecha = date('Y-m-d H:i:s');
-   
+            //añadir htmlentities delante de cada entrada
             $resultado = insert_cliente($_POST['nif'], $_POST['nombre'], $_POST['apellidos'], 
             $_POST['email'], $_POST['telefono'], $_POST['direccion'], $_POST['localidad'], $_POST['cod_postal'], $_POST['provincia'],
             $_POST['contrasena'], $creado_fecha); 
