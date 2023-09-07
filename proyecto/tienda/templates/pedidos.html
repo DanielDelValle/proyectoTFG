@@ -43,7 +43,7 @@
     <tr>
         <td><input type="checkbox" name="pedido_select[]" class="checkbox"  value= {{pedido.id_pedido}}>
         <a href="http://localhost/proyecto/tienda/index.php/detalle_pedido?id_pedido={{pedido.id_pedido}}">{{pedido.id_pedido}}</td>
-        <td><a href="http://localhost/proyecto/tienda/index.php/detalle_cliente?id_cliente={{pedido.nif_cliente}}">{{pedido.nif_cliente}}</a></td>
+        <td><a href="http://localhost/proyecto/tienda/index.php/detalle_cliente?nif={{pedido.nif_cliente}}">{{pedido.nif_cliente}}</a></td>
         <td>{{pedido.total_kg}} Kilo(s)</td>
         <td>{{pedido.total_precio}} €</td>
         <td>{{pedido.forma_pago}} </td>
@@ -70,7 +70,9 @@
 
         <button type="submit" name="marcar_entregado" method="POST">Marcar Entregado</button>
         
-        <button type="submit" name="cancelar_pedido" method="POST">Cancelar Pedido</button>
+        <button class = 'critical' type="submit" name="cancelar_pedido" method="POST">Cancelar Pedido</button>
+
+        <button type="submit" name="borrar_cancelados" method="POST">Borrar Cancelados</button>
 
 
 

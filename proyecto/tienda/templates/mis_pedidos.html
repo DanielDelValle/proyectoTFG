@@ -15,7 +15,6 @@
 
     <table id="datos_cliente">
         <th>Id Pedido</th>
-        <th>Nif Cliente</th>
         <th>Total Peso</th>
         <th>Total Precio</th>
         <th>Forma Pago</th>
@@ -28,8 +27,8 @@
         <th>Notas</th>
     {% for key, pedido in pedidosArray %}
     <tr>
-        <td><input type="checkbox" name="pedido_select[]" class="checkbox"  value= {{pedido.id_pedido}}>
-        <td><a href="http://localhost/proyecto/tienda/index.php/detalle_pedido?id_pedido={{pedido.id_pedido}}">{{pedido.id_pedido}}</a></td>
+        <td><input {{activo}} type="checkbox" name="pedido_select[]" class="checkbox"  value= {{pedido.id_pedido}}>
+        <a href="http://localhost/proyecto/tienda/index.php/detalle_pedido?id_pedido={{pedido.id_pedido}}">&nbsp;{{pedido.id_pedido}}</a></td>
         <td>{{pedido.total_kg}} Kilo(s)</td>
         <td>{{pedido.total_precio}} €</td>
         <td>{{pedido.forma_pago}} </td>
@@ -70,9 +69,10 @@
 
 
         <button type="submit" name="marcar_recibido" method="POST">Marcar Recibido</button>
+        
+        <button class= "critical" type="submit" name="cancelar_pedido" method="POST">Cancelar Pedido</button>
 
-
-        <button type="submit" name="eliminar_cuenta" method="POST">Eliminar Mi Cuenta</button>
+        <button type="submit" name="borrar_cancelados" method="POST">Borrar Cancelados</button>
 
 
     </fieldset>

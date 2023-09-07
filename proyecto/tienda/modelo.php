@@ -128,7 +128,9 @@ function get_sugerencias_ajax($busqueda){
 	//echo $sugerencias === "" ? "<br> no se encuentran sugerencias" : $sugerencias;
 	echo $sugerencias;
 
-	function lista_users()
+
+	//Unifico ambas listas de usuarios(empleado + cliente) para un unico controlador de autenticacion
+	function lista_users()   
 	{	
 			$pdo = conexion();
 			if($pdo){
@@ -397,8 +399,32 @@ function alta_empleado($nif, $nombre, $apellidos, $email, $telefono, $direccion,
 		$pdo = null;*/
 
 
+		
+function datos_cliente_nif($nif)   //BUSCA CLIENTE POR NIF
+{	
+		$pdo = conexion();
+		if($pdo){
+			try{
+			//La búsqueda se realiza en mysql con el comando LIKE
+			$sql = "SELECT nif, nombre, apellidos, email, telefono, direccion, localidad, cod_postal, provincia, contrasena, creado_fecha, estado_cuenta, tipo_cuenta
+					FROM cliente WHERE nif ='$nif'";		
+			$lectura = $pdo->query($sql);
+			$cliente= $lectura->fetchObject();
 
-function datos_cliente($email)
+			return $cliente;
+			//total_pedidos, c.total_gasto SI SE LLEGAN A INCORPORAR DICHAS COLUMNAS
+		}	
+		
+		catch(PDOException $e){
+			echo 'Excepción: ', $e->getMessage();
+			return null;
+		  }
+		}  	
+		$pdo = null;
+	
+}
+
+function datos_cliente($email)  // BUSCA CLIENTE POR MAIL
 {	
 		$pdo = conexion();
 		if($pdo){
@@ -408,6 +434,7 @@ function datos_cliente($email)
 					FROM cliente WHERE email ='$email'";		
 			$lectura = $pdo->query($sql);
 			$cliente= $lectura->fetchObject();
+
 			return $cliente;
 			//total_pedidos, c.total_gasto SI SE LLEGAN A INCORPORAR DICHAS COLUMNAS
 		}	
@@ -431,6 +458,7 @@ function datos_empleado($email)
 					FROM empleado WHERE email ='$email'";		
 			$lectura = $pdo->query($sql);
 			$empleado= $lectura->fetchObject();
+
 			return $empleado;
 
 		}	
@@ -504,16 +532,16 @@ function insert_pedido($id_pedido, $nif, $total_precio, $total_kg, $forma_pago, 
 
 
 
-function pedidos_usuario($nif, $orden){ //añado argumento "orden" para añadir opcion en base a qué ordenarlo
+function pedidos_usuario($nif){ //añado argumento "orden" para añadir opcion en base a qué ordenarlo
 
 		$pdo = conexion();
 		if($pdo){
 			try{
 			//La búsqueda se realiza en mysql con el comando LIKE
-			$sql = "SELECT p.id_pedido, p.nif_cliente, p.total_precio, p.total_kg, p.forma_pago, p.estado_pago, p.estado_pedido, p.creado_fecha, p.enviado_fecha, p.entregado_fecha, p.notas
+			$sql = "SELECT p.id_pedido, p.nif_cliente, p.total_precio, p.total_kg, p.forma_pago, p.estado_pago, p.estado_pedido, p.creado_fecha, p.enviado_fecha, p.entregado_fecha, p.cancelado_fecha, p.notas
 					FROM pedido p JOIN cliente c ON p.nif_cliente = c.nif
-					WHERE p.nif_cliente LIKE '%$nif%'
-					ORDER BY '%$orden%' DESC";
+					WHERE p.nif_cliente LIKE '%$nif%'";
+					//ORDER BY '%$orden%' DESC";
 
 			//USO LIKE PARA BUSCAR POR NIF SIN TENER QUE ESCRIBIRLO ENTERO, PARA MAYOR FACILIDAD
 
@@ -660,6 +688,78 @@ function pedido_cancelado($id_pedido, $cancelado_fecha){
 	$sql = "UPDATE pedido 
 			SET estado_pedido = 'cancelado', cancelado_fecha = '$cancelado_fecha'
 			WHERE id_pedido = '$id_pedido'" ;
+
+
+	$pedido_cancelado = $pdo->prepare($sql);
+
+	if(($pedido_cancelado->execute())>0){ //si la consulta ha retornado algún resultado ---          
+		$pdo->commit();
+		$resultado = $pedido_cancelado->rowCount(); // --- entonces retorno el número de autores afectados (borrados)
+	}
+
+	else {
+		$resultado=false;
+		echo "Ningún pedido modificado - intentelo de nuevo";
+		$pdo->rollback();		
+		}	
+	}	
+catch(PDOException $e){
+echo 'Excepción: ', $e->getMessage();
+$resultado = false;				
+}
+$pdo = null;
+return $resultado;
+
+}else{  return null; die("error en la conexión a la BD");} //en caso de no haber conexión, directamente se para el proceso
+
+
+}	
+
+function borrar_cancelados(){ //// REVISAR
+		
+	$pdo = conexion();
+	if($pdo){
+		try{				
+	$pdo->beginTransaction();
+
+	$sql = "DELETE FROM pedido
+			WHERE estado_pedido = 'cancelado'" ;
+
+
+	$pedido_cancelado = $pdo->prepare($sql);
+
+	if(($pedido_cancelado->execute())>0){ //si la consulta ha retornado algún resultado ---          
+		$pdo->commit();
+		$resultado = $pedido_cancelado->rowCount(); // --- entonces retorno el número de autores afectados (borrados)
+	}
+
+	else {
+		$resultado=false;
+		echo "Ningún pedido modificado - intentelo de nuevo";
+		$pdo->rollback();		
+		}	
+	}	
+catch(PDOException $e){
+echo 'Excepción: ', $e->getMessage();
+$resultado = false;				
+}
+$pdo = null;
+return $resultado;
+
+}else{  return null; die("error en la conexión a la BD");} //en caso de no haber conexión, directamente se para el proceso
+
+
+}	
+
+function borrar_cancelados_cliente($nif){
+		
+	$pdo = conexion();
+	if($pdo){
+		try{				
+	$pdo->beginTransaction();
+
+	$sql = "DELETE FROM pedido
+			WHERE nif_cliente = '$nif' AND estado_pedido = 'cancelado'" ;
 
 
 	$pedido_cancelado = $pdo->prepare($sql);

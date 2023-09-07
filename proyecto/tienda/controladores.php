@@ -165,20 +165,38 @@ function controlador_detalle_mercancia($id)
 function controlador_detalle_cliente($nif)
 {   $URI = get_URI();
     $usuario = checkSession();
-    $empleado = datos_empleado($usuario);
-    $cliente= datos_cliente($usuario); 
-    
+    $empleado = datos_empleado($usuario); 
+   // if ($empleado->tipo_cuenta != 'admon'){exit(header('location:pedidos'));}  // sólo el administrativo puede ver los datos del cliente
+    $cliente = datos_cliente_nif($nif);
+    $email = $cliente->email;    
+    $total_pedidos = count(pedidos_usuario($nif)); //EL NÚM DE ELEMENTOS DEL ARRAY DE LOS PEDIDOS DEL USUARIO
+    $total_gasto = array_sum(array_column(pedidos_usuario($nif), 'total_precio')); // SUMO LOS ELEMENTOS DEL ARRAY QUE CONTIENE EL TOTAL DE PRECIO DE TODOS LOS PEDIDOS DEL USUARIO
     $mensaje = "";
+
+    if(isset($_POST['volver_pedidos']))controlador_pedidos();
 
     
     global $twig;
     $template = $twig->load('detalle_cliente.html');  
-	echo $template->render(array ('URI'=>$URI, 'empleado'=>$empleado, 'cliente'=>$cliente, 'mensaje'=> $mensaje));
+	echo $template->render(array ('URI'=>$URI, 'empleado'=>$empleado, 'cliente'=>$cliente, 'mensaje'=> $mensaje, 'total_pedidos'=>$total_pedidos, 'total_gasto' =>$total_gasto));
     
 }
 
 
-function controlador_mis_datos()   /// PENDIENTE REASIGNAR A OTRA VISTA, OBSOLETO (SUSTITUIDO POR "CUENTA")
+function controlador_detalle_empleado()
+{   $URI = get_URI();
+    $usuario = checkSession();
+    $empleado = datos_empleado($usuario);
+    $mensaje = "";
+
+    
+    global $twig;
+    $template = $twig->load('detalle_empleado.html');  
+	echo $template->render(array ('URI'=>$URI, 'empleado'=>$empleado, 'mensaje'=> $mensaje));
+    
+}
+
+function controlador_mis_datos()   
 {   $URI = get_URI();
     $usuario = checkSession();
     $cliente = datos_cliente($usuario);
@@ -398,7 +416,7 @@ function controlador_pedido_realizado($id_pedido){
     $total_precio = $_SESSION['total_precio'];
     $total_kg = $_SESSION['total_kg'];
     $total_prods = $_SESSION['total_prods'];
-    unset($_SESSION['cesta']);     // DESCOMENTAR CUANDO YA NO NECESITE HACER PRUEBAS  //eliminamos cesta pues ya se ha transformado en pedido
+    unset($_SESSION['cesta']);      //eliminamos cesta pues ya se ha transformado en pedido  // COMENTAR CUANDO NECESITE HACER PRUEBAS
     if(isset($_POST["ver_productos"])){
         exit(header("location:index.php"));
     }
@@ -475,11 +493,34 @@ function controlador_mis_pedidos()
             header("Refresh:$delay");
             $mensaje = $contador. " pedido(s) marcado(s) como 'Recibido'";
         }
-    else $mensaje = "Por favor, seleccione al menos un producto para modificar";
+    else $mensaje = "Por favor, seleccione al menos un pedido para modificar";
     }
 
+    if (isset($_POST["cancelar_pedido"])) {
+        $activo = '';
+        $contador = 0;
+        if(intval($checked) == 1){
+            $cancelado_fecha = date('Y-m-d H:i:s');
+            foreach($checked as $val){
+                $cuenta = pedido_cancelado($val, $cancelado_fecha);
+                $contador +=$cuenta;
+            }
+            $delay=1;
+            header("Refresh:$delay");
+            $mensaje = $contador. " pedido(s) cancelados'";
+        }
+    else $mensaje = "Por favor, seleccione al menos un pedido para cancelar";
+    }
+
+    
+    if (isset($_POST["borrar_cancelados"])) {
+        $contador = borrar_cancelados_cliente($nif);
+        $delay=1;
+        header("Refresh:$delay");
+        $mensaje = $contador. " pedido(s) cancelado(s) borrado(s)";
+    }
     if (isset($_POST["ordenar"])){
-        //aplicar algo que ordene, script o PHP
+        //aplicar algo que ordene, script o PHP, mismo que en controlador_pedidos)
     }
    
     if (isset($_POST["cerrar_sesion"])){
@@ -497,14 +538,15 @@ function controlador_pedidos()   /// PENDIENTE REASIGNAR A OTRA VISTA, OBSOLETO 
     $lista_pedidos = lista_pedidos();
     $checked = isset($_POST['pedido_select']) ? $_POST['pedido_select'] : [];
     $nif= isset($_POST['nif']) ? $_POST['nif'] : '';
-    $orden = isset($_POST['orden']) ? htmlentities($_POST['orden'],  ENT_QUOTES, "UTF-8") : '';
+    $orden = isset($_POST['orden']) ? $_POST['orden'] : '';
+   // $orden = isset($_POST['orden']) ? htmlentities($_POST['orden'],  ENT_QUOTES, "UTF-8") : '';
     $mensaje = "";
 
     var_dump($checked);
 
     if (isset($_POST["buscar"]) && $_POST['nif']!='') {
-        $lista_pedidos = pedidos_usuario($_POST['nif'], $orden); 
-        $mensaje = "Encontrados ".count($lista_pedidos). " pedidos del usuario ".$nif;}  
+        $lista_pedidos = pedidos_usuario($_POST['nif']); 
+        $mensaje = "Encontrados ".count($lista_pedidos). " pedidos cuyo NIF contiene '$nif'";}  
 
     /*if (isset($_POST["buscar"]) && $_POST['creado_fecha']!='') {
         $lista_pedidos = pedidos_usuario($_POST['creado_fecha'], $orden); 
@@ -573,6 +615,12 @@ function controlador_pedidos()   /// PENDIENTE REASIGNAR A OTRA VISTA, OBSOLETO 
 
     }
 
+    if (isset($_POST["borrar_cancelados"])) {
+        $contador = borrar_cancelados();
+        $delay=1;
+        header("Refresh:$delay");
+        $mensaje = $contador. " pedido(s) cancelado(s) borrado(s)";
+    }
     global $twig;
     $template = $twig->load('pedidos.html');
 	echo $template->render(array ('URI'=>$URI, 'usuario' =>$usuario, 'empleado'=>$empleado, 'nif'=> $nif, 'lista_pedidos'=>$lista_pedidos, 'mensaje'=>$mensaje));
@@ -653,6 +701,7 @@ function controlador_iniciar_sesion(){
     $template = $twig->load('iniciar_sesion.html');
     echo $template->render(array ('URI'=>$URI, 'usuario' => $usuario, 'mensaje' =>$mensaje));
 }
+
 
 
 

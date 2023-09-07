@@ -23,31 +23,35 @@ if ($URI == 'index.php')
 
 elseif ($URI == 'mercancia') 
 {
-    controlador_mercancia(); // Se ejecuta el controlador específico de index
+    controlador_mercancia(); 
 }
-
 
 elseif ($URI == 'detalle_producto' && isset($_GET['id'])) 
 {
-    // Se ejecuta el controlador específico que muestra los detalles de un articulo específico
+
     controlador_detalle_producto($_GET['id']); 
 }
 
 elseif ($URI == 'detalle_mercancia' && isset($_GET['id'])) 
 {
-    // Se ejecuta el controlador específico que muestra los detalles de un  producto específico
+
     controlador_detalle_mercancia($_GET['id']); 
 }
-elseif ($URI == 'detalle_cliente' && isset($_GET['email'])) 
+elseif ($URI == 'detalle_cliente' && isset($_GET['nif'])) 
 {
-    // Se ejecuta el controlador específico que muestra los detalles de un  pedido específico
-    controlador_detalle_cliente($_GET['email']); 
+
+    controlador_detalle_cliente($_GET['nif']); 
 }
 
+elseif ($URI == 'detalle_empleado') 
+{
+
+    controlador_detalle_empleado(); 
+}
 
 elseif ($URI == 'detalle_pedido' && isset($_GET['id_pedido'])) 
 {
-    // Se ejecuta el controlador específico que muestra los detalles de un  pedido específico
+
     controlador_detalle_pedido($_GET['id_pedido']); 
 }
 
