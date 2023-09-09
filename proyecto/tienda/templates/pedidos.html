@@ -15,7 +15,7 @@
         <input type="text" name="nif" id="nif" value="{{nif}}" >
 
         <label for="creado_fecha">Fecha Creación</label>
-        <input type="text" name="creado_fecha" id="creado_fecha" value= {{creado_fecha}}  ><br>
+        <input type="text" name="creado_fecha" id="creado_fecha" value= "{{creado_fecha}}""  ><br>
 
         <button type="submit" name="buscar" method="POST">Buscar</button>
 
@@ -27,6 +27,7 @@
     <h2 class='titulo'>PEDIDOS</h2>
 
     <table id="datos_cliente">
+        <th></th>
         <th>Id Pedido</th>
         <th>Nif Cliente</th>
         <th>Total Peso</th>
@@ -41,8 +42,8 @@
         <th>Notas</th>
     {% for key, pedido in lista_pedidos %}
     <tr>
-        <td><input type="checkbox" name="pedido_select[]" class="checkbox"  value= {{pedido.id_pedido}}>
-        <a href="http://localhost/proyecto/tienda/index.php/detalle_pedido?id_pedido={{pedido.id_pedido}}">{{pedido.id_pedido}}</td>
+        <td><input type="checkbox" name="pedido_select[]" class="checkbox"  value= {{pedido.id_pedido}}></td>
+        <td><a href="http://localhost/proyecto/tienda/index.php/detalle_pedido?id_pedido={{pedido.id_pedido}}">{{pedido.id_pedido}}</td>
         <td><a href="http://localhost/proyecto/tienda/index.php/detalle_cliente?nif={{pedido.nif_cliente}}">{{pedido.nif_cliente}}</a></td>
         <td>{{pedido.total_kg}} Kilo(s)</td>
         <td>{{pedido.total_precio}} €</td>

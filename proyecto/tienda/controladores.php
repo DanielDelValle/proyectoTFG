@@ -447,7 +447,7 @@ function controlador_detalle_pedido($id_pedido)
     $logged_legible = isset($_SESSION['usuario']) ? "Cerrar Sesión" : "Iniciar Sesión";
     // Petición al modelo para que retorne la lista de productos de la BD
     $_SESSION['cesta'] = checkCesta();
-    
+ 
     $total_prods = (isset($_SESSION['usuario']) && isset($_SESSION['cesta'])) ? count($_SESSION['cesta']) : 0;
    
     $pedido = detalle_pedido($id_pedido);  //transformo el objeto que devuelve el modelo en array asociativo
@@ -538,6 +538,7 @@ function controlador_pedidos()   /// PENDIENTE REASIGNAR A OTRA VISTA, OBSOLETO 
     $lista_pedidos = lista_pedidos();
     $checked = isset($_POST['pedido_select']) ? $_POST['pedido_select'] : [];
     $nif= isset($_POST['nif']) ? $_POST['nif'] : '';
+    $creado_fecha = isset($_POST['creado_fecha']) ? $_POST['creado_fecha'] : '';
     $orden = isset($_POST['orden']) ? $_POST['orden'] : '';
    // $orden = isset($_POST['orden']) ? htmlentities($_POST['orden'],  ENT_QUOTES, "UTF-8") : '';
     $mensaje = "";
@@ -548,9 +549,9 @@ function controlador_pedidos()   /// PENDIENTE REASIGNAR A OTRA VISTA, OBSOLETO 
         $lista_pedidos = pedidos_usuario($_POST['nif']); 
         $mensaje = "Encontrados ".count($lista_pedidos). " pedidos cuyo NIF contiene '$nif'";}  
 
-    /*if (isset($_POST["buscar"]) && $_POST['creado_fecha']!='') {
-        $lista_pedidos = pedidos_usuario($_POST['creado_fecha'], $orden); 
-        $mensaje = "Encontrados ".count($lista_pedidos). " pedidos del usuario ".$creado_fecha;}  */
+    if (isset($_POST["buscar"]) && $_POST['creado_fecha']!='') {
+        $lista_pedidos = pedidos_usuario_fecha($_POST['creado_fecha']); 
+        $mensaje = "Encontrados ".count($lista_pedidos). " pedidos en la fecha ".$creado_fecha;}  
 
     if (isset($_POST["marcar_pagado"])) {
             $contador = 0;
@@ -734,14 +735,6 @@ function controlador_home_admon()
     $mensaje = "";
 
 
-
-
-
- 
-
-    if (isset($_POST["cerrar_sesion"])){
-        exit(header('location:cerrar_sesion'));
-    }
 
 
 

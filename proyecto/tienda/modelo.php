@@ -531,8 +531,41 @@ function insert_pedido($id_pedido, $nif, $total_precio, $total_kg, $forma_pago, 
 }
 
 
+function pedidos_usuario_fecha($creado_fecha){ // retorna todos los pedidos cuya fecha de creación sea (o contenga) la fecha dada como argumento
 
-function pedidos_usuario($nif){ //añado argumento "orden" para añadir opcion en base a qué ordenarlo
+	$pdo = conexion();
+	if($pdo){
+		try{
+		//La búsqueda se realiza en mysql con el comando LIKE
+		$sql = "SELECT p.id_pedido, p.nif_cliente, p.total_precio, p.total_kg, p.forma_pago, p.estado_pago, p.estado_pedido, p.creado_fecha, p.enviado_fecha, p.entregado_fecha, p.cancelado_fecha, p.notas
+				FROM pedido p JOIN cliente c ON p.nif_cliente = c.nif
+				WHERE p.creado_fecha LIKE '%$creado_fecha%'";
+				//ORDER BY '%$orden%' DESC";
+
+		//USO LIKE PARA BUSCAR POR NIF SIN TENER QUE ESCRIBIRLO ENTERO, PARA MAYOR FACILIDAD
+
+		$resultado = $pdo->query($sql);
+		$pedidosArray = $resultado->fetchAll(PDO::FETCH_OBJ);
+
+	/*	foreach($pedidosArray as $i => $pedido) {   
+		}*/
+		
+		if($resultado->rowCount()>0) $mensaje = "Se han encontrado <b>" . $resultado->rowCount() . "</b> pedido(s) <br><br>"; 
+		else $mensaje = "No se han encontrado pedidos";
+		//c.total_pedidos, c.total_gasto SI SE LLEGAN A INCORPORAR DICHAS COLUMNAS
+	}	
+	
+	catch(PDOException $e){
+		echo 'Excepción: ', $e->getMessage();
+		return null;
+	  }
+	}  	
+	$pdo=null;
+	
+return $pedidosArray;
+}
+
+function pedidos_usuario($nif){ 
 
 		$pdo = conexion();
 		if($pdo){
