@@ -126,6 +126,7 @@ function controlador_detalle_producto($id)
         if(count($_SESSION['cesta']) != 0){
             if(in_array($prod_add['id_prod'], array_keys($_SESSION['cesta']))){
                 $_SESSION['cesta'][$prod_add['id_prod']]['cantidad'] +=1;
+
             } 
             else {
                 //Si ninguno de los productos de la cesta es el que vamos a introducir, se introduce el mismo
@@ -472,6 +473,7 @@ function controlador_mis_pedidos()
     $nif = $cliente->nif;
     $orden = isset($_POST['orden']) ? htmlentities($_POST['orden'], ENT_QUOTES,'utf-8') : 'sin criterio';
     $total_prods = isset($_SESSION['cesta']) ? count($_SESSION['cesta']) : 0;
+    $mensaje='';
 
     $pedidosArray = pedidos_usuario($nif, $orden);
     // Petición al modelo para que retorne la lista de productos de la BD
@@ -679,7 +681,7 @@ function controlador_cuentas()
 
     if (isset($_POST["bloquear_cuenta"])) {
             $contador = 0;
-            $nuevo_estado = 'bloqueada';
+            $nuevo_estado = 'bloqueado';
             if(intval($checked) == 1){
                 foreach($checked as $val){
                     $cuenta = modificar_cuenta($val, $nuevo_estado);
@@ -745,35 +747,34 @@ function controlador_iniciar_sesion(){
                        // echo 'USUARIO EN LISTADO'; 
                         $pass = $user->contrasena;
                         $estado = $user->estado_cuenta;
-                        $tipo_cuenta = $user->tipo_cuenta;        
-                        if ($estado === 'activo'){
-                          //  if (($estado === 'activo')  && (password_verify($contrasena, $pass))){
-                            //Login correcto
-                            //Establecer sesion autentificada
-                            $_SESSION["usuario"] = $usuario;    
-                            //$_SESSION["contrasena"] = $contrasena;
-                            session_regenerate_id(); //para evitar ataque de fijacion de sesion (en redes compartidas)
+                        $tipo_cuenta = $user->tipo_cuenta;
 
-                            //Según tipo de cuenta, se redirecciona a una página u otra
-                            switch($tipo_cuenta){
-                                case 'cliente': exit(header("location:mi_cuenta"));
-                                case 'admon': exit(header("location:home_admon"));
-                                case 'almacen': exit(header("location:home_almacen"));
-                                }
+                    if ($estado === 'activo' ){
+                        if(password_verify($contrasena, $pass)){ 
+                        //Login correcto
+                        //Establecer sesion autentificada
+                        $_SESSION["usuario"] = $usuario;    
+                        //$_SESSION["contrasena"] = $contrasena;
+                        session_regenerate_id(); //para evitar ataque de fijacion de sesion (en redes compartidas)
+
+                        //Según tipo de cuenta, se redirecciona a una página u otra
+                        switch($tipo_cuenta){
+                            case 'cliente': exit(header("location:mi_cuenta"));
+                            case 'admon': exit(header("location:home_admon"));
+                            case 'almacen': exit(header("location:home_almacen"));
                             }
-                            elseif (!password_verify($contrasena, $pass)) {
-                                $mensaje = "Usuario y/o contraseña incorrectos";
-                            } elseif ($estado != 'activo') {
-                                $mensaje = "Por favor, confirme su cuenta de usuario a través del email que recibió";
-                
-                            }               
-                        }elseif (!in_array($usuario, $lista_users)) {
-                           //$mensaje = "Usuario no está en BD";
-                        }  $mensaje = "Usuario y/o contraseña incorrectos";
+                    } else $mensaje = "Usuario y/o contraseña incorrectos";   
                     
-                    } 
-                               
-        else $mensaje = "Los campos usuario y contraseña son obligatorios";
+                } elseif ($estado === 'pendiente') {
+                                $mensaje = "Por favor, confirme su cuenta de usuario a través del email que recibió";
+                                
+                } elseif ($estado === 'bloqueado') {
+                                $mensaje = "Su cuenta ha sido bloqueada - por favor, contacte con nosotros";
+                }               
+            }else {$mensaje = "Usuario y/o contraseña incorrectos";}  //$mensaje = "Usuario no está en BD";
+                    
+        } else $mensaje = "Los campos usuario y contraseña son obligatorios";  // si uno de los 2 campos o ambos están vacíos                              
+        
 
     } else if (isset($_SESSION["usuario"])) {
         //Sesión ya iniciada
@@ -1022,8 +1023,8 @@ function controlador_alta_empleado()
             $validaciones->$val_prov="ERROR en PROVINCIA - Debe seleccionar una del menú desplegable";
         }*/
 
-        if (!valid_email($datos->email)){
-            $validaciones->val_email="ERROR en EMAIL - Debe incluir una dirección de email válida";
+        if (!valid_email_empleado($datos->email)){
+            $validaciones->val_email="ERROR en EMAIL - Debe incluir una dirección de email válida con extension @frutasdelvalle.com";
         }
 
         if (!valid_contrasena($datos->contrasena)){

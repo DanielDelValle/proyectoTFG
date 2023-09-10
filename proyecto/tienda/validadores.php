@@ -47,6 +47,14 @@ function valid_email($email) {
     return (preg_match($patron, $email));
 }
 
+function valid_email_empleado($email) {  //PENDIENTE CAMBIAR PATRON PARA QUE INCLUYA @FRUTASDELVALLE.COM
+    $email = strtolower($email);
+    //definimos el patrón
+    $patron = '/^[a-zA-Z0-9.!#$%&\'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/i';
+ 
+    return (preg_match($patron, $email));
+}
+
 
 /**
 * Comprueba que una contraseña (cadena) tenga el formato exigido: 8 caracteres incluyendo mayusc., minusc., cifras y signos especiales.

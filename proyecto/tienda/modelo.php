@@ -531,9 +531,10 @@ function modificar_cuenta($email, $nuevo_estado){  ///PENDIENTE QUERY QUE FUNCIO
 	if($pdo){
 		try{				
 	$pdo->beginTransaction();
+	
 
-	$sql = "UPDATE cliente c, empleado e SET c.estado_cuenta = '$nuevo_estado', e.estado_cuenta = '$nuevo_estado'
-			FROM c UNION e
+	$sql = "UPDATE cliente
+			SET estado_cuenta = '$nuevo_estado'
 			WHERE email = '$email'";
 
 
