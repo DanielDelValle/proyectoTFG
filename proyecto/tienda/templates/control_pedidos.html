@@ -1,0 +1,93 @@
+{% extends "base_empl.html" %}
+
+{% block stylesheets %}
+<link rel="stylesheet" type="text/css" href="css/tarea7.css">
+{% endblock %}
+
+{% block content %}
+
+
+<form method="POST" action="" autocomplete>
+    <fieldset>
+        <legend>Busqueda</legend>
+
+        <label for="cliente">Cliente</label>
+        <input type="text" name="nif" id="nif" value="{{nif}}">
+
+        <label for="creado_fecha">Fecha Creación</label>
+        <input type="text" name="creado_fecha" id="creado_fecha" value="{{creado_fecha}}"  ><br>
+
+        <button type= "submit" name= "buscar" method= "POST">Buscar</button>
+
+    </fieldset>
+    <fieldset>
+
+
+        <div>
+            <h2 class='titulo'>PEDIDOS</h2>
+
+            <table id= 'datos_cliente'>
+                <th></th>
+                <th>Id Pedido</th>
+                <th>Nif Cliente</th>
+                <th>Total Peso</th>
+                <th>Total Precio</th>
+                <th>Forma Pago</th>
+                <th>Estado Pago</th>
+                <th>Estado Pedido</th>
+                <th>Fecha Creado</th>
+                <th>Fecha Envío</th>
+                <th>Fecha Entrega</th>
+                <th>Fecha Cancelación</th>
+                <th>Notas</th>
+
+                {% for key, pedido in lista_pedidos %}
+                <tr>
+                    <td><input type="checkbox" name="pedido_select[]" class="checkbox" value={{pedido.id_pedido}}></td>
+                    <td><a
+                            href="http://localhost/proyecto/tienda/index.php/detalle_pedido?id_pedido={{pedido.id_pedido}}">{{pedido.id_pedido}}
+                    </td>
+                    <td><a
+                            href="http://localhost/proyecto/tienda/index.php/detalle_cliente?nif={{pedido.nif_cliente}}">{{pedido.nif_cliente}}</a>
+                    </td>
+                    <td>{{pedido.total_kg}} Kilo(s)</td>
+                    <td>{{pedido.total_precio}} €</td>
+                    <td>{{pedido.forma_pago}} </td>
+                    <td>{{pedido.estado_pago}} </td>
+                    <td>{{pedido.estado_pedido}} </td>
+                    <td>{{pedido.creado_fecha}} </td>
+                    <td>{{pedido.enviado_fecha}} </td>
+                    <td>{{pedido.entregado_fecha}} </td>
+                    <td>{{pedido.cancelado_fecha}} </td>
+                    <td>{{pedido.notas}} </td>
+                </tr>
+                {% endfor %}
+            </table>
+            <div>
+    </fieldset>
+    <div>
+
+
+
+
+        <button type="submit" name="marcar_pagado" method="POST">Marcar Pagado</button>
+
+        <button type="submit" name="marcar_enviado" method="POST">Marcar Enviado</button>
+
+        <button type="submit" name="marcar_entregado" method="POST">Marcar Entregado</button>
+
+        <button class='critical' type="submit" name="cancelar_pedido" method="POST">Cancelar Pedido</button>
+
+        <button type="submit" name="borrar_cancelados" method="POST">Borrar Cancelados</button>
+
+
+
+
+        </fieldset>
+
+    </div>
+</form>
+
+
+
+{% endblock %}

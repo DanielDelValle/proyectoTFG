@@ -214,7 +214,7 @@ function controlador_mis_datos()
     }
     global $twig;
     $template = $twig->load('mis_datos.html');
-	echo $template->render(array ('URI'=>$URI, 'usuario' =>$usuario, 'cliente'=> $cliente, 'logged'=>$logged, 'logged_legible'=>$logged_legible, 'total_prods'=>$total_prods));
+	echo $template->render(array ('URI'=>$URI, 'usuario' =>$usuario, 'cliente'=> $cliente, 'logged'=>$logged, 'logged_legible'=>$logged_legible));
 
 }
 
@@ -527,11 +527,11 @@ function controlador_mis_pedidos()
         exit(header('location:cerrar_sesion'));
     }
     $template = $twig->load('mis_pedidos.html');
-	echo $template->render(array ('URI'=>$URI, 'usuario' =>$usuario, 'cliente'=> $cliente, 'logged'=>$logged, 'total_prods'=>$total_prods, 'logged_legible'=>$logged_legible, 'pedidosArray' => $pedidosArray));
+	echo $template->render(array ('URI'=>$URI, 'usuario' =>$usuario, 'cliente'=> $cliente, 'logged'=>$logged, 'mensaje'=>$mensaje, 'total_prods'=>$total_prods, 'logged_legible'=>$logged_legible, 'pedidosArray' => $pedidosArray));
 
 }
 
-function controlador_pedidos()   /// PENDIENTE REASIGNAR A OTRA VISTA, OBSOLETO (SUSTITUIDO POR "CUENTA")
+function controlador_pedidos()   
 {   $URI = get_URI();
     $usuario = checkSession();
     $empleado = datos_empleado($usuario);
@@ -542,8 +542,6 @@ function controlador_pedidos()   /// PENDIENTE REASIGNAR A OTRA VISTA, OBSOLETO 
     $orden = isset($_POST['orden']) ? $_POST['orden'] : '';
    // $orden = isset($_POST['orden']) ? htmlentities($_POST['orden'],  ENT_QUOTES, "UTF-8") : '';
     $mensaje = "";
-
-    var_dump($checked);
 
     if (isset($_POST["buscar"]) && $_POST['nif']!='') {
         $lista_pedidos = pedidos_usuario($_POST['nif']); 
@@ -623,8 +621,103 @@ function controlador_pedidos()   /// PENDIENTE REASIGNAR A OTRA VISTA, OBSOLETO 
         $mensaje = $contador. " pedido(s) cancelado(s) borrado(s)";
     }
     global $twig;
-    $template = $twig->load('pedidos.html');
+    $template = $twig->load('control_pedidos.html');
 	echo $template->render(array ('URI'=>$URI, 'usuario' =>$usuario, 'empleado'=>$empleado, 'nif'=> $nif, 'lista_pedidos'=>$lista_pedidos, 'mensaje'=>$mensaje));
+
+}
+
+function controlador_cuentas()  
+{   $URI = get_URI();
+    $usuario = checkSession();
+    $empleado = datos_empleado($usuario);
+    if ($empleado->tipo_cuenta != 'admon'){exit(header('location:iniciar_sesion'));} //solo ADMON puede manipular cuentas de usuario
+    $lista_cuentas = lista_cuentas();
+    $checked = isset($_POST['cuenta_select']) ? $_POST['cuenta_select'] : [];
+    $email= isset($_POST['email']) ? $_POST['email'] : '';
+    $creado_fecha = isset($_POST['creado_fecha']) ? $_POST['creado_fecha'] : '';
+    $orden = isset($_POST['orden']) ? $_POST['orden'] : '';
+    $nuevo_estado='';
+   // $orden = isset($_POST['orden']) ? htmlentities($_POST['orden'],  ENT_QUOTES, "UTF-8") : '';
+    $mensaje = "";
+
+    if (isset($_POST["buscar"]) && $_POST['email']!='') {
+        $lista_cuentas = lista_cuentas_email($_POST['email']);
+        $mensaje = "Encontrados ". count($lista_cuentas). " cuentas cuyo EMAIL es '$email'";}  
+
+
+    if (isset($_POST["activar_cuenta"])) {
+        $contador = 0;
+        $nuevo_estado = 'activo';
+        if(intval($checked) == 1){
+            foreach($checked as $val){
+                $cuenta = modificar_cuenta($val, $nuevo_estado);
+                $contador +=$cuenta;
+            }
+            $delay=1;
+            header("Refresh:$delay");
+            $mensaje = $contador. " cuentas(s) ACTIVADAS";
+        }
+    else $mensaje = "Por favor, seleccione al menos una cuenta para activar";
+
+        }        
+
+    if (isset($_POST["desactivar_cuenta"])) {
+            $contador = 0;
+            $nuevo_estado = 'inactivo';
+            if(intval($checked) == 1){
+                foreach($checked as $val){
+                    $cuenta = modificar_cuenta($val, $nuevo_estado);
+                    $contador +=$cuenta;
+                }
+                $delay=1;
+                header("Refresh:$delay");
+                $mensaje = $contador. " cuentas(s) DESACTIVADAS";
+            }
+    else $mensaje = "Por favor, seleccione al menos una cuenta para desactivar";
+
+        }        
+
+    if (isset($_POST["bloquear_cuenta"])) {
+            $contador = 0;
+            $nuevo_estado = 'bloqueada';
+            if(intval($checked) == 1){
+                foreach($checked as $val){
+                    $cuenta = modificar_cuenta($val, $nuevo_estado);
+                    $contador +=$cuenta;
+                }
+                $delay=1;
+                header("Refresh:$delay");
+                $mensaje = $contador. " cuentas(s) BLOQUEADAS";
+            }
+            else $mensaje = "Por favor, seleccione al menos una cuenta para bloquear";
+
+        }
+
+    if (isset($_POST["cancelar_pedido"])) {
+        $contador = 0;
+        if(intval($checked) == 1){
+            $cancelado_fecha = date('Y-m-d H:i:s');
+            foreach($checked as $val){
+                $cuenta = pedido_cancelado($val, $cancelado_fecha );
+                $contador +=$cuenta;
+            }
+            $delay=1;
+            header("Refresh:$delay");
+            $mensaje = $contador. " pedido(s) cancelado(s)";
+        }
+    else $mensaje = "Por favor, seleccione al menos un producto para modificar";
+
+    }
+
+    if (isset($_POST["borrar_cancelados"])) {
+        $contador = borrar_cancelados();
+        $delay=1;
+        header("Refresh:$delay");
+        $mensaje = $contador. " pedido(s) cancelado(s) borrado(s)";
+    }
+    global $twig;
+    $template = $twig->load('control_cuentas.html');
+	echo $template->render(array ('URI'=>$URI, 'usuario' =>$usuario, 'empleado'=>$empleado, 'email'=> $email, 'lista_cuentas'=>$lista_cuentas, 'mensaje'=>$mensaje));
 
 }
 

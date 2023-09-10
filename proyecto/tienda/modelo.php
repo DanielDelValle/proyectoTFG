@@ -166,7 +166,7 @@ function get_sugerencias_ajax($busqueda){
 				
 			
 	}
-
+	//DEVUELVE LISTA DE TODOS PEDIDOS ORDENADOS DE MÁS RECIENTE FECHA CREACIÓN A MÁS ANTIGUAS
 	function lista_pedidos(){
 
 		$pdo = conexion();
@@ -199,7 +199,60 @@ function get_sugerencias_ajax($busqueda){
 	}
 
 	
+//DEVUELVE LISTA DE TODAS LAS CUENTAS (USUARIO Y EMPLEADO) ORDENADAS DE MÁS RECIENTE FECHA CREACIÓN A MÁS ANTIGUAS
+function lista_cuentas(){
 
+	$pdo = conexion();
+	if($pdo){
+		try{
+	$sql = "SELECT * FROM cliente 
+				UNION ALL SELECT * FROM empleado
+				ORDER BY creado_fecha DESC";
+
+		$resultado = $pdo->query($sql);
+		$lista_cuentas = $resultado->fetchAll(PDO::FETCH_OBJ);
+		$mensaje = "Se han encontrado <b>" . $resultado->rowCount() . "</b> pedido(s) <br><br>"; 
+		if ($resultado->rowCount()==0) $mensaje = "No se han encontrado pedidos";
+		$pdo = null;  //cierro conexion para no mantener BD en espera
+	}		
+	catch(PDOException $e){
+		echo 'Excepción: ', $e->getMessage();
+		return null;
+		}
+	}  
+	
+return $lista_cuentas;
+}
+
+//RETORNA LISTA DE CUENTAS EMPLEADO Y USUARIO CUYO MAIL ESTÁ CONTENIDO O COINCIDE CON BUSQUEDA 
+function lista_cuentas_email($email){
+
+	$pdo = conexion();
+	if($pdo){
+		try{
+		$sql = "SELECT * FROM cliente 
+				WHERE cliente.email LIKE '%$email%'
+				UNION SELECT * FROM empleado
+				WHERE empleado.email LIKE '%$email%'
+				ORDER BY creado_fecha DESC";
+
+		$resultado = $pdo->query($sql);
+		$lista_cuentas = $resultado->fetchAll(PDO::FETCH_OBJ);		
+		$mensaje = "Se han encontrado <b>" . $resultado->rowCount() . "</b> pedido(s) <br><br>"; 
+		if ($resultado->rowCount()==0) $mensaje = "No se han encontrado pedidos";
+		$pdo = null;  //cierro conexion para no mantener BD en espera
+
+	}		
+	catch(PDOException $e){
+		echo 'Excepción: ', $e->getMessage();
+		return null;
+		}
+	}  
+	
+return $lista_cuentas;
+}
+
+	
 function lista_productos()
 {	
 		$pdo = conexion();
@@ -470,6 +523,43 @@ function datos_empleado($email)
 		}  	
 		$pdo = null;
 	
+}
+
+function modificar_cuenta($email, $nuevo_estado){  ///PENDIENTE QUERY QUE FUNCIONE (PROBABLEMENTE SUBQUERY Y SINO  1 POR CADA TABLA )
+			
+	$pdo = conexion();
+	if($pdo){
+		try{				
+	$pdo->beginTransaction();
+
+	$sql = "UPDATE cliente c, empleado e SET c.estado_cuenta = '$nuevo_estado', e.estado_cuenta = '$nuevo_estado'
+			FROM c UNION e
+			WHERE email = '$email'";
+
+
+	$pedido_pagado = $pdo->prepare($sql);
+
+	if(($pedido_pagado->execute())>0){ //si la consulta ha retornado algún resultado ---          
+		$pdo->commit();
+		$resultado = $pedido_pagado->rowCount(); // --- entonces retorno el número de autores afectados (borrados)
+	}
+
+	else {
+		$resultado=false;
+		echo "Ninguna cuenta modificada - intentelo de nuevo";
+		$pdo->rollback();		
+		}	
+	}	
+catch(PDOException $e){
+echo 'Excepción: ', $e->getMessage();
+$resultado = false;				
+}
+$pdo = null;
+return $resultado;
+
+}else{  return null; die("error en la conexión a la BD");} //en caso de no haber conexión, directamente se para el proceso
+
+
 }
 
 
@@ -820,53 +910,30 @@ return $resultado;
 
 }	
 
-	function detalle_pedido($id_pedido)
-	{	
-		$id_pedido = isset($_GET["id_pedido"]) ? $_GET["id_pedido"] : "";
-			$pdo = conexion();
-			if($pdo){
-				try{
-				//La búsqueda se realiza en mysql con el comando LIKE
-				$sql = "SELECT * FROM productos_pedido p WHERE id_pedido ='$id_pedido'";		
+function detalle_pedido($id_pedido)
+{	
+	$id_pedido = isset($_GET["id_pedido"]) ? $_GET["id_pedido"] : "";
+		$pdo = conexion();
+		if($pdo){
+			try{
+			//La búsqueda se realiza en mysql con el comando LIKE
+			$sql = "SELECT * FROM productos_pedido p WHERE id_pedido ='$id_pedido'";		
 
-				$resultado = $pdo->query($sql);
-				$productosArray = $resultado->fetchAll(PDO::FETCH_OBJ);
-				$pdo = null;
-			}	
-			
-			catch(PDOException $e){
-				echo 'Excepción: ', $e->getMessage();
-				return null;
-			  }
-			}  
-			
-		return $productosArray;
-							
-	}
-
-
-	function opiniones()
-{
-	//Obtener usuario y sugerencia
-		$listaOpiniones = array(
-		array(
-			"usuario" => "Pepe23",
-			"sugerencia" => "Quiero precios más baratos"),	
-		array(
-			"usuario" => "jjabrahms",
-			"sugerencia" => "Mejoren la parte gráfica"),
-		array(
-			"usuario" => "plopez",
-			"sugerencia" => "Poca variedad de ratones") 
-	);
-	
-    return $listaOpiniones;
+			$resultado = $pdo->query($sql);
+			$productosArray = $resultado->fetchAll(PDO::FETCH_OBJ);
+			$pdo = null;
+		}	
+		
+		catch(PDOException $e){
+			echo 'Excepción: ', $e->getMessage();
+			return null;
+			}
+		}  
+		
+	return $productosArray;
+						
 }
 
-function registrar($nombre, $apellidos, $direccion, $email, $contrasena)
-{
-	//Registrar el nuevo usuario en BD
-}
 
 ?>
 		

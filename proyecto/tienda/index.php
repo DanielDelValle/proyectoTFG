@@ -105,6 +105,11 @@ elseif ($URI == 'pedidos')
 		controlador_pedidos(); 
 }
 
+elseif ($URI == 'control_cuentas')
+{      
+		controlador_cuentas(); 
+}
+
 elseif ($URI == 'mi_cesta')
 {      
 		controlador_mi_cesta(); 
