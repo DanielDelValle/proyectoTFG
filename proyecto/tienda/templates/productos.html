@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block stylesheets %}
-<link rel="stylesheet" type="text/css" href="css/tarea8.css">
+<link rel="stylesheet" type="text/css" href="css/tarea7.css">
 {% endblock %}
 
 {% block script %}
@@ -51,7 +51,7 @@ $(document).ready(function(){
 
         <ul style="list-style: none">
             <!-- Mostramos una lista de los artículos-->
-			{%for producto in productos %}
+			{% for producto in productos %}
 			<li>
                     <h2>ID PRODUCTO: {{producto.id_prod}}</h2>
                     <img src="imagenes/{{producto.nombre}}.jpg"/>

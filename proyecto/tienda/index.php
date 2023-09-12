@@ -100,7 +100,7 @@ elseif ($URI == 'mis_pedidos')
 		controlador_mis_pedidos(); 
 }
 
-elseif ($URI == 'pedidos')
+elseif ($URI == 'control_pedidos')
 {      
 		controlador_pedidos(); 
 }

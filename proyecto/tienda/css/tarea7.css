@@ -237,6 +237,11 @@ footer {
 
 .critical {
 	border-color: red;
+	border-width: 3px;
+}
+.critical_green{
+	border-color: green;
+	border-width: 3px;
 }
 
 .continue{

@@ -470,18 +470,23 @@ function controlador_mis_pedidos()
     $logged = isset($_SESSION['usuario']) ? "cerrar_sesion" : "iniciar_sesion";
     $logged_legible = isset($_SESSION['usuario']) ? "Cerrar Sesión" : "Iniciar Sesión";
     $checked = isset($_POST['pedido_select']) ? $_POST['pedido_select'] : [];
+    $creado_fecha = isset($_POST['creado_fecha']) ? $_POST['creado_fecha'] : '';
     $nif = $cliente->nif;
-    $orden = isset($_POST['orden']) ? htmlentities($_POST['orden'], ENT_QUOTES,'utf-8') : 'sin criterio';
+    //$orden = isset($_POST['orden']) ? htmlentities($_POST['orden'], ENT_QUOTES,'utf-8') : 'sin criterio';
     $total_prods = isset($_SESSION['cesta']) ? count($_SESSION['cesta']) : 0;
     $mensaje='';
 
-    $pedidosArray = pedidos_usuario($nif, $orden);
-    // Petición al modelo para que retorne la lista de productos de la BD
-	global $twig;
-    // Carga la plantilla que se mostrará al usuario con los datos recuperados 
-    // del modelo
+    $pedidosArray = pedidos_usuario($nif);
 
-     echo $orden;
+	global $twig;
+
+    if (isset($_POST["buscar"])){ 
+ 
+       if($_POST['creado_fecha']!='') {
+         $pedidosArray = pedidos_usuario_fecha($nif, $_POST['creado_fecha']); 
+         $mensaje = "Encontrado(s) ".count($pedidosArray). " pedido(s) en la fecha ".$creado_fecha;}  
+        }
+        
     
     if (isset($_POST["marcar_recibido"])) {
         $contador = 0;
@@ -501,17 +506,22 @@ function controlador_mis_pedidos()
     if (isset($_POST["cancelar_pedido"])) {
         $activo = '';
         $contador = 0;
+        $contador2 = 0;
         if(intval($checked) == 1){
-            $cancelado_fecha = date('Y-m-d H:i:s');
-            foreach($checked as $val){
-                $cuenta = pedido_cancelado($val, $cancelado_fecha);
+            foreach($checked as $id_pedido){
+                $cancelado_fecha = date('Y-m-d H:i:s');
+                $cuenta = pedido_cancelado($id_pedido, $cancelado_fecha);
                 $contador +=$cuenta;
+                $pedido = detalle_pedido($id_pedido);
+                foreach($pedido as $prod){
+                $cuenta2 = actualizar_stock($prod->id_prod, $prod->cantidad, 'sumar');
+                $contador2 +=$cuenta2;
+                }
             }
             $delay=1;
             header("Refresh:$delay");
-            $mensaje = $contador. " pedido(s) cancelados'";
-        }
-    else $mensaje = "Por favor, seleccione al menos un pedido para cancelar";
+            $mensaje = $contador. " pedido(s) marcado(s) como Pagado(s) - ".$contador2. " ACTUALIZACIONES DE STOCK";
+        } else $mensaje = "Por favor, seleccione al menos un pedido para cancelar";
     }
 
     
@@ -521,9 +531,7 @@ function controlador_mis_pedidos()
         header("Refresh:$delay");
         $mensaje = $contador. " pedido(s) cancelado(s) borrado(s)";
     }
-    if (isset($_POST["ordenar"])){
-        //aplicar algo que ordene, script o PHP, mismo que en controlador_pedidos)
-    }
+
    
     if (isset($_POST["cerrar_sesion"])){
         exit(header('location:cerrar_sesion'));
@@ -541,32 +549,38 @@ function controlador_pedidos()
     $checked = isset($_POST['pedido_select']) ? $_POST['pedido_select'] : [];
     $nif= isset($_POST['nif']) ? $_POST['nif'] : '';
     $creado_fecha = isset($_POST['creado_fecha']) ? $_POST['creado_fecha'] : '';
-    $orden = isset($_POST['orden']) ? $_POST['orden'] : '';
+    //$orden = isset($_POST['orden']) ? $_POST['orden'] : '';
    // $orden = isset($_POST['orden']) ? htmlentities($_POST['orden'],  ENT_QUOTES, "UTF-8") : '';
     $mensaje = "";
 
     if (isset($_POST["buscar"])){ 
-       if($_POST['nif']!='') {
-        $lista_pedidos = pedidos_usuario($_POST['nif']); 
-        $mensaje = "Encontrados ".count($lista_pedidos). " pedidos cuyo NIF contiene '$nif'";}  
-
-       elseif($_POST['creado_fecha']!='') {
-        $lista_pedidos = pedidos_usuario_fecha($_POST['creado_fecha']); 
-        $mensaje = "Encontrados ".count($lista_pedidos). " pedidos en la fecha ".$creado_fecha;}  
-       }
-       
+        if($_POST['nif']!='') {
+         $lista_pedidos = pedidos_usuario($_POST['nif']); 
+         $mensaje = "Encontrados ".count($lista_pedidos). " pedidos cuyo NIF contiene '$nif'";}  
+ 
+        elseif($_POST['creado_fecha']!='') {
+         $lista_pedidos = pedidos_usuario_fecha($_POST['creado_fecha']); 
+         $mensaje = "Encontrados ".count($lista_pedidos). " pedidos en la fecha ".$creado_fecha;}  
+        }
+        
 
     if (isset($_POST["marcar_pagado"])) {
             $contador = 0;
+            $contador2 = 0;
             if(intval($checked) == 1){
-                $pagado_fecha = date('Y-m-d H:i:s');
-                foreach($checked as $val){
-                    $cuenta = pedido_pagado($val, $pagado_fecha);
+                                foreach($checked as $id_pedido){
+                    $pagado_fecha = date('Y-m-d H:i:s');
+                    $cuenta = pedido_pagado($id_pedido, $pagado_fecha);
                     $contador +=$cuenta;
+                    $pedido = detalle_pedido($id_pedido);
+                    foreach($pedido as $prod){
+                    $cuenta2 = actualizar_stock($prod->id_prod, $prod->cantidad, 'restar');
+                    $contador2 +=$cuenta2;
+                    }
                 }
                 $delay=1;
                 header("Refresh:$delay");
-                $mensaje = $contador. " pedido(s) marcado(s) como 'Pagado'";
+                $mensaje = $contador. " pedido(s) marcado(s) como Pagado(s) - ".$contador2. " ACTUALIZACIONES DE STOCK";
             }
     else $mensaje = "Por favor, seleccione al menos un producto para modificar";
 
@@ -574,10 +588,10 @@ function controlador_pedidos()
 
     if (isset($_POST["marcar_enviado"])) {
             $contador = 0;
-            if(intval($checked) == 1){
-                $enviado_fecha = date('Y-m-d H:i:s');
-                foreach($checked as $val){
-                    $cuenta = pedido_enviado($val, $enviado_fecha );
+            if(intval($checked) == 1){                
+                foreach($checked as $id_pedido){
+                    $enviado_fecha = date('Y-m-d H:i:s');
+                    $cuenta = pedido_enviado($id_pedido, $enviado_fecha);
                     $contador +=$cuenta;
                 }
                 $delay=1;
@@ -590,10 +604,10 @@ function controlador_pedidos()
 
     if (isset($_POST["marcar_entregado"])) {
         $contador = 0;
-        if(intval($checked) == 1){
-            $entregado_fecha = date('Y-m-d H:i:s');
-            foreach($checked as $val){
-                $cuenta = pedido_entregado($val, $entregado_fecha);
+        if(intval($checked) == 1){            
+            foreach($checked as $ide_){
+                $entregado_fecha = date('Y-m-d H:i:s');
+                $cuenta = pedido_entregado($ide_, $entregado_fecha);
                 $contador +=$cuenta;
             }
             $delay=1;
@@ -602,18 +616,24 @@ function controlador_pedidos()
         }
     else $mensaje = "Por favor, seleccione al menos un producto para modificar";
     }
-
+    //Para uso en caso de que se haya pagado pero aun no enviado. El stock descontado se vuelve a añadir.
     if (isset($_POST["cancelar_pedido"])) {
         $contador = 0;
-        if(intval($checked) == 1){
-            $cancelado_fecha = date('Y-m-d H:i:s');
+        $contador2 = 0;
+        if(intval($checked) == 1){            
             foreach($checked as $val){
+                $cancelado_fecha = date('Y-m-d H:i:s');
                 $cuenta = pedido_cancelado($val, $cancelado_fecha );
                 $contador +=$cuenta;
+                $pedido = detalle_pedido($val);
+                foreach($pedido as $prod){
+                $cuenta2 = actualizar_stock($prod->id_prod, $prod->cantidad, 'sumar');
+                $contador2 +=$cuenta2;
+                }
             }
             $delay=1;
             header("Refresh:$delay");
-            $mensaje = $contador. " pedido(s) cancelado(s)";
+            $mensaje = $contador. " pedido(s) Cancelado(s) - ".$contador2. " ACTUALIZACIONES DE STOCK";
         }
     else $mensaje = "Por favor, seleccione al menos un producto para modificar";
 
@@ -698,28 +718,21 @@ function controlador_cuentas()
 
         }
 
-    if (isset($_POST["cancelar_pedido"])) {
+    if (isset($_POST["eliminar_cuenta"])) {
         $contador = 0;
         if(intval($checked) == 1){
-            $cancelado_fecha = date('Y-m-d H:i:s');
             foreach($checked as $val){
-                $cuenta = pedido_cancelado($val, $cancelado_fecha );
+                $cuenta = eliminar_cuenta($val, $cancelado_fecha);
                 $contador +=$cuenta;
             }
             $delay=1;
             header("Refresh:$delay");
-            $mensaje = $contador. " pedido(s) cancelado(s)";
+            $mensaje = $contador. " cuenta(s) eliminada(s)";
         }
-    else $mensaje = "Por favor, seleccione al menos un producto para modificar";
+    else $mensaje = "Por favor, seleccione al menos una cuenta para eliminar";
 
     }
 
-    if (isset($_POST["borrar_cancelados"])) {
-        $contador = borrar_cancelados();
-        $delay=1;
-        header("Refresh:$delay");
-        $mensaje = $contador. " pedido(s) cancelado(s) borrado(s)";
-    }
     global $twig;
     $template = $twig->load('control_cuentas.html');
 	echo $template->render(array ('URI'=>$URI, 'usuario' =>$usuario, 'empleado'=>$empleado, 'email'=> $email, 'lista_cuentas'=>$lista_cuentas, 'mensaje'=>$mensaje));

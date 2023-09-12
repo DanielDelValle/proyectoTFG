@@ -544,6 +544,49 @@ return $resultado;
 
 }
 
+function eliminar_cuenta($email){  ///PENDIENTE QUERY QUE FUNCIONE (PROBABLEMENTE SUBQUERY Y SINO  1 POR CADA TABLA )
+	$resultado = 0;
+	$tipo='cliente';
+	$pdo = conexion();
+	if($pdo){
+		//Para discernir si tengo que modificar la tabla empleado o la tabla cliente
+		$dominio = ltrim(strstr($email, '@'), '@');
+		if ($dominio === 'frutasdelvalle.com')
+		$tipo = 'empleado';
+
+		try{				
+			$pdo->beginTransaction();			
+
+			$sql = "DELETE
+					FROM $tipo
+					WHERE email = '$email'";
+
+			$cuenta_eliminada = $pdo->prepare($sql);
+
+		if(($cuenta_eliminada->execute())>0){ //si la consulta ha retornado algún resultado ---          
+			$pdo->commit();
+			$resultado = $resultado + $cuenta_eliminada->rowCount(); // --- entonces retorno el número de autores afectados (borrados)
+		}
+
+	else {
+		//$resultado=false;
+		echo "Ninguna cuenta eliminada - intentelo de nuevo";
+		$pdo->rollback();		
+		}	
+	}	
+catch(PDOException $e){
+echo 'Excepción: ', $e->getMessage();
+$resultado = false;				
+}
+$pdo = null;
+return $resultado;
+	
+}else{  return null; die("error en la conexión a la BD");} //en caso de no haber conexión, directamente se para el proceso
+
+
+}
+
+
 
 function insert_productos_pedido($id_pedido, $cesta){
 
@@ -603,28 +646,22 @@ function insert_pedido($id_pedido, $nif, $total_precio, $total_kg, $forma_pago, 
 }
 
 
-function pedidos_usuario_fecha($creado_fecha){ // retorna todos los pedidos cuya fecha de creación sea (o contenga) la fecha dada como argumento
+function pedidos_usuario_fecha($nif,$creado_fecha){ // retorna todos los pedidos cuya fecha de creación sea (o contenga) la fecha dada como argumento
 
 	$pdo = conexion();
 	if($pdo){
 		try{
 		//La búsqueda se realiza en mysql con el comando LIKE
-		$sql = "SELECT p.id_pedido, p.nif_cliente, p.total_precio, p.total_kg, p.forma_pago, p.estado_pago, p.estado_pedido, p.creado_fecha, p.enviado_fecha, p.entregado_fecha, p.cancelado_fecha, p.notas
-				FROM pedido p JOIN cliente c ON p.nif_cliente = c.nif
-				WHERE p.creado_fecha LIKE '%$creado_fecha%'";
-				//ORDER BY '%$orden%' DESC";
+		$sql = "SELECT id_pedido, nif_cliente, total_precio, total_kg, forma_pago, estado_pago, estado_pedido, creado_fecha, enviado_fecha, entregado_fecha, cancelado_fecha, notas
+				FROM pedido WHERE nif_cliente = '$nif' AND creado_fecha LIKE '%$creado_fecha%'
+				ORDER BY creado_fecha DESC";
 
-		//USO LIKE PARA BUSCAR POR NIF SIN TENER QUE ESCRIBIRLO ENTERO, PARA MAYOR FACILIDAD
 
 		$resultado = $pdo->query($sql);
 		$pedidosArray = $resultado->fetchAll(PDO::FETCH_OBJ);
 
-	/*	foreach($pedidosArray as $i => $pedido) {   
-		}*/
-		
 		if($resultado->rowCount()>0) $mensaje = "Se han encontrado <b>" . $resultado->rowCount() . "</b> pedido(s) <br><br>"; 
 		else $mensaje = "No se han encontrado pedidos";
-		//c.total_pedidos, c.total_gasto SI SE LLEGAN A INCORPORAR DICHAS COLUMNAS
 	}	
 	
 	catch(PDOException $e){
@@ -645,8 +682,8 @@ function pedidos_usuario($nif){
 			//La búsqueda se realiza en mysql con el comando LIKE
 			$sql = "SELECT p.id_pedido, p.nif_cliente, p.total_precio, p.total_kg, p.forma_pago, p.estado_pago, p.estado_pedido, p.creado_fecha, p.enviado_fecha, p.entregado_fecha, p.cancelado_fecha, p.notas
 					FROM pedido p JOIN cliente c ON p.nif_cliente = c.nif
-					WHERE p.nif_cliente LIKE '%$nif%'";
-					//ORDER BY '%$orden%' DESC";
+					WHERE p.nif_cliente LIKE '%$nif%'
+					ORDER BY p.creado_fecha DESC";
 
 			//USO LIKE PARA BUSCAR POR NIF SIN TENER QUE ESCRIBIRLO ENTERO, PARA MAYOR FACILIDAD
 
@@ -679,7 +716,7 @@ function pedido_pagado($id_pedido, $pagado_fecha){
 		$pdo->beginTransaction();
 
 		$sql = "UPDATE pedido 
-				SET estado_pago = 'pagado', pagado_fecha = '$pagado_fecha'
+				SET estado_pago = 'pagado', estado_pedido = 'procesando', pagado_fecha = '$pagado_fecha'
 				WHERE id_pedido = '$id_pedido'" ;
 
 
@@ -791,7 +828,7 @@ function pedido_cancelado($id_pedido, $cancelado_fecha){
 	$pdo->beginTransaction();
 
 	$sql = "UPDATE pedido 
-			SET estado_pedido = 'cancelado', cancelado_fecha = '$cancelado_fecha'
+			SET estado_pedido = 'cancelado', estado_pago = 'devolución', cancelado_fecha = '$cancelado_fecha'
 			WHERE id_pedido = '$id_pedido'" ;
 
 
@@ -894,7 +931,7 @@ return $resultado;
 
 function detalle_pedido($id_pedido)
 {	
-	$id_pedido = isset($_GET["id_pedido"]) ? $_GET["id_pedido"] : "";
+	//$id_pedido = isset($_GET["id_pedido"]) ? $_GET["id_pedido"] : "";
 		$pdo = conexion();
 		if($pdo){
 			try{
@@ -919,7 +956,7 @@ function detalle_pedido($id_pedido)
 
 function detalle_producto($id)
 {	
-	$id = isset($_REQUEST["id"]) ? $_REQUEST["id"] : "";
+	//$id = isset($_GET["id"]) ? $_GET["id"] : "";
 		$pdo = conexion();
 		if($pdo){
 			try{
@@ -940,6 +977,55 @@ function detalle_producto($id)
 	return $producto;
 			
 		
+}
+
+function actualizar_stock($id_prod, $cantidad, $operacion){
+			
+	$pdo = conexion();
+	if($pdo){
+		$sql='';
+		try{				
+	$pdo->beginTransaction();
+
+
+	if($operacion == 'sumar'){
+
+	$sql = "UPDATE producto
+			SET stock = stock + $cantidad
+			WHERE id_prod = $id_prod" ;
+	}
+
+	
+	elseif($operacion == 'restar'){
+
+	$sql = "UPDATE producto
+			SET stock = stock - $cantidad
+			WHERE id_prod = $id_prod" ;
+		}
+
+	$stock_actualizado = $pdo->prepare($sql);
+
+	if(($stock_actualizado->execute())>0){ //si la consulta ha retornado algún resultado ---          
+		$pdo->commit();
+		$resultado = $stock_actualizado->rowCount(); // --- entonces retorno el número de autores afectados (borrados)
+	}
+
+	else {
+		$resultado=false;
+		echo "Ningún pedido modificado - intentelo de nuevo";
+		$pdo->rollback();		
+		}	
+	}	
+catch(PDOException $e){
+echo 'Excepción: ', $e->getMessage();
+$resultado = false;				
+}
+$pdo = null;
+return $resultado;
+
+}else{  return null; die("error en la conexión a la BD");} //en caso de no haber conexión, directamente se para el proceso
+
+
 }
 
 

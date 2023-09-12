@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block stylesheets %}
-<link rel="stylesheet" type="text/css" href="css/tarea8.css">
+<link rel="stylesheet" type="text/css" href="css/tarea7.css">
 {% endblock %}
 
 {% block content %}	
@@ -15,9 +15,14 @@
 				<h2>STOCK DISPONIBLE: {{producto.stock}} Kilo(s)</h2>
 				<h3>DESCRIPCION: {{producto.descripcion}}</h3>
 
+				{% set tipo_anadir = 'submit' %} 
+				{% if producto.stock == 0 %}    
+					{% set tipo_anadir = 'disabled' %}   
+				{% endif %}
+
 
 				<form action="" method="POST">
-					<button type="submit" name="anadir_producto" value="Añadir a la Cesta"/>Añadir Producto a la Cesta</button>
+					<button type="{{tipo_anadir}}" name="anadir_producto" value="Añadir a la Cesta"/>Añadir Producto a la Cesta</button>
 				</form>
 
 				<form action="index.php" method="POST">
