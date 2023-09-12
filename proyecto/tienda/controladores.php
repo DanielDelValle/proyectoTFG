@@ -545,13 +545,16 @@ function controlador_pedidos()
    // $orden = isset($_POST['orden']) ? htmlentities($_POST['orden'],  ENT_QUOTES, "UTF-8") : '';
     $mensaje = "";
 
-    if (isset($_POST["buscar"]) && $_POST['nif']!='') {
+    if (isset($_POST["buscar"])){ 
+       if($_POST['nif']!='') {
         $lista_pedidos = pedidos_usuario($_POST['nif']); 
         $mensaje = "Encontrados ".count($lista_pedidos). " pedidos cuyo NIF contiene '$nif'";}  
 
-    if (isset($_POST["buscar"]) && $_POST['creado_fecha']!='') {
+       elseif($_POST['creado_fecha']!='') {
         $lista_pedidos = pedidos_usuario_fecha($_POST['creado_fecha']); 
         $mensaje = "Encontrados ".count($lista_pedidos). " pedidos en la fecha ".$creado_fecha;}  
+       }
+       
 
     if (isset($_POST["marcar_pagado"])) {
             $contador = 0;
@@ -624,7 +627,7 @@ function controlador_pedidos()
     }
     global $twig;
     $template = $twig->load('control_pedidos.html');
-	echo $template->render(array ('URI'=>$URI, 'usuario' =>$usuario, 'empleado'=>$empleado, 'nif'=> $nif, 'lista_pedidos'=>$lista_pedidos, 'mensaje'=>$mensaje));
+	echo $template->render(array ('URI'=>$URI, 'usuario' =>$usuario, 'empleado'=>$empleado, 'nif'=> $nif, 'creado_fecha'=>$creado_fecha, 'lista_pedidos'=>$lista_pedidos, 'mensaje'=>$mensaje));
 
 }
 
@@ -641,7 +644,7 @@ function controlador_cuentas()
     $nuevo_estado='';
    // $orden = isset($_POST['orden']) ? htmlentities($_POST['orden'],  ENT_QUOTES, "UTF-8") : '';
     $mensaje = "";
-
+    var_dump($checked);
     if (isset($_POST["buscar"]) && $_POST['email']!='') {
         $lista_cuentas = lista_cuentas_email($_POST['email']);
         $mensaje = "Encontrados ". count($lista_cuentas). " cuentas cuyo EMAIL es '$email'";}  
@@ -667,10 +670,10 @@ function controlador_cuentas()
             $contador = 0;
             $nuevo_estado = 'inactivo';
             if(intval($checked) == 1){
-                foreach($checked as $val){
+               foreach($checked as $val){
                     $cuenta = modificar_cuenta($val, $nuevo_estado);
                     $contador +=$cuenta;
-                }
+               }
                 $delay=1;
                 header("Refresh:$delay");
                 $mensaje = $contador. " cuentas(s) DESACTIVADAS";
@@ -796,10 +799,6 @@ function controlador_iniciar_sesion(){
     $template = $twig->load('iniciar_sesion.html');
     echo $template->render(array ('URI'=>$URI, 'usuario' => $usuario, 'mensaje' =>$mensaje));
 }
-
-
-
-
 
 function controlador_mi_cuenta()
 {   $URI = get_URI();

@@ -291,30 +291,6 @@ function lista_productos()
 }
 
 
-function detalle_producto($id)
-{	
-	$id = isset($_REQUEST["id"]) ? $_REQUEST["id"] : "";
-		$pdo = conexion();
-		if($pdo){
-			try{
-			$sql = "SELECT id_prod, nombre, precio, stock, descripcion 
-					FROM producto
-					WHERE id_prod ='$id'";		
-			$lectura = $pdo->query($sql);
-			$producto= $lectura->fetchObject();
-			$pdo = null;
-		}	
-		
-		catch(PDOException $e){
-			echo 'Excepción: ', $e->getMessage();
-			return null;
-		  }
-		}  
-		
-	return $producto;
-			
-		
-}
 function insert_cliente($nif, $nombre, $apellidos, $email, $telefono, $direccion, $localidad, $cod_postal, $provincia, $contrasena, $creado_fecha){
 	$resultado = false;
 	$pdo = conexion();
@@ -526,27 +502,32 @@ function datos_empleado($email)
 }
 
 function modificar_cuenta($email, $nuevo_estado){  ///PENDIENTE QUERY QUE FUNCIONE (PROBABLEMENTE SUBQUERY Y SINO  1 POR CADA TABLA )
-			
+	$resultado = 0;
+	$tipo='cliente';
 	$pdo = conexion();
 	if($pdo){
+		//Para discernir si tengo que modificar la tabla empleado o la tabla cliente
+		$dominio = ltrim(strstr($email, '@'), '@');
+		if ($dominio === 'frutasdelvalle.com')
+		$tipo = 'empleado';
+
 		try{				
-	$pdo->beginTransaction();
-	
+			$pdo->beginTransaction();			
 
-	$sql = "UPDATE cliente
-			SET estado_cuenta = '$nuevo_estado'
-			WHERE email = '$email'";
+			$sql = "UPDATE $tipo
+					SET estado_cuenta = '$nuevo_estado'
+					WHERE email = '$email'";
 
 
-	$pedido_pagado = $pdo->prepare($sql);
+			$cuenta_modificada = $pdo->prepare($sql);
 
-	if(($pedido_pagado->execute())>0){ //si la consulta ha retornado algún resultado ---          
-		$pdo->commit();
-		$resultado = $pedido_pagado->rowCount(); // --- entonces retorno el número de autores afectados (borrados)
-	}
+		if(($cuenta_modificada->execute())>0){ //si la consulta ha retornado algún resultado ---          
+			$pdo->commit();
+			$resultado = $resultado + $cuenta_modificada->rowCount(); // --- entonces retorno el número de autores afectados (borrados)
+		}
 
 	else {
-		$resultado=false;
+		//$resultado=false;
 		echo "Ninguna cuenta modificada - intentelo de nuevo";
 		$pdo->rollback();		
 		}	
@@ -557,7 +538,7 @@ $resultado = false;
 }
 $pdo = null;
 return $resultado;
-
+	
 }else{  return null; die("error en la conexión a la BD");} //en caso de no haber conexión, directamente se para el proceso
 
 
@@ -933,6 +914,32 @@ function detalle_pedido($id_pedido)
 		
 	return $productosArray;
 						
+}
+
+
+function detalle_producto($id)
+{	
+	$id = isset($_REQUEST["id"]) ? $_REQUEST["id"] : "";
+		$pdo = conexion();
+		if($pdo){
+			try{
+			$sql = "SELECT id_prod, nombre, precio, stock, descripcion 
+					FROM producto
+					WHERE id_prod ='$id'";		
+			$lectura = $pdo->query($sql);
+			$producto= $lectura->fetchObject();
+			$pdo = null;
+		}	
+		
+		catch(PDOException $e){
+			echo 'Excepción: ', $e->getMessage();
+			return null;
+		  }
+		}  
+		
+	return $producto;
+			
+		
 }
 
 

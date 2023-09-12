@@ -4,7 +4,9 @@
 <link rel="stylesheet" type="text/css" href="css/tarea7.css">
 {% endblock %}
 
+
 {% block content %}
+
 
 
 <form method="POST" action="" autocomplete>
@@ -30,7 +32,7 @@
         <th>Nombre</th>
         <th>Apellidos</th>
         <th>Estado Cuenta</th>
-        <th>TipoCuenta</th>
+        <th>Tipo Cuenta</th>
         <th>Fecha Creado</th>
 
 
@@ -38,7 +40,7 @@
     <!-- Dependiendo del tipo de cuenta, me llevará a plantilla "detalle_cliente" o "detalle_empleado"-->
         {% if cuenta.tipo_cuenta == 'cliente' %}    
             {% set tipo_usuario = 'cliente' %}   
-            {% else %} {% set tipo_usuario = 'empleado' %}  
+            {% else %} {% set tipo_usuario = 'empleado' %} 
         {% endif %}
     <tr>
         <td><input type="checkbox" name="cuenta_select[]" class="checkbox"  value= {{cuenta.email}}></td>
@@ -47,7 +49,7 @@
         <td>{{cuenta.nombre}}</td>
         <td>{{cuenta.apellidos}} </td>
         <td>{{cuenta.estado_cuenta}} </td>
-        <td>{{cuenta.tipo_cuenta}} </td>
+        <td >{{cuenta.tipo_cuenta}} </td>
         <td>{{cuenta.creado_fecha}} </td>
 
     </tr>
