@@ -9,6 +9,9 @@ require_once 'funciones_sesion.php';
 require_once "modelo.php";
 require_once 'validadores.php';
 
+$base = 'base.html';
+global $base;
+
 function get_URI(){
     $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
     $segments = explode('/', $path);
@@ -60,8 +63,6 @@ function controlador_index()
     //estas variables son necesarias para variar el texto de los links, dependiendo de si está el usuario logeado o no
     $logged = isset($_SESSION['usuario']) ? "cerrar_sesion" : "iniciar_sesion";
     $logged_legible = isset($_SESSION['usuario']) ? "Cerrar Sesión" : "Iniciar Sesión";
-   /* $crear_cuenta = isset($_SESSION['usuario']) ? "" : "crear_cuenta";
-    $crear_cuenta_legible = isset($_SESSION['usuario']) ? "" : "Crear Cuenta";*/
 
     $total_prods = (isset($_SESSION['usuario']) && isset($_SESSION['cesta'])) ? count($_SESSION['cesta']) : 0;
     
@@ -76,6 +77,10 @@ function controlador_index()
 function controlador_mercancia()
 { $URI = get_URI();
     $usuario = checkSession();
+    //Con las siguientes 2 lineas restrinjo el acceso a partes solo destinadas a empleados
+    $base = checkDomain($usuario);   
+    if ($base !== 'base_empl') exit(header('location:iniciar_sesion'));
+
     $empleado = datos_empleado($usuario);
 
     // Petición al modelo para que retorne la lista de productos de la BD
@@ -94,9 +99,7 @@ function controlador_mercancia()
 
 function controlador_detalle_producto($id)
 {   
-    $URI = get_URI();    
-    // Petición al modelo para que retorne la lista de productos de la BD
-    //$productos = lista_productos();
+    $URI = get_URI(); 
     $_SESSION['cesta'] = checkCesta();
     $logged = isset($_SESSION['usuario']) ? "cerrar_sesion" : "iniciar_sesion";
     $logged_legible = isset($_SESSION['usuario']) ? "Cerrar Sesión" : "Iniciar Sesión";
@@ -107,9 +110,11 @@ function controlador_detalle_producto($id)
     $mensaje = "";
 
     if (isset($_POST["anadir_producto"])) {
-       // session_start();    PARA PERMITIR AÑADIR PRODUCTOS SIN HABER INICIADO SESION (CESTA SOLO ACCESIBLE TRAS LOGIN)
+        session_start();   // PARA PERMITIR AÑADIR PRODUCTOS SIN HABER INICIADO SESION (CESTA SOLO ACCESIBLE TRAS LOGIN)
         $usuario = checkSession();
         $_SESSION['cesta'] = checkCesta();
+        $logged = isset($_SESSION['usuario']) ? "cerrar_sesion" : "iniciar_sesion";
+        $logged_legible = isset($_SESSION['usuario']) ? "Cerrar Sesión" : "Iniciar Sesión";
         $total_prods = (isset($_SESSION['usuario']) && isset($_SESSION['cesta'])) ? count($_SESSION['cesta']) : 0;
 
         $prod_add = array();  //$prod_add = new ArrayObject(); 
@@ -148,11 +153,13 @@ function controlador_detalle_producto($id)
 
 function controlador_detalle_mercancia($id)
 {   $URI = get_URI();    
-    $usuario = checkSession();
+    //Con las siguientes 2 lineas restrinjo el acceso a partes solo destinadas a empleados
+    $base = checkDomain($usuario);   
+    if ($base !== 'base_empl') exit(header('location:iniciar_sesion'));
+
     $empleado = datos_empleado($usuario);
 
     // Petición al modelo para que retorne la lista de productos de la BD
-   
     $producto = get_object_vars(detalle_producto($id));  //transformo el objeto que devuelve el modelo en array asociativo
     $mensaje = "";
 
@@ -166,6 +173,10 @@ function controlador_detalle_mercancia($id)
 function controlador_detalle_cliente($nif)
 {   $URI = get_URI();
     $usuario = checkSession();
+    //Con las siguientes 2 lineas restrinjo el acceso a partes solo destinadas a empleados
+    $base = checkDomain($usuario);   
+    if ($base !== 'base_empl') exit(header('location:iniciar_sesion'));
+
     $empleado = datos_empleado($usuario); 
    // if ($empleado->tipo_cuenta != 'admon'){exit(header('location:pedidos'));}  // sólo el administrativo puede ver los datos del cliente
     $cliente = datos_cliente_nif($nif);
@@ -187,10 +198,10 @@ function controlador_detalle_cliente($nif)
 function controlador_detalle_empleado()
 {   $URI = get_URI();
     $usuario = checkSession();
+    $base = checkDomain($usuario);   
+    if ($base !== 'base_empl') exit(header('location:iniciar_sesion'));
     $empleado = datos_empleado($usuario);
     $mensaje = "";
-
-    
     global $twig;
     $template = $twig->load('detalle_empleado.html');  
 	echo $template->render(array ('URI'=>$URI, 'empleado'=>$empleado, 'mensaje'=> $mensaje));
@@ -271,7 +282,7 @@ function borrar_producto(){
         foreach($_POST['productos_borrar'] as $val){
             unset($_SESSION['cesta'][intval($val)]);
         }
-        $delay=1;
+        $delay=2;
         header("Refresh:$delay");
         $mensaje = "Producto eliminado con Éxito";
     }
@@ -283,7 +294,7 @@ return $mensaje;
 function vaciar_cesta(){
         unset($_SESSION['cesta']);
         $mensaje = "Cesta Vaciada con Éxito";
-        $delay=1;
+        $delay=2;
         header("Refresh:$delay");
         return $mensaje;
     }
@@ -444,11 +455,12 @@ function controlador_pedido_realizado($id_pedido){
 function controlador_detalle_pedido($id_pedido)
 {   $URI = get_URI();   
     $usuario = checkSession();
+    $empleado = datos_empleado($usuario);
+    $base = checkDomain($usuario);    
     $logged = isset($_SESSION['usuario']) ? "cerrar_sesion" : "iniciar_sesion";
     $logged_legible = isset($_SESSION['usuario']) ? "Cerrar Sesión" : "Iniciar Sesión";
     // Petición al modelo para que retorne la lista de productos de la BD
     $_SESSION['cesta'] = checkCesta();
- 
     $total_prods = (isset($_SESSION['usuario']) && isset($_SESSION['cesta'])) ? count($_SESSION['cesta']) : 0;
    
     $pedido = detalle_pedido($id_pedido);  //transformo el objeto que devuelve el modelo en array asociativo
@@ -457,7 +469,7 @@ function controlador_detalle_pedido($id_pedido)
 
     global $twig;
     $template = $twig->load('detalle_pedido.html');  
-	echo $template->render(array ('URI'=>$URI, 'pedido' => $pedido, 'total_prods'=>$total_prods, 'mensaje'=> $mensaje, 'logged'=>$logged, 'logged_legible'=>$logged_legible));
+	echo $template->render(array ('URI'=>$URI, 'base'=>$base, 'empleado'=>$empleado,'pedido' => $pedido, 'total_prods'=>$total_prods, 'mensaje'=> $mensaje, 'logged'=>$logged, 'logged_legible'=>$logged_legible));
     return $pedido;
 
 
@@ -475,7 +487,6 @@ function controlador_mis_pedidos()
     //$orden = isset($_POST['orden']) ? htmlentities($_POST['orden'], ENT_QUOTES,'utf-8') : 'sin criterio';
     $total_prods = isset($_SESSION['cesta']) ? count($_SESSION['cesta']) : 0;
     $mensaje='';
-
     $pedidosArray = pedidos_usuario($nif);
 
 	global $twig;
@@ -496,7 +507,7 @@ function controlador_mis_pedidos()
                 $cuenta = pedido_entregado($val, $recibido_fecha);
                 $contador +=$cuenta;
             }
-            $delay=1;
+            $delay=2;
             header("Refresh:$delay");
             $mensaje = $contador. " pedido(s) marcado(s) como 'Recibido'";
         }
@@ -518,7 +529,7 @@ function controlador_mis_pedidos()
                 $contador2 +=$cuenta2;
                 }
             }
-            $delay=1;
+            $delay=2;
             header("Refresh:$delay");
             $mensaje = $contador. " pedido(s) marcado(s) como Pagado(s) - ".$contador2. " ACTUALIZACIONES DE STOCK";
         } else $mensaje = "Por favor, seleccione al menos un pedido para cancelar";
@@ -527,7 +538,7 @@ function controlador_mis_pedidos()
     
     if (isset($_POST["borrar_cancelados"])) {
         $contador = borrar_cancelados_cliente($nif);
-        $delay=1;
+        $delay=2;
         header("Refresh:$delay");
         $mensaje = $contador. " pedido(s) cancelado(s) borrado(s)";
     }
@@ -544,6 +555,10 @@ function controlador_mis_pedidos()
 function controlador_pedidos()   
 {   $URI = get_URI();
     $usuario = checkSession();
+    //Con las siguientes 2 lineas restrinjo el acceso a partes solo destinadas a empleados
+    $base = checkDomain($usuario);   
+    if ($base !== 'base_empl') exit(header('location:iniciar_sesion'));
+
     $empleado = datos_empleado($usuario);
     $lista_pedidos = lista_pedidos();
     $checked = isset($_POST['pedido_select']) ? $_POST['pedido_select'] : [];
@@ -578,7 +593,7 @@ function controlador_pedidos()
                     $contador2 +=$cuenta2;
                     }
                 }
-                $delay=1;
+                $delay=2;
                 header("Refresh:$delay");
                 $mensaje = $contador. " pedido(s) marcado(s) como Pagado(s) - ".$contador2. " ACTUALIZACIONES DE STOCK";
             }
@@ -594,7 +609,7 @@ function controlador_pedidos()
                     $cuenta = pedido_enviado($id_pedido, $enviado_fecha);
                     $contador +=$cuenta;
                 }
-                $delay=1;
+                $delay=2;
                 header("Refresh:$delay");
                 $mensaje = $contador. " pedido(s) marcado(s) como 'Enviado'";
             }
@@ -610,7 +625,7 @@ function controlador_pedidos()
                 $cuenta = pedido_entregado($ide_, $entregado_fecha);
                 $contador +=$cuenta;
             }
-            $delay=1;
+            $delay=2;
             header("Refresh:$delay");
             $mensaje = $contador. " pedido(s) marcado(s) como 'Entregado'";
         }
@@ -631,7 +646,7 @@ function controlador_pedidos()
                 $contador2 +=$cuenta2;
                 }
             }
-            $delay=1;
+            $delay=2;
             header("Refresh:$delay");
             $mensaje = $contador. " pedido(s) Cancelado(s) - ".$contador2. " ACTUALIZACIONES DE STOCK";
         }
@@ -641,7 +656,7 @@ function controlador_pedidos()
 
     if (isset($_POST["borrar_cancelados"])) {
         $contador = borrar_cancelados();
-        $delay=1;
+        $delay=2;
         header("Refresh:$delay");
         $mensaje = $contador. " pedido(s) cancelado(s) borrado(s)";
     }
@@ -664,7 +679,7 @@ function controlador_cuentas()
     $nuevo_estado='';
    // $orden = isset($_POST['orden']) ? htmlentities($_POST['orden'],  ENT_QUOTES, "UTF-8") : '';
     $mensaje = "";
-    var_dump($checked);
+
     if (isset($_POST["buscar"]) && $_POST['email']!='') {
         $lista_cuentas = lista_cuentas_email($_POST['email']);
         $mensaje = "Encontrados ". count($lista_cuentas). " cuentas cuyo EMAIL es '$email'";}  
@@ -678,7 +693,7 @@ function controlador_cuentas()
                 $cuenta = modificar_cuenta($val, $nuevo_estado);
                 $contador +=$cuenta;
             }
-            $delay=1;
+            $delay=2;
             header("Refresh:$delay");
             $mensaje = $contador. " cuentas(s) ACTIVADAS";
         }
@@ -694,7 +709,7 @@ function controlador_cuentas()
                     $cuenta = modificar_cuenta($val, $nuevo_estado);
                     $contador +=$cuenta;
                }
-                $delay=1;
+                $delay=2;
                 header("Refresh:$delay");
                 $mensaje = $contador. " cuentas(s) DESACTIVADAS";
             }
@@ -710,7 +725,7 @@ function controlador_cuentas()
                     $cuenta = modificar_cuenta($val, $nuevo_estado);
                     $contador +=$cuenta;
                 }
-                $delay=1;
+                $delay=2;
                 header("Refresh:$delay");
                 $mensaje = $contador. " cuentas(s) BLOQUEADAS";
             }
@@ -725,7 +740,7 @@ function controlador_cuentas()
                 $cuenta = eliminar_cuenta($val, $cancelado_fecha);
                 $contador +=$cuenta;
             }
-            $delay=1;
+            $delay=2;
             header("Refresh:$delay");
             $mensaje = $contador. " cuenta(s) eliminada(s)";
         }
@@ -756,7 +771,7 @@ function controlador_iniciar_sesion(){
         if (($usuario != "") && ($contrasena != "")) {
 
             $dominio = ltrim(strstr($usuario, '@'), '@');    //con esto obtengo lo que va tras la @ para conocer si es un mail de empleado o no
-
+                //Si el usuario está en la lista de usuarios (tanto cliente como empleado):
                 if(in_array($usuario, $lista_users)){
                     if ($dominio === 'frutasdelvalle.com') {$user = datos_empleado($usuario);}
                     else {$user = datos_cliente($usuario);}  
@@ -840,10 +855,6 @@ function controlador_home_admon()
     if ($empleado->tipo_cuenta != 'admon'){exit(header('location:iniciar_sesion'));}
     $mensaje = "";
 
-
-
-
-
     global $twig;
     $template = $twig->load('home_admon.html');
 	echo $template->render(array ('URI'=>$URI, 'usuario' =>$usuario, 'empleado'=>$empleado));
@@ -857,7 +868,6 @@ function controlador_home_almacen()
     $empleado = datos_empleado($usuario);
     if ($empleado->tipo_cuenta != 'almacen'){exit(header('location:iniciar_sesion'));}
     $mensaje = "";
-
 
 
     if (isset($_POST["cerrar_sesion"])){
@@ -972,9 +982,9 @@ function controlador_alta_empleado()
 {   $URI = get_URI();
     $usuario = checkSession();
     $empleado = datos_empleado($usuario);
+    if ($empleado->tipo_cuenta != 'admon'){exit(header('location:iniciar_sesion'));}
     $logged = isset($_SESSION['usuario']) ? "cerrar_sesion" : "iniciar_sesion";
     $logged_legible = isset($_SESSION['usuario']) ? "Cerrar Sesión" : "Iniciar Sesión";
-    if ($empleado->tipo_cuenta != 'admon'){exit(header('location:iniciar_sesion'));}
     $mensaje = "";
     $resultado = "";
 

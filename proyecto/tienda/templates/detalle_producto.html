@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block stylesheets %}
-<link rel="stylesheet" type="text/css" href="css/tarea7.css">
+<link rel="stylesheet" type="text/css" href="css/base.css">
 {% endblock %}
 
 {% block content %}	
@@ -10,19 +10,22 @@
 			<!-- Mostramos una lista de los artículos-->
 			Detalles Producto ID: {{producto.id_prod}}
 			<img width="400" height="400" src="imagenes/{{producto.nombre}}.jpg"/> 
+			{% set boton_anadir = '' %} 
+			{% set texto_stock = "STOCK DISPONIBLE: #{producto.stock} Kilo(s)"  %}
+			{% if producto.stock == 0 %}    
+				{% set boton_anadir = 'disabled' %}   
+				{% set texto_stock = 'Producto Temporalmente No Disponible' %} 	
+			{% endif %}
+
 				<h2>{{producto.nombre}}</h2>
 				<h2>PRECIO: {{producto.precio}}€ / Kilo</h2>
-				<h2>STOCK DISPONIBLE: {{producto.stock}} Kilo(s)</h2>
+				<h2>{{texto_stock}} </h2>
 				<h3>DESCRIPCION: {{producto.descripcion}}</h3>
 
-				{% set tipo_anadir = 'submit' %} 
-				{% if producto.stock == 0 %}    
-					{% set tipo_anadir = 'disabled' %}   
-				{% endif %}
 
 
 				<form action="" method="POST">
-					<button type="{{tipo_anadir}}" name="anadir_producto" value="Añadir a la Cesta"/>Añadir Producto a la Cesta</button>
+					<button {{boton_anadir}} type="submit" name="anadir_producto" />Añadir Producto a la Cesta</button>
 				</form>
 
 				<form action="index.php" method="POST">

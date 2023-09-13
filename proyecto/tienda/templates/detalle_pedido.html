@@ -1,7 +1,7 @@
-{% extends "base.html" %}
+{% extends "#{base}.html" %}
 
 {% block stylesheets %}
-<link rel="stylesheet" type="text/css" href="css/tarea8.css">
+<link rel="stylesheet" type="text/css" href="css/{{base}}.css">
 {% endblock %}
 
 
@@ -25,6 +25,6 @@
 
 
 				<form action="index.php/mis_pedidos" method="POST">
-					<button type="submit" name="mis_pedidos"/>Ir a Mis Pedidos</button>
+					<button class="depende" type="submit" name="mis_pedidos"/>Ir a Mis Pedidos</button>
 				</form>
 {% endblock %}	

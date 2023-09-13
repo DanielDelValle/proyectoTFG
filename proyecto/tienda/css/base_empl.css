@@ -262,7 +262,10 @@ footer {
 	color: #001aff;
 	
 }
-
+.depende{
+	display:none;
+	visibility:hidden;
+}
 #banner img {
 	float:left; 
 	margin-left:1%;  

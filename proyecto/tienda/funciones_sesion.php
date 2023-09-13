@@ -23,7 +23,12 @@ function closeSession() //elimina la sesión sin borrar los datos de la cesta
             session_write_close();
            // session_destroy();  //destruye sesion
         }
-   
+function checkDomain($usuario) //elimina la sesión sin borrar los datos de la cesta
+{  
+    $dominio = ltrim(strstr($usuario, '@'), '@');    //con esto obtengo lo que va tras la @ para conocer si es un mail de empleado o no
+    if ($dominio === 'frutasdelvalle.com') $base = 'base_empl'; else $base = 'base';
+    return $base;
+    }
     
 
 
