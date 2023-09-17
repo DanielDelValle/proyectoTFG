@@ -483,7 +483,7 @@ function controlador_mis_pedidos()
     $logged_legible = isset($_SESSION['usuario']) ? "Cerrar Sesión" : "Iniciar Sesión";
     $checked = isset($_POST['pedido_select']) ? $_POST['pedido_select'] : [];
     $creado_fecha = isset($_POST['creado_fecha']) ? $_POST['creado_fecha'] : '';
-    $nif = $cliente->nif;
+    $nif = $cliente->nif;  //en este caso se define el nif como el nif del cliente, con lo que al hacer el JOIN en la consulta a BD, sólo sus pedidos aparecen, acotando la busqueda.
     //$orden = isset($_POST['orden']) ? htmlentities($_POST['orden'], ENT_QUOTES,'utf-8') : 'sin criterio';
     $total_prods = isset($_SESSION['cesta']) ? count($_SESSION['cesta']) : 0;
     $mensaje='';
@@ -558,26 +558,47 @@ function controlador_pedidos()
     //Con las siguientes 2 lineas restrinjo el acceso a partes solo destinadas a empleados
     $base = checkDomain($usuario);   
     if ($base !== 'base_empl') exit(header('location:iniciar_sesion'));
-
     $empleado = datos_empleado($usuario);
     $lista_pedidos = lista_pedidos();
     $checked = isset($_POST['pedido_select']) ? $_POST['pedido_select'] : [];
-    $nif= isset($_POST['nif']) ? $_POST['nif'] : '';
+    $id_pedido = isset($_POST['id_pedido']) ? $_POST['id_pedido'] : '';
+    $nif = isset($_POST['nif']) ? $_POST['nif'] : '';  //en este caso el DNI es otro campo de búsqueda porque lo utiliza el administrador
+    $total_precio = isset($_POST['total_precio']) ? $_POST['total_precio'] : '';
+    $total_kg = isset($_POST['total_kg']) ? $_POST['total_kg'] : '';
+    $forma_pago = isset($_POST['forma_pago']) ? $_POST['forma_pago'] : '';
+    $estado_pago = isset($_POST['estado_pago']) ? $_POST['estado_pago'] : '';
+    $estado_pedido = isset($_POST['estado_pedido']) ? $_POST['estado_pedido'] :'';
     $creado_fecha = isset($_POST['creado_fecha']) ? $_POST['creado_fecha'] : '';
+    $pagado_fecha = isset($_POST['pagado_fecha']) ? $_POST['pagado_fecha'] : '';
+    $enviado_fecha = isset($_POST['enviado_fecha']) ? $_POST['enviado_fecha'] : '';
+    $entregado_fecha = isset($_POST['entregado_fecha']) ? $_POST['entregado_fecha'] : '';
+    $cancelado_fecha = isset($_POST['cancelado_fecha']) ? $_POST['cancelado_fecha'] : '';
+    $notas = isset($_POST['notas']) ? $_POST['notas'] : '';
     //$orden = isset($_POST['orden']) ? $_POST['orden'] : '';
    // $orden = isset($_POST['orden']) ? htmlentities($_POST['orden'],  ENT_QUOTES, "UTF-8") : '';
-    $mensaje = "";
+    $mensaje='';
+    $where = '';
+
 
     if (isset($_POST["buscar"])){ 
-        if($_POST['nif']!='') {
-         $lista_pedidos = pedidos_usuario($_POST['nif']); 
-         $mensaje = "Encontrados ".count($lista_pedidos). " pedidos cuyo NIF contiene '$nif'";}  
- 
-        elseif($_POST['creado_fecha']!='') {
-         $lista_pedidos = pedidos_usuario_fecha($_POST['creado_fecha']); 
-         $mensaje = "Encontrados ".count($lista_pedidos). " pedidos en la fecha ".$creado_fecha;}  
-        }
-        
+        //$where será un string modificable al que iré anexando cada campo en caso de que no esté vacío. Es decir, tendrá una longitud variable.
+        $where = "WHERE id_pedido LIKE '%$id_pedido%' ";
+        if($nif != '') $where .= "AND nif_cliente LIKE '%$nif%'";
+        if($total_precio != '')$where .= "AND total_precio LIKE '%$total_precio%'";
+        if($total_kg != '')$where .= "AND total_kg LIKE '%$total_kg%'";
+        if($forma_pago != '')$where .= "AND forma_pago LIKE '%$forma_pago%'";
+        if($estado_pago != '')$where .= "AND estado_pago LIKE '%$estado_pago%'";
+        if($estado_pedido != '')$where .= "AND estado_pedido LIKE '%$estado_pedido%'";
+        if($creado_fecha != '')$where .= "AND creado_fecha LIKE '%$creado_fecha%'";
+        if($pagado_fecha != '')$where .= "AND pagado_fecha LIKE '%$pagado_fecha%'";
+        if($enviado_fecha != '')$where .= "AND enviado_fecha LIKE '%$enviado_fecha%'";
+        if($entregado_fecha != '')$where .= "AND entregado_fecha LIKE '%$entregado_fecha%'";
+        if($cancelado_fecha != '')$where .= "AND cancelado_fecha LIKE '%$cancelado_fecha%'";
+        if($notas != '')$where .= "AND notas LIKE '%$notas%'";
+
+        $lista_pedidos = pedidos_busqueda($where, $id_pedido, $nif, $total_precio, $total_kg, $forma_pago, $estado_pago, $estado_pedido, 
+                         $creado_fecha, $pagado_fecha, $enviado_fecha, $entregado_fecha, $cancelado_fecha, $notas); }
+        $mensaje = "Encontrado(s) ".count($lista_pedidos). " pedido(s)";
 
     if (isset($_POST["marcar_pagado"])) {
             $contador = 0;
@@ -662,7 +683,9 @@ function controlador_pedidos()
     }
     global $twig;
     $template = $twig->load('control_pedidos.html');
-	echo $template->render(array ('URI'=>$URI, 'usuario' =>$usuario, 'empleado'=>$empleado, 'nif'=> $nif, 'creado_fecha'=>$creado_fecha, 'lista_pedidos'=>$lista_pedidos, 'mensaje'=>$mensaje));
+	echo $template->render(array ('URI'=>$URI, 'usuario' =>$usuario, 'empleado'=>$empleado, 'where'=>$where, 'id_pedido'=>$id_pedido, 'nif'=> $nif, 'total_precio'=>$total_precio, 'total_kg'=>$total_kg, 
+    'forma_pago'=>$forma_pago,'estado_pago'=>$estado_pago, 'estado_pedido'=>$estado_pedido, 'creado_fecha'=>$creado_fecha, 'pagado_fecha'=>$pagado_fecha, 'enviado_fecha'=>$enviado_fecha,
+    'entregado_fecha'=>$entregado_fecha, 'cancelado_fecha'=>$cancelado_fecha, 'notas'=>$notas,'lista_pedidos'=>$lista_pedidos, 'mensaje'=>$mensaje));
 
 }
 
