@@ -7,7 +7,11 @@
 
 
 {% block content %}	
-
+{% if base =='base' %}
+{% set detalle = 'producto' %}
+{% else %}
+{% set detalle = 'mercancia' %}
+{% endif %}
 			<table id="datos_cliente">
 			<th>Id Producto</th>
 			<th>Nombre</th>
@@ -17,7 +21,7 @@
 			{% for key, producto in pedido %}
 			<tr>	
 			<td>	{{producto.id_prod}}</td>	
-			<td><a href="http://localhost/proyecto/tienda/index.php/detalle_mercancia?id={{producto.id_prod}}">{{producto.nombre}}</a></td>	
+			<td><a href="http://localhost/proyecto/tienda/index.php/detalle_{{detalle}}?id={{producto.id_prod}}">{{producto.nombre}}</a></td>	
 			<td>	{{producto.cantidad}} Kilo(s)</td>	
 			</tr>
 			{% endfor %}

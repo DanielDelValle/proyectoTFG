@@ -686,7 +686,7 @@ function pedidos_usuario($nif){
 		if($pdo){
 			try{
 
-				$sql = "SELECT id_pedido, nif_cliente, total_precio, total_kg, forma_pago, estado_pago, estado_pedido, creado_fecha, enviado_fecha, entregado_fecha, cancelado_fecha, notas
+				$sql = "SELECT id_pedido, nif_cliente, total_precio, total_kg, forma_pago, estado_pago, estado_pedido, creado_fecha, pagado_fecha, enviado_fecha, entregado_fecha, cancelado_fecha, notas
 					FROM pedido $where 
 					ORDER BY creado_fecha DESC";
 

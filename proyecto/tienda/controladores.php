@@ -154,6 +154,7 @@ function controlador_detalle_producto($id)
 function controlador_detalle_mercancia($id)
 {   $URI = get_URI();    
     //Con las siguientes 2 lineas restrinjo el acceso a partes solo destinadas a empleados
+    $usuario = checkSession();
     $base = checkDomain($usuario);   
     if ($base !== 'base_empl') exit(header('location:iniciar_sesion'));
 
@@ -166,7 +167,7 @@ function controlador_detalle_mercancia($id)
     
     global $twig;
     $template = $twig->load('detalle_mercancia.html');  
-	echo $template->render(array ('URI'=>$URI, 'empleado'=>$empleado, 'producto' => $producto, 'mensaje'=> $mensaje));
+	echo $template->render(array ('URI'=>$URI, 'empleado'=>$empleado, 'base'=>$base, 'producto' => $producto, 'mensaje'=> $mensaje));
     
 }
 
@@ -681,6 +682,7 @@ function controlador_pedidos()
         header("Refresh:$delay");
         $mensaje = $contador. " pedido(s) cancelado(s) borrado(s)";
     }
+    
     global $twig;
     $template = $twig->load('control_pedidos.html');
 	echo $template->render(array ('URI'=>$URI, 'usuario' =>$usuario, 'empleado'=>$empleado, 'where'=>$where, 'id_pedido'=>$id_pedido, 'nif'=> $nif, 'total_precio'=>$total_precio, 'total_kg'=>$total_kg, 
