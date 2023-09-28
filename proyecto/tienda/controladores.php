@@ -175,7 +175,8 @@ function controlador_detalle_cliente($nif)
 {   $URI = get_URI();
     $usuario = checkSession();
     //Con las siguientes 2 lineas restrinjo el acceso a partes solo destinadas a empleados
-    $base = checkDomain($usuario);   
+    $base = checkDomain($usuario); 
+    var_dump($base);  
     if ($base !== 'base_empl') exit(header('location:iniciar_sesion'));
 
     $empleado = datos_empleado($usuario); 
@@ -186,7 +187,7 @@ function controlador_detalle_cliente($nif)
     $total_gasto = array_sum(array_column(pedidos_usuario($nif), 'total_precio')); // SUMO LOS ELEMENTOS DEL ARRAY QUE CONTIENE EL TOTAL DE PRECIO DE TODOS LOS PEDIDOS DEL USUARIO
     $mensaje = "";
 
-    if(isset($_POST['volver_pedidos']))controlador_pedidos();
+    if(isset($_POST['volver_pedidos']))exit(header('location:control_pedidos'));
 
     
     global $twig;
@@ -558,7 +559,7 @@ function controlador_pedidos()
     $usuario = checkSession();
     //Con las siguientes 2 lineas restrinjo el acceso a partes solo destinadas a empleados
     $base = checkDomain($usuario);   
-    if ($base !== 'base_empl') exit(header('location:iniciar_sesion'));
+    if ($base != 'base_empl') exit(header('location:iniciar_sesion'));
     $empleado = datos_empleado($usuario);
     $lista_pedidos = lista_pedidos();
     $checked = isset($_POST['pedido_select']) ? $_POST['pedido_select'] : [];

@@ -127,7 +127,7 @@ a {
 
 
 a:hover {
-	font-size: 120%;
+	/*font-size: 120%;*/
 	/*text-decoration: underline;*/
 	background-color:#89ad506e;
 }
