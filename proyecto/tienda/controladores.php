@@ -579,6 +579,7 @@ function controlador_pedidos()
    // $orden = isset($_POST['orden']) ? htmlentities($_POST['orden'],  ENT_QUOTES, "UTF-8") : '';
     $mensaje='';
     $where = '';
+    $selected_est_pago = '';
 
 
     if (isset($_POST["buscar"])){ 
@@ -587,9 +588,9 @@ function controlador_pedidos()
         if($nif != '') $where .= "AND nif_cliente LIKE '%$nif%'";
         if($total_precio != '')$where .= "AND total_precio LIKE '%$total_precio%'";
         if($total_kg != '')$where .= "AND total_kg LIKE '%$total_kg%'";
-        if($forma_pago != '')$where .= "AND forma_pago LIKE '%$forma_pago%'";
-        if($estado_pago != '')$where .= "AND estado_pago LIKE '%$estado_pago%'";
-        if($estado_pedido != '')$where .= "AND estado_pedido LIKE '%$estado_pedido%'";
+        if($forma_pago != ''){$where .= "AND forma_pago LIKE '%$forma_pago%'"; $selected_est_pago = 'selected';}
+        if($estado_pago != ''){$where .= "AND estado_pago LIKE '%$estado_pago%'"; $selected_est_pago = 'selected';}
+        if($estado_pedido != ''){$where .= "AND estado_pedido LIKE '%$estado_pedido%'";$selected_est_pago = 'selected';}
         if($creado_fecha != '')$where .= "AND creado_fecha LIKE '%$creado_fecha%'";
         if($pagado_fecha != '')$where .= "AND pagado_fecha LIKE '%$pagado_fecha%'";
         if($enviado_fecha != '')$where .= "AND enviado_fecha LIKE '%$enviado_fecha%'";
@@ -687,7 +688,7 @@ function controlador_pedidos()
     $template = $twig->load('control_pedidos.html');
 	echo $template->render(array ('URI'=>$URI, 'usuario' =>$usuario, 'empleado'=>$empleado, 'where'=>$where, 'id_pedido'=>$id_pedido, 'nif'=> $nif, 'total_precio'=>$total_precio, 'total_kg'=>$total_kg, 
     'forma_pago'=>$forma_pago,'estado_pago'=>$estado_pago, 'estado_pedido'=>$estado_pedido, 'creado_fecha'=>$creado_fecha, 'pagado_fecha'=>$pagado_fecha, 'enviado_fecha'=>$enviado_fecha,
-    'entregado_fecha'=>$entregado_fecha, 'cancelado_fecha'=>$cancelado_fecha, 'notas'=>$notas,'lista_pedidos'=>$lista_pedidos, 'mensaje'=>$mensaje));
+    'entregado_fecha'=>$entregado_fecha, 'cancelado_fecha'=>$cancelado_fecha, 'notas'=>$notas,'lista_pedidos'=>$lista_pedidos, 'mensaje'=>$mensaje, 'selected_est_pago'=>$selected_est_pago));
 
 }
 

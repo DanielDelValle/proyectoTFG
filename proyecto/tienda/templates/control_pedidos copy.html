@@ -1,7 +1,7 @@
 {% extends "base_empl.html" %}
 
 {% block stylesheets %}
-<link rel="stylesheet" type="text/css" href="css/base_empl.css">
+<link rel="stylesheet" type="text/css" href="css/tarea7.css">
 {% endblock %}
 
 {% block content %}
@@ -38,12 +38,7 @@
         <label for="forma_pago">Forma Pago</label>
         <input type="text" name="forma_pago" id="forma_pago" value="{{forma_pago}}"  ><br>
         <label for="estado_pago">Estado Pago</label>
-            <select name='estado_pago' id='estado_pago'>
-                <option value = '' ></option>
-                <option value = 'pendiente' > Pendiente</option>
-                <option value = 'pagado' > Pagado</option>
-                <option value = 'devolucion' > Devolucion</option>
-            </select> <br>
+        <input type="text" name="estado_pago" id="estado_pago" value="{{estado_pago}}"  ><br>
         <label for="estado_pedido">Estado Pedido</label>
         <input type="text" name="estado_pedido" id="estado_pedido" value="{{estado_pedido}}"  ><br>
         <label for="creado_fecha">Fecha Creación</label>

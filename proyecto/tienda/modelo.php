@@ -699,38 +699,7 @@ function pedidos_usuario($nif){
 			
 			if($resultado->rowCount()>0) $mensaje = "Se han encontrado <b>" . $resultado->rowCount() . "</b> pedido(s) <br><br>"; 
 			else $mensaje = "No se han encontrado pedidos";
-			//c.total_pedidos, c.total_gasto SI SE LLEGAN A INCORPORAR DICHAS COLUMNAS
-
-
-		/*	$sql = "SELECT id_pedido, nif_cliente, total_precio, total_kg, forma_pago, estado_pago, estado_pedido, creado_fecha, enviado_fecha, entregado_fecha, cancelado_fecha, notas
-					FROM pedido 
-					WHERE nif_cliente = IF(:nif_cliente = '', nif_cliente, :nif_cliente)						
-						AND estado_pago  = IF(:estado_pago  = '', estado_pago, :estado_pago)
-						AND estado_pedido = IF(:estado_pedido = '', estado_pedido,  :estado_pedido)";
-				$stmt = $pdo->prepare($sql);
-				$params = [
-					':nif_cliente' => $nif_cliente,
-					':estado_pago' => $estado_pago,
-					':estado_pedido' => $estado_pedido
-					
-				];
-				$stmt->execute($params);*/
-			//La búsqueda se realiza en mysql con el comando LIKE
-			/*$sql = "SELECT id_pedido, nif_cliente, total_precio, total_kg, forma_pago, estado_pago, estado_pedido, creado_fecha, enviado_fecha, entregado_fecha, cancelado_fecha, notas
-					FROM pedido
-					WHERE (id_pedido LIKE '%$id_pedido%' AND nif_cliente LIKE '%$nif%' AND total_precio LIKE '%$total_precio%' AND total_kg LIKE '%$total_kg%' 
-					AND forma_pago LIKE '%$forma_pago%' AND estado_pago LIKE '%$estado_pago%' AND estado_pedido LIKE '%$estado_pedido%' AND creado_fecha LIKE '%$creado_fecha%' 
-					AND pagado_fecha LIKE '%$pagado_fecha%'AND enviado_fecha LIKE '%$enviado_fecha%' AND entregado_fecha LIKE '%$entregado_fecha%' 
-					AND cancelado_fecha LIKE '%$cancelado_fecha%' AND notas LIKE '%$notas%')
-					ORDER BY creado_fecha DESC";
-
-			$pedidosArray = $stmt->fetchAll(PDO::FETCH_OBJ);
-
-
-			if($stmt->rowCount()>0) $mensaje = "Se han encontrado <b>" . $stmt->rowCount() . "</b> pedido(s) <br><br>"; 
-			else $mensaje = "No se han encontrado pedidos";*/
-
-		}	
+	}	
 		
 		catch(PDOException $e){
 			echo 'Excepción: ', $e->getMessage();
@@ -738,8 +707,7 @@ function pedidos_usuario($nif){
 		  }
 		}  	
 		$pdo=null;
-		//var_dump($pedidosArray);
-		echo($sql);
+
 	return $pedidosArray;
 	}
 	

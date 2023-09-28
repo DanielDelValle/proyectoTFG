@@ -209,11 +209,10 @@ input:focus {
 select{
 	padding:.5em;
 	border-radius:10px;
-	border:1px solid;
+	border:2px solid;
 	border-color:#3678ce;
-	width: auto;
+	width: 12.5em;
 	text-align:center;
-	margin-right: 15px;;
 	background-color: #b0e0e6;
 }
 
