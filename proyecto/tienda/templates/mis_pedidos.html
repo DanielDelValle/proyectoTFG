@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block stylesheets %}
-<link rel="stylesheet" type="text/css" href="css/tarea7.css">
+<link rel="stylesheet" type="text/css" href="css/base.css">
 {% endblock %}
 
 {% block content %}
@@ -45,6 +45,7 @@
         <th>Estado Pago</th>
         <th>Estado Pedido</th>
         <th>Fecha Creado</th>
+        <th>Fecha Pago</th>
         <th>Fecha Envío</th>
         <th>Fecha Recibido</th>
         <th>Fecha Cancelación</th>
@@ -59,6 +60,7 @@
         <td>{{pedido.estado_pago}} </td>
         <td>{{pedido.estado_pedido}} </td>
         <td>{{pedido.creado_fecha}} </td>
+        <td>{{pedido.pagado_fecha}} </td>
         <td>{{pedido.enviado_fecha}} </td>
         <td>{{pedido.entregado_fecha}} </td>
         <td>{{pedido.cancelado_fecha}} </td>

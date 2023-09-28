@@ -175,8 +175,7 @@ function controlador_detalle_cliente($nif)
 {   $URI = get_URI();
     $usuario = checkSession();
     //Con las siguientes 2 lineas restrinjo el acceso a partes solo destinadas a empleados
-    $base = checkDomain($usuario); 
-    var_dump($base);  
+    $base = checkDomain($usuario);  
     if ($base !== 'base_empl') exit(header('location:iniciar_sesion'));
 
     $empleado = datos_empleado($usuario); 
@@ -464,15 +463,13 @@ function controlador_detalle_pedido($id_pedido)
     // Petición al modelo para que retorne la lista de productos de la BD
     $_SESSION['cesta'] = checkCesta();
     $total_prods = (isset($_SESSION['usuario']) && isset($_SESSION['cesta'])) ? count($_SESSION['cesta']) : 0;
-   
-    $pedido = detalle_pedido($id_pedido);  //transformo el objeto que devuelve el modelo en array asociativo
-    
+    $pedido = detalle_pedido($id_pedido);  //transformo el objeto que devuelve el modelo en array de objetos
+    $facturas = facturacion_pedido($id_pedido);
     $mensaje = "";
-
     global $twig;
     $template = $twig->load('detalle_pedido.html');  
-	echo $template->render(array ('URI'=>$URI, 'base'=>$base, 'empleado'=>$empleado,'pedido' => $pedido, 'total_prods'=>$total_prods, 'mensaje'=> $mensaje, 'logged'=>$logged, 'logged_legible'=>$logged_legible));
-    return $pedido;
+	echo $template->render(array ('URI'=>$URI, 'base'=>$base, 'empleado'=>$empleado,'pedido' => $pedido, 'facturas'=>$facturas, 'total_prods'=>$total_prods, 'mensaje'=> $mensaje, 'logged'=>$logged, 'logged_legible'=>$logged_legible));
+    //return $pedido;
 
 
 }
@@ -579,13 +576,23 @@ function controlador_pedidos()
     //$orden = isset($_POST['orden']) ? $_POST['orden'] : '';
    // $orden = isset($_POST['orden']) ? htmlentities($_POST['orden'],  ENT_QUOTES, "UTF-8") : '';
     $mensaje='';
-    $where = '';
+    //$where será un string modificable al que iré anexando cada campo en caso de que no esté vacío. Es decir, tendrá una longitud variable.
+    $where = "WHERE id_pedido LIKE '%$id_pedido%' ";
     $selected_est_pago = '';
+    $factura = '';
+    $albaran = '';
+    $disponible = '';
+
+    if(intval($checked) == 1){
+        foreach($checked as $id_pedido){
+            $datos_pedido = estado_pedido($id_pedido);
+            if ($datos_pedido[0]->estado_pago =='pagado'){$disponible = 'disabled';}
+        }
+    }
 
 
     if (isset($_POST["buscar"])){ 
-        //$where será un string modificable al que iré anexando cada campo en caso de que no esté vacío. Es decir, tendrá una longitud variable.
-        $where = "WHERE id_pedido LIKE '%$id_pedido%' ";
+        //$where = "WHERE id_pedido LIKE '%$id_pedido%' ";
         if($nif != '') $where .= "AND nif_cliente LIKE '%$nif%'";
         if($total_precio != '')$where .= "AND total_precio LIKE '%$total_precio%'";
         if($total_kg != '')$where .= "AND total_kg LIKE '%$total_kg%'";
@@ -600,26 +607,34 @@ function controlador_pedidos()
         if($notas != '')$where .= "AND notas LIKE '%$notas%'";
 
         $lista_pedidos = pedidos_busqueda($where, $id_pedido, $nif, $total_precio, $total_kg, $forma_pago, $estado_pago, $estado_pedido, 
-                         $creado_fecha, $pagado_fecha, $enviado_fecha, $entregado_fecha, $cancelado_fecha, $notas); }
+                         $creado_fecha, $pagado_fecha, $enviado_fecha, $entregado_fecha, $cancelado_fecha, $notas); } 
+                         //Genero lista de pedidos con el where según criterios de búsqueda combinados
         $mensaje = "Encontrado(s) ".count($lista_pedidos). " pedido(s)";
 
     if (isset($_POST["marcar_pagado"])) {
             $contador = 0;
+            $contador1 = 0;
             $contador2 = 0;
+            //If intval($checked == 1 significa que el array "checked" tiene al menos un valor dentro, con lo que hay algún pedido seleccionado)
             if(intval($checked) == 1){
-                                foreach($checked as $id_pedido){
+                foreach($checked as $id_pedido){
                     $pagado_fecha = date('Y-m-d H:i:s');
+                    $factura = 'FAC_'.$pagado_fecha.'/'.$contador; //Así aseguro que, aunque marque como pagados 2 pedidos a la vez, el ID factura y albaran sean unicos.
+                    $albaran = 'ALB_'.$pagado_fecha.'/'.$contador; 
                     $cuenta = pedido_pagado($id_pedido, $pagado_fecha);
-                    $contador +=$cuenta;
-                    $pedido = detalle_pedido($id_pedido);
+                    $contador +=$cuenta; 
+                    $cuenta1 = factura_creada($factura, $albaran, $id_pedido);
+                    $contador1 +=$cuenta1;    
+                    //Obtengo detalles de cada pedido para ahondar en los productos que lo componen, y modificar su stock
+                    $pedido = detalle_pedido($id_pedido);               
                     foreach($pedido as $prod){
-                    $cuenta2 = actualizar_stock($prod->id_prod, $prod->cantidad, 'restar');
-                    $contador2 +=$cuenta2;
-                    }
+                        $cuenta2 = actualizar_stock($prod->id_prod, $prod->cantidad, 'restar');
+                        $contador2 +=$cuenta2;
+                        }
                 }
                 $delay=2;
                 header("Refresh:$delay");
-                $mensaje = $contador. " pedido(s) marcado(s) como Pagado(s) - ".$contador2. " ACTUALIZACIONES DE STOCK";
+                $mensaje = $contador. " pedido(s) marcado(s) como Pagado(s) - ".$contador2. " Stock actualizado(s) - ".PHP_EOL. $contador1." Factura(s) Generada(s)";
             }
     else $mensaje = "Por favor, seleccione al menos un producto para modificar";
 
@@ -627,6 +642,7 @@ function controlador_pedidos()
 
     if (isset($_POST["marcar_enviado"])) {
             $contador = 0;
+            //If intval($checked == 1 significa que el array "checked" tiene al menos un valor dentro, con lo que hay algún pedido seleccionado)
             if(intval($checked) == 1){                
                 foreach($checked as $id_pedido){
                     $enviado_fecha = date('Y-m-d H:i:s');
@@ -643,6 +659,7 @@ function controlador_pedidos()
 
     if (isset($_POST["marcar_entregado"])) {
         $contador = 0;
+        //If intval($checked == 1 significa que el array "checked" tiene al menos un valor dentro, con lo que hay algún pedido seleccionado)
         if(intval($checked) == 1){            
             foreach($checked as $ide_){
                 $entregado_fecha = date('Y-m-d H:i:s');
@@ -659,6 +676,7 @@ function controlador_pedidos()
     if (isset($_POST["cancelar_pedido"])) {
         $contador = 0;
         $contador2 = 0;
+        //If intval($checked == 1 significa que el array "checked" tiene al menos un valor dentro, con lo que hay algún pedido seleccionado)
         if(intval($checked) == 1){            
             foreach($checked as $val){
                 $cancelado_fecha = date('Y-m-d H:i:s');
@@ -687,7 +705,7 @@ function controlador_pedidos()
     
     global $twig;
     $template = $twig->load('control_pedidos.html');
-	echo $template->render(array ('URI'=>$URI, 'usuario' =>$usuario, 'empleado'=>$empleado, 'where'=>$where, 'id_pedido'=>$id_pedido, 'nif'=> $nif, 'total_precio'=>$total_precio, 'total_kg'=>$total_kg, 
+	echo $template->render(array ('URI'=>$URI, 'usuario' =>$usuario, 'empleado'=>$empleado, 'disponible'=>$disponible, 'factura'=>$factura, 'albaran'=>$albaran, 'where'=>$where, 'id_pedido'=>$id_pedido, 'nif'=> $nif, 'total_precio'=>$total_precio, 'total_kg'=>$total_kg, 
     'forma_pago'=>$forma_pago,'estado_pago'=>$estado_pago, 'estado_pedido'=>$estado_pedido, 'creado_fecha'=>$creado_fecha, 'pagado_fecha'=>$pagado_fecha, 'enviado_fecha'=>$enviado_fecha,
     'entregado_fecha'=>$entregado_fecha, 'cancelado_fecha'=>$cancelado_fecha, 'notas'=>$notas,'lista_pedidos'=>$lista_pedidos, 'mensaje'=>$mensaje, 'selected_est_pago'=>$selected_est_pago));
 

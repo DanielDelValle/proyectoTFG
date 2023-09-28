@@ -181,7 +181,17 @@
             if($bd->query($sql9)){
             echo "Datos insertados con éxito en tabla EMPLEADO<br>";
             }else echo "Error insertando datos en tabla EMPLEADO<br>";
+            
+            //ALTER TABLE productos_pedido ADD factura VARCHAR(35), albaran VARCHAR(35);  PARA AÑADIR LOS ATRIBUTOS ALBARAN Y FACTURA A LA TABLA QUE DETALLA EL PEDIDO
 
+            $sql10="CREATE TABLE IF NOT EXISTS facturacion (
+                factura VARCHAR(30) PRIMARY KEY, 
+                estado_fact ENUM ('activa', 'anulada') DEFAULT 'activa', 
+                fact_rectif VARCHAR(30) DEFAULT NULL,
+                albaran VARCHAR(30),
+                id_pedido VARCHAR(30)
+   
+                )";
 
 
 
@@ -198,6 +208,12 @@
             if($bd->query($sqlFK2)){
                 echo "FOREIGN KEY FK_productos_pedido añadido con éxito<br>";
                 }else echo "Error insertando FOREIGN KEY FK_productos_pedido<br>";
+
+            $sqlFK3 = "ALTER TABLE facturacion ADD CONSTRAINT FK_factura_pedido FOREIGN KEY (id_pedido) REFERENCES pedido (id_pedido) ON DELETE CASCADE ON UPDATE NO ACTION";
+            if($bd->query($sqlFK3)){
+                echo "FOREIGN KEY FK_factura_pedido con éxito<br>";
+                }else echo "Error insertando FOREIGN KEY FK_factura_pedido<br>";
+
 
 
 

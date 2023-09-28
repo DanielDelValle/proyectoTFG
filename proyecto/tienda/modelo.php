@@ -252,6 +252,32 @@ function lista_cuentas_email($email){
 return $lista_cuentas;
 }
 
+//RETORNA LISTA DE CUENTAS EMPLEADO Y USUARIO CUYO MAIL ESTÁ CONTENIDO O COINCIDE CON BUSQUEDA 
+function facturacion_pedido($id_pedido){
+
+	$pdo = conexion();
+	if($pdo){
+		try{		
+		$sql = "SELECT * FROM facturacion 
+				WHERE id_pedido = '$id_pedido'
+				";
+
+		$resultado = $pdo->query($sql);
+		$facturas_pedido = $resultado->fetchAll(PDO::FETCH_OBJ);		
+		$mensaje = "Se han encontrado <b>" . $resultado->rowCount() . "</b> facturas(s) <br><br>"; 
+		if ($resultado->rowCount()==0) $mensaje = "No se han encontrado facturas";
+		$pdo = null;  //cierro conexion para no mantener BD en espera
+
+	}		
+	catch(PDOException $e){
+		echo 'Excepción: ', $e->getMessage();
+		return null;
+		}
+	}  
+	
+return $facturas_pedido;
+}
+
 	
 function lista_productos()
 {	
@@ -710,14 +736,44 @@ function pedidos_usuario($nif){
 
 	return $pedidosArray;
 	}
-	
+function estado_pedido($id_pedido){ 
+
+		$pdo = conexion();
+		if($pdo){
+			try{
+
+				$sql = "SELECT id_pedido, nif_cliente, total_precio, total_kg, forma_pago, estado_pago, estado_pedido, creado_fecha, pagado_fecha, enviado_fecha, entregado_fecha, cancelado_fecha, notas
+						FROM pedido WHERE id_pedido = '$id_pedido'
+						ORDER BY creado_fecha DESC";
+
+				
+			$resultado = $pdo->query($sql);
+			$pedido = $resultado->fetchAll(PDO::FETCH_OBJ);
+
+		/*	foreach($pedido as $i => $pedido) {   
+			}*/
+			
+			if($resultado->rowCount()>0) $mensaje = "Se han encontrado <b>" . $resultado->rowCount() . "</b> pedido(s) <br><br>"; 
+			else $mensaje = "No se han encontrado pedidos";
+	}	
+		
+		catch(PDOException $e){
+			echo 'Excepción: ', $e->getMessage();
+			return null;
+		  }
+		}  	
+		$pdo=null;
+
+	return $pedido;
+	}
+
 function pedido_pagado($id_pedido, $pagado_fecha){
 			
 		$pdo = conexion();
 		if($pdo){
 			try{				
 		$pdo->beginTransaction();
-
+				//Actualizo el estado del pago y el del pedido, por si hubiese sido cancelado y reactivado. Establezco fecha de pago.
 		$sql = "UPDATE pedido 
 				SET estado_pago = 'pagado', estado_pedido = 'procesando', pagado_fecha = '$pagado_fecha'
 				WHERE id_pedido = '$id_pedido'" ;
@@ -735,7 +791,8 @@ function pedido_pagado($id_pedido, $pagado_fecha){
 			echo "Ningún pedido modificado - intentelo de nuevo";
 			$pdo->rollback();		
 			}	
-		}	
+		}
+			
 catch(PDOException $e){
 	echo 'Excepción: ', $e->getMessage();
 	$resultado = false;				
@@ -932,6 +989,43 @@ return $resultado;
 
 }	
 
+function factura_creada($factura, $albaran, $id_pedido){
+			
+	$resultado = false;
+	$pdo = conexion();
+	if($pdo){
+		try{$pdo->beginTransaction();
+
+			$sql = "INSERT INTO facturacion (factura, albaran, id_pedido) 
+					VALUES ('".$factura."', '".$albaran."', '".$id_pedido."');";
+
+
+			$crearFactura = $pdo->prepare($sql);
+
+			if(($crearFactura->execute())>0){ //si la consulta ha retornado algún resultado ---          
+				$pdo->commit();
+				$resultado = $crearFactura->rowCount(); // --- entonces retorno el número de autores afectados (borrados)
+				$pdo = null;
+			}
+
+			else {
+				$resultado=false;
+				echo "No pudo crearse la factura para el pedido $factura - por favor, intentelo de nuevo";
+				$pdo->rollback();		
+				}	
+			}	
+	catch(PDOException $e){
+		echo 'Excepción: ', $e->getMessage();
+		$resultado = false;				
+		}
+	$pdo = null;
+	return $resultado;
+
+	}else{  return null; die("error en la conexión a la BD");} //en caso de no haber conexión, directamente se para el proceso
+
+
+}
+
 function detalle_pedido($id_pedido)
 {	
 	//$id_pedido = isset($_GET["id_pedido"]) ? $_GET["id_pedido"] : "";
@@ -939,10 +1033,11 @@ function detalle_pedido($id_pedido)
 		if($pdo){
 			try{
 			//La búsqueda se realiza en mysql con el comando LIKE
-			$sql = "SELECT * FROM productos_pedido p WHERE id_pedido ='$id_pedido'";		
+			$sql = "SELECT * FROM productos_pedido 
+					WHERE id_pedido ='$id_pedido'";		
 
 			$resultado = $pdo->query($sql);
-			$productosArray = $resultado->fetchAll(PDO::FETCH_OBJ);
+			$detallePedidoArray = $resultado->fetchAll(PDO::FETCH_OBJ);
 			$pdo = null;
 		}	
 		
@@ -952,7 +1047,7 @@ function detalle_pedido($id_pedido)
 			}
 		}  
 		
-	return $productosArray;
+	return $detallePedidoArray;
 						
 }
 

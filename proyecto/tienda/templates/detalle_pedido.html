@@ -7,17 +7,20 @@
 
 
 {% block content %}	
+<!-- ESTA PLANTILLA LA COMPARTEN EMPLEADOS Y CLIENTES, GRACIAS A LA variable BASE y las que se derivan de ella. -->
 {% if base =='base' %}
 {% set detalle = 'producto' %}
+{% set volver = 'mis_pedidos' %}
 {% else %}
 {% set detalle = 'mercancia' %}
+{% set volver = 'control_pedidos' %}
 {% endif %}
 			<table id="datos_cliente">
 			<th>Id Producto</th>
 			<th>Nombre</th>
 			<th>Cantidad</th>
-			<!-- pedido.o.id_pedido para acceder a la id_pedido del primer producto ( está en todos pero sólo la necesito 1 vez)-->
-			<h2>Detalles Pedido Nº &nbsp&nbsp {{pedido.0.id_pedido}}</h2>   
+			<!-- pedido.0.id_pedido para acceder a la id_pedido del primer producto ( está en todos pero sólo la necesito 1 vez)-->
+			<h2>Detalles Pedido Nº: &nbsp&nbsp {{pedido.0.id_pedido}}</h2>   
 			{% for key, producto in pedido %}
 			<tr>	
 			<td>	{{producto.id_prod}}</td>	
@@ -26,9 +29,10 @@
 			</tr>
 			{% endfor %}
 		</table>
+		<h2>Factura Nº: &nbsp&nbsp {{facturas.0.factura}}</h2>  <!-- al estar fuera del bucle for, simplemente selecciono el primer y unico valor-->
+		<h2> Albaran Nº: &nbsp&nbsp {{facturas.0.albaran}}</h2> 
 
-
-				<form action="index.php/mis_pedidos" method="POST">
-					<button class="depende" type="submit" name="mis_pedidos"/>Ir a Mis Pedidos</button>
+				<form action="index.php/{{volver}}" method="POST">
+					<button  type="submit" name="volver"/>Volver a Pedidos</button>
 				</form>
 {% endblock %}	
