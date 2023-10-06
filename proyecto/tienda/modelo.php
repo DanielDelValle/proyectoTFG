@@ -252,7 +252,7 @@ function lista_cuentas_email($email){
 return $lista_cuentas;
 }
 
-//RETORNA LISTA DE CUENTAS EMPLEADO Y USUARIO CUYO MAIL ESTÁ CONTENIDO O COINCIDE CON BUSQUEDA 
+
 function facturacion_pedido($id_pedido){
 
 	$pdo = conexion();
@@ -989,15 +989,15 @@ return $resultado;
 
 }	
 
-function factura_creada($factura, $albaran, $id_pedido){
+function factura_creada($factura, $albaran, $id_pedido, $nif_cliente){
 			
 	$resultado = false;
 	$pdo = conexion();
 	if($pdo){
 		try{$pdo->beginTransaction();
 
-			$sql = "INSERT INTO facturacion (factura, albaran, id_pedido) 
-					VALUES ('".$factura."', '".$albaran."', '".$id_pedido."');";
+			$sql = "INSERT INTO facturacion (factura, albaran, id_pedido, nif_cliente) 
+					VALUES ('".$factura."', '".$albaran."', '".$id_pedido."', '".$nif_cliente."');";
 
 
 			$crearFactura = $pdo->prepare($sql);
@@ -1011,6 +1011,45 @@ function factura_creada($factura, $albaran, $id_pedido){
 			else {
 				$resultado=false;
 				echo "No pudo crearse la factura para el pedido $factura - por favor, intentelo de nuevo";
+				$pdo->rollback();		
+				}	
+			}	
+	catch(PDOException $e){
+		echo 'Excepción: ', $e->getMessage();
+		$resultado = false;				
+		}
+	$pdo = null;
+	return $resultado;
+
+	}else{  return null; die("error en la conexión a la BD");} //en caso de no haber conexión, directamente se para el proceso
+
+
+}
+
+function factura_cancelada($id_pedido, $cancelado_fecha){
+			
+	$resultado = false;
+	$pdo = conexion();
+	if($pdo){
+		try{$pdo->beginTransaction();
+
+			$sql = "UPDATE facturacion 
+					SET estado_fact = 'anulada', cancelado_fecha = '$cancelado_fecha'
+					WHERE id_pedido = '$id_pedido'" ;
+
+
+
+			$crearFactura = $pdo->prepare($sql);
+
+			if(($crearFactura->execute())>0){ //si la consulta ha retornado algún resultado ---          
+				$pdo->commit();
+				$resultado = $crearFactura->rowCount(); // --- entonces retorno el número de autores afectados (borrados)
+				$pdo = null;
+			}
+
+			else {
+				$resultado=false;
+				echo "No pudo anularse la factura para el pedido $factura - por favor, intentelo de nuevo";
 				$pdo->rollback();		
 				}	
 			}	

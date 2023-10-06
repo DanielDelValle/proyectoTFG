@@ -55,7 +55,7 @@ descomentar y poner a continuacion de la linea "$twig=....($loader," para habili
 	echo $template->render(array ( 'productos' => $productos, 'sugerencias' => $sugerencias));
     echo gettype($sugerencias);
 }*/
-
+//CONTROLA LA PAGINA PRINCIPAL, DONDE SE MUESTRAN LOS PRODUCTOS DE LA TIENDA
 function controlador_index()
 { $URI = get_URI();
     session_start();
@@ -220,11 +220,12 @@ function controlador_mis_datos()
     if (isset($_POST["volver_cuenta"])) exit(header("location:mi_cuenta"));
     if (isset($_POST["mis_pedidos"])) exit(header("location:mis_pedidos"));
 
-    if (isset($_POST["eliminar_cuenta"])) exit(header("location:eliminar_cuenta"));
+    if (isset($_POST["eliminar_cuenta"])) {        
+        $contador = eliminar_cuenta($usuario);
+        $mensaje = $contador. " cuenta(s) eliminada(s)";
+        $delay=2;
+        header("Refresh:$delay");}
    
-    if (isset($_POST["cerrar_sesion"])){
-        exit(header('location:cerrar_sesion'));
-    }
     global $twig;
     $template = $twig->load('mis_datos.html');
 	echo $template->render(array ('URI'=>$URI, 'usuario' =>$usuario, 'cliente'=> $cliente, 'logged'=>$logged, 'logged_legible'=>$logged_legible));
@@ -315,10 +316,7 @@ function vaciar_cesta(){
     if (isset($_POST["vaciar_cesta"])) {
         $mensaje = vaciar_cesta();
     }
-   
-    if (isset($_POST["cerrar_sesion"])){
-        exit(header('location:cerrar_sesion'));
-    }
+
 
     $template = $twig->load('mi_cesta.html');
 	echo $template->render(array ('URI'=>$URI, 'usuario' =>$usuario, 'cliente'=> $cliente, 'cesta' => $cesta, 'mensaje' =>$mensaje, 'logged'=>$logged, 'logged_legible'=>$logged_legible, 'total_kg'=> $total_kg, 'total_prods'=> $total_prods, 'total_precio' => $total_precio));
@@ -343,11 +341,6 @@ function controlador_datos_envio(){
 
     if(isset($_POST["confirmar_datos"])){
         exit(header("location:confirmar_pedido"));
-    }
-
-
-    if (isset($_POST["cerrar_sesion"])){
-        exit(header('location:cerrar_sesion'));
     }
 
 
@@ -407,10 +400,6 @@ function controlador_confirmar_pedido(){
               
 
         } else $mensaje = "Por favor, seleccione una forma de pago";
-
-    if (isset($_POST["cerrar_sesion"])){
-        exit(header('location:cerrar_sesion'));
-    }
 
     global $twig;
     $template = $twig->load('confirmar_pedido.html');
@@ -581,14 +570,8 @@ function controlador_pedidos()
     $selected_est_pago = '';
     $factura = '';
     $albaran = '';
-    $disponible = '';
+    $nif_cliente = '';
 
-    if(intval($checked) == 1){
-        foreach($checked as $id_pedido){
-            $datos_pedido = estado_pedido($id_pedido);
-            if ($datos_pedido[0]->estado_pago =='pagado'){$disponible = 'disabled';}
-        }
-    }
 
 
     if (isset($_POST["buscar"])){ 
@@ -619,11 +602,12 @@ function controlador_pedidos()
             if(intval($checked) == 1){
                 foreach($checked as $id_pedido){
                     $pagado_fecha = date('Y-m-d H:i:s');
+                    $nif_cliente = $_POST ['nif_cliente']; //NECESITO ESTE DATO PARA INCORPORARLO A LAS FACTURAS al marcar como pagado
                     $factura = 'FAC_'.$pagado_fecha.'/'.$contador; //Así aseguro que, aunque marque como pagados 2 pedidos a la vez, el ID factura y albaran sean unicos.
                     $albaran = 'ALB_'.$pagado_fecha.'/'.$contador; 
                     $cuenta = pedido_pagado($id_pedido, $pagado_fecha);
                     $contador +=$cuenta; 
-                    $cuenta1 = factura_creada($factura, $albaran, $id_pedido);
+                    $cuenta1 = factura_creada($factura, $albaran, $id_pedido, $nif_cliente);
                     $contador1 +=$cuenta1;    
                     //Obtengo detalles de cada pedido para ahondar en los productos que lo componen, y modificar su stock
                     $pedido = detalle_pedido($id_pedido);               
@@ -675,13 +659,16 @@ function controlador_pedidos()
     //Para uso en caso de que se haya pagado pero aun no enviado. El stock descontado se vuelve a añadir.
     if (isset($_POST["cancelar_pedido"])) {
         $contador = 0;
+        $contador1 = 0;
         $contador2 = 0;
         //If intval($checked == 1 significa que el array "checked" tiene al menos un valor dentro, con lo que hay algún pedido seleccionado)
         if(intval($checked) == 1){            
             foreach($checked as $val){
                 $cancelado_fecha = date('Y-m-d H:i:s');
-                $cuenta = pedido_cancelado($val, $cancelado_fecha );
+                $cuenta = pedido_cancelado($val, $cancelado_fecha);
                 $contador +=$cuenta;
+                $cuenta1 = factura_cancelada($val, $cancelado_fecha);
+                $contador1 += $cuenta1;
                 $pedido = detalle_pedido($val);
                 foreach($pedido as $prod){
                 $cuenta2 = actualizar_stock($prod->id_prod, $prod->cantidad, 'sumar');
@@ -690,7 +677,7 @@ function controlador_pedidos()
             }
             $delay=2;
             header("Refresh:$delay");
-            $mensaje = $contador. " pedido(s) Cancelado(s) - ".$contador2. " ACTUALIZACIONES DE STOCK";
+            $mensaje = $contador. " pedido(s) Cancelado(s) - ".$contador2. " actualizaciones de stock- ".$contador1. " Facturas Cancelada(s)";
         }
     else $mensaje = "Por favor, seleccione al menos un producto para modificar";
 
@@ -705,7 +692,7 @@ function controlador_pedidos()
     
     global $twig;
     $template = $twig->load('control_pedidos.html');
-	echo $template->render(array ('URI'=>$URI, 'usuario'=>$usuario, 'empleado'=>$empleado, 'disponible'=>$disponible, 'factura'=>$factura, 'albaran'=>$albaran, 'where'=>$where, 'id_pedido'=>$id_pedido, 'nif'=> $nif, 'total_precio'=>$total_precio, 'total_kg'=>$total_kg, 
+	echo $template->render(array ('URI'=>$URI, 'usuario'=>$usuario, 'empleado'=>$empleado, 'factura'=>$factura, 'albaran'=>$albaran, 'where'=>$where, 'id_pedido'=>$id_pedido, 'nif'=> $nif, 'total_precio'=>$total_precio, 'total_kg'=>$total_kg, 
     'forma_pago'=>$forma_pago,'estado_pago'=>$estado_pago, 'estado_pedido'=>$estado_pedido, 'creado_fecha'=>$creado_fecha, 'pagado_fecha'=>$pagado_fecha, 'enviado_fecha'=>$enviado_fecha,
     'entregado_fecha'=>$entregado_fecha, 'cancelado_fecha'=>$cancelado_fecha, 'notas'=>$notas,'lista_pedidos'=>$lista_pedidos, 'mensaje'=>$mensaje));
 
@@ -792,6 +779,8 @@ function controlador_cuentas()
     else $mensaje = "Por favor, seleccione al menos una cuenta para eliminar";
 
     }
+
+    if (isset($_POST["alta_empleados"])) exit(header('location:alta_empleado'));
 
     global $twig;
     $template = $twig->load('control_cuentas.html');

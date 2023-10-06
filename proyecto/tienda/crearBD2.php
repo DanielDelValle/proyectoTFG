@@ -9,15 +9,15 @@
     echo "Conexión establecida con éxito a MySql por usuario <b>". $usuario."</b><br>";
 
         //Crea DB si no existe (para no sobreescribir y perder info)
-        $sql ="CREATE DATABASE IF NOT EXISTS `tienda` 
+        $sql ="CREATE DATABASE IF NOT EXISTS `tienda2` 
         DEFAULT CHARACTER SET utf8 COLLATE utf8_spanish_ci;";  //CON utf8_general_ci si diese problema el spanish_ci
         //cotejamiento para mayor compatibilidad español
 
         if($bd->query($sql)){
-            echo "Base de Datos TIENDA creada con éxito<br>";
+            echo "Base de Datos TIENDA2 creada con éxito<br>";
 
             //Usar la base datos creada
-            $bd->query("USE tienda");
+            $bd->query("USE tienda2");
 
             //Crear tablas producto, cliente, pedido, albaran
             
@@ -192,9 +192,13 @@
                 id_pedido VARCHAR(30),
                 nif_cliente VARCHAR(9),
                 cancelado_fecha DATETIME DEFAULT NULL
-   
                 )";
 
+
+                                    
+            if($bd->query($sql10)){
+                echo "Tabla PEDIDO creada con éxito<br>";
+            }else echo "Error creando tabla PEDIDO";
 
 
 
@@ -216,13 +220,13 @@
                 echo "FOREIGN KEY FK_factura_pedido con éxito<br>";
                 }else echo "Error insertando FOREIGN KEY FK_factura_pedido<br>";
 
-
+                
             $sqlFK4 = "ALTER TABLE facturacion ADD CONSTRAINT FK_factura_cliente FOREIGN KEY (nif_cliente) REFERENCES cliente (nif) ON DELETE CASCADE ON UPDATE NO ACTION";
             if($bd->query($sqlFK4)){
-                echo "FOREIGN KEY FK_factura_clientecon éxito<br>";
+                echo "FOREIGN KEY FK_factura_cliente con éxito<br>";
                 }else echo "Error insertando FOREIGN KEY FK_factura_cliente<br>";
 
-    
+
 
 
             }else echo "Error creando BD";   
