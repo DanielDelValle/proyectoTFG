@@ -11,6 +11,10 @@
 
     <h3 class='titulo'>Introduzca sus datos para el Registro</h3>
     <div>
+        <p class='info'>{{validaciones.val_nif}}<br>{{validaciones.val_nombre}}<br>{{validaciones.val_ape}}<br>{{validaciones.val_tel}}
+            <br>{{validaciones.val_email_existe}}<br>{{validaciones.val_email}}<br>{{validaciones.val_dir}}<br>{{validaciones.val_loc}}
+            <br>{{validaciones.val_postal}}<br>{{validaciones.val_prov}}<br>{{validaciones.val_contrasena}}<br></p>
+
         <table id='datos_cliente' >
             <tr>
                 <th>NIF</th>
@@ -19,13 +23,9 @@
             </tr>
             <tr>  
 
-
             <td><input type="text" name='nif' value="{{datos.nif}}"></input></td>
-            <p class='info'>{{validaciones.val_nif}}</p>
             <td><input type="text" name='nombre' value="{{datos.nombre}}"></input></td>
-            <p class='info'>{{validaciones.val_nom}}</p>
             <td><input type="text" name='apellidos' value="{{datos.apellidos}}"></input></td>
-            <p class='info'>{{validaciones.val_ape}}</p>
    
 
             </tr>
@@ -35,9 +35,7 @@
             </tr>
             <tr>
                 <td><input type="text" name='telefono' value="{{datos.telefono}}"></input></td>
-                <p class='info'>{{validaciones.val_tel}}</p>
                 <td><input type="email" name='email' value="{{datos.email}}"></input></td>
-                <p class='info'>{{validaciones.val_email}}</p>
             </tr>
             <tr>
                 <th>Direccion</th>
@@ -47,13 +45,9 @@
             </tr>
             <tr>
                 <td><input type="text" name='direccion' value="{{datos.direccion}}"></input></td>
-                <p class='info'>{{validaciones.val_dir}}</p>
                 <td><input type="text" name='localidad' value="{{datos.localidad}}"></input></td>
-                <p class='info'>{{validaciones.val_loc}}</p>
                 <td><input type="text" name='cod_postal' value="{{datos.cod_postal}}"></input></td>
-                <p class='info'>{{validaciones.val_postal}}</p>
                 <td><input type="text" name='provincia' value="{{datos.provincia}}"></input></td>
-                <p class='info'>{{validaciones.val_prov}}</p>
             </tr>
             <tr>
                 <th>Contraseña</th>
@@ -62,7 +56,6 @@
             <tr>
                 <td><input type="text" name='contrasena' ></input></td>
                 <td><input type="text" name='rep_contrasena'></input></td>
-                <p class='info'>{{validaciones.val_contrasena}}</p>
             </tr>
 
         </table>
@@ -72,7 +65,7 @@
         <fieldset>
             <!--   el botón "Cerrar Sesion" da la orden de borrar datos de sesión y elimina cookie-->
 
-            <button type="submit" name="volver_productos" method="POST">Volver a Productos</button>
+            <button type="submit" name="volver_tienda" method="POST">Volver a Tienda</button>
 
             <button type="submit" name="crear_cuenta" method="POST">Crear Cuenta</button>
 
