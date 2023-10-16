@@ -134,9 +134,9 @@ a:hover {
 
 
 form{
-	border-radius: 10px;
+/*	border-radius: 10px;
 	border: 2px solid;
-	border-color: #00806bc9;
+	border-color: #00806bc9;*/
 	padding: 5px;
 	background-color: #bac47e85;
 	margin-left: auto;
@@ -147,9 +147,9 @@ form{
 }
 
 fieldset {
-	border-radius: 20px;
+	/*border-radius: 20px;
 	border: 2px solid;
-	border-color: #00806bc9;
+	border-color: #00806bc9;*/
 	padding: 5px;
 	position: relative;
 	margin: auto;
@@ -164,7 +164,6 @@ legend {
 	top: -25px;
 	font-weight: bold;
 }
-
 
 label {
 	display: flex;
@@ -182,8 +181,8 @@ input {
 	border-color: #00806bc9;
 	width: auto;
 	background-color: #dee6b0;
-}
 
+}
 
 button {
 	padding: 0.75em;

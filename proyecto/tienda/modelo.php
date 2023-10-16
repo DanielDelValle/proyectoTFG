@@ -671,6 +671,34 @@ function insert_pedido($id_pedido, $nif, $total_precio, $total_kg, $forma_pago, 
 	$pdo=null;
 }
 
+function situacion_pedido($id_pedido){ 
+
+		$pdo = conexion();
+		if($pdo){
+			try{
+
+				$sql = "SELECT estado_pago, estado_pedido
+					FROM pedido WHERE id_pedido = '$id_pedido'";
+
+				
+			$resultado = $pdo->query($sql);
+			$situacion_pedido = $resultado->fetchObject();
+
+			
+			if($resultado->rowCount()>0) $mensaje = "Se han encontrado <b>" . $resultado->rowCount() . "</b> pedido(s) <br><br>"; 
+			else $mensaje = "No se han encontrado pedidos";
+	}	
+		
+		catch(PDOException $e){
+			echo 'Excepción: ', $e->getMessage();
+			return null;
+		  }
+		}  	
+		$pdo=null;
+
+	return $situacion_pedido;
+	}
+
 function pedidos_usuario($nif){ 
 
 		$pdo = conexion();
@@ -850,6 +878,43 @@ return $resultado;
 
 
 }
+
+function mercancia_devuelta($id_pedido){
+		
+	$pdo = conexion();
+	if($pdo){
+		try{				
+	$pdo->beginTransaction();
+
+	$sql = "UPDATE pedido 
+			SET estado_pedido = 'devuelto', estado_pago = 'devolución'
+			WHERE id_pedido = '$id_pedido'" ;
+
+
+	$pedido_devuelto = $pdo->prepare($sql);
+
+	if(($pedido_devuelto->execute())>0){ //si la consulta ha retornado algún resultado ---          
+		$pdo->commit();
+		$resultado = $pedido_devuelto->rowCount(); // --- entonces retorno el número de autores afectados (borrados)
+	}
+
+	else {
+		$resultado=false;
+		echo "Ningún pedido modificado - intentelo de nuevo";
+		$pdo->rollback();		
+		}	
+	}	
+catch(PDOException $e){
+echo 'Excepción: ', $e->getMessage();
+$resultado = false;				
+}
+$pdo = null;
+return $resultado;
+
+}else{  return null; die("error en la conexión a la BD");} //en caso de no haber conexión, directamente se para el proceso
+
+
+}	
 	
 function pedido_cancelado($id_pedido, $cancelado_fecha){
 		
@@ -970,7 +1035,7 @@ function factura_activa($id_pedido){
 				WHERE id_pedido ='$id_pedido' AND estado_fact = 'activa'";		
 
 		$resultado = $pdo->query($sql);
-		$id_factura = $resultado->fetchAll();
+		$id_factura = $resultado->fetchObject();
 		$pdo = null;
 	}	
 	
@@ -1036,17 +1101,17 @@ function factura_cancelada($id_factura, $cancelado_fecha, $rectif){
 
 
 
-			$crearFactura = $pdo->prepare($sql);
+			$cancelarFactura = $pdo->prepare($sql);
 
-			if(($crearFactura->execute())>0){ //si la consulta ha retornado algún resultado ---          
+			if(($cancelarFactura->execute())>0){ //si la consulta ha retornado algún resultado ---          
 				$pdo->commit();
-				$resultado = $crearFactura->rowCount(); // --- entonces retorno el número de autores afectados (borrados)
+				$resultado = $cancelarFactura->rowCount(); // --- entonces retorno el número de facturas afectadas (borradas)
 				$pdo = null;
 			}
 
 			else {
 				$resultado=false;
-				echo "No pudo anularse la factura para el pedido $factura - por favor, intentelo de nuevo";
+				echo "No pudo anularse la factura para el pedido $id_factura - por favor, intentelo de nuevo";
 				$pdo->rollback();		
 				}	
 			}	
@@ -1140,7 +1205,7 @@ function actualizar_stock($id_prod, $cantidad, $operacion){
 
 	if(($stock_actualizado->execute())>0){ //si la consulta ha retornado algún resultado ---          
 		$pdo->commit();
-		$resultado = $stock_actualizado->rowCount(); // --- entonces retorno el número de autores afectados (borrados)
+		$resultado = $stock_actualizado->rowCount(); // --- entonces retorno el número de productos afectados 
 	}
 
 	else {

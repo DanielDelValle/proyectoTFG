@@ -6,8 +6,6 @@
 
 {% block content %}
 
-
-
 <form method="POST" action="" autocomplete>
 
     <fieldset>
@@ -32,6 +30,8 @@
             </select> <br>
         <label for="estado_pedido">Estado Pedido</label>
         <input type="text" name="estado_pedido" id="estado_pedido" value="{{estado_pedido}}"  ><br>
+    </fieldset>
+    <fieldset>
         <label for="creado_fecha">Fecha Creación</label>
         <input type="text" name="creado_fecha" id="creado_fecha" value="{{creado_fecha}}"  ><br>
         <label for="pagado_fecha">Fecha Pago</label>
@@ -43,11 +43,10 @@
         <label for="cancelado_fecha">Fecha Cancelación</label>
         <input type="text" name="cancelado_fecha" id="cancelado_fecha" value="{{cancelado_fecha}}"  ><br>
         <label for="notas">Notas</label>
-        <input type="text" name="notas" id="notas" value="{{notas}}"  ><br>
-
-        <button type= "submit" name= "buscar" method= "POST">Buscar</button>
+        <input type="text" name="notas" id="notas" value="{{notas}}" ><br>
 
     </fieldset>
+    <button type= "submit" name= "buscar" method= "POST">Buscar</button>
     <fieldset>
 
 
@@ -103,6 +102,8 @@
         <button type="submit" name="marcar_enviado" method="POST">Marcar Enviado</button>
 
         <button type="submit" name="marcar_entregado" method="POST">Marcar Entregado</button>
+
+        <button class = 'critical' type="submit" name="mercancia_devuelta" method="POST">Mercancia Devuelta</button>
 
         <button class='critical' type="submit" name="cancelar_pedido" method="POST">Cancelar Pedido</button>
 
