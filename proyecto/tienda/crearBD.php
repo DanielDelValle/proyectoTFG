@@ -96,7 +96,7 @@
                 enviado_fecha DATETIME DEFAULT NULL,
                 entregado_fecha DATETIME DEFAULT NULL,
                 cancelado_fecha DATETIME DEFAULT NULL,
-                notas VARCHAR (500)
+                notas VARCHAR (200)
 
                 )";
                 

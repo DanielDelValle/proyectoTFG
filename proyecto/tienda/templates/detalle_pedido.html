@@ -28,9 +28,10 @@
 			<td>	{{producto.cantidad}} Kilo(s)</td>	
 			</tr>
 			{% endfor %}
-		</table>
-		<h2>Factura Nº: &nbsp&nbsp {{facturas.0.factura}}</h2>  <!-- al estar fuera del bucle for, simplemente selecciono el primer y unico valor-->
-		<h2> Albaran Nº: &nbsp&nbsp {{facturas.0.albaran}}</h2> 
+		</table><!-- al estar fuera del bucle for, simplemente selecciono el primer y unico valor del array, osea el de indice "0"-->
+		<h2>Factura Nº: &nbsp&nbsp <a href="http://localhost/proyecto/tienda/index.php/detalle_factura?id={{facturas.0.factura}}">{{facturas.0.factura}}</a></h2>  
+		<h2> Albaran Nº: &nbsp&nbsp <a href="http://localhost/proyecto/tienda/index.php/detalle_albaran?id={{facturas.0.albaran}}">{{facturas.0.albaran}}</a></h2>
+		<h2> Factura Rectificativa Nº: &nbsp&nbsp <a href="http://localhost/proyecto/tienda/index.php/detalle_factura?id={{facturas.0.fact_rectif}}">{{facturas.0.fact_rectif}}</a></h2>  
 
 				<form action="index.php/{{volver}}" method="POST">
 					<button  type="submit" name="volver"/>Volver a Pedidos</button>

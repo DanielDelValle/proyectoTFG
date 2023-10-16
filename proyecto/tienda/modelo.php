@@ -736,36 +736,7 @@ function pedidos_usuario($nif){
 
 	return $pedidosArray;
 	}
-function estado_pedido($id_pedido){ 
 
-		$pdo = conexion();
-		if($pdo){
-			try{
-
-				$sql = "SELECT id_pedido, nif_cliente, total_precio, total_kg, forma_pago, estado_pago, estado_pedido, creado_fecha, pagado_fecha, enviado_fecha, entregado_fecha, cancelado_fecha, notas
-						FROM pedido WHERE id_pedido = '$id_pedido'
-						ORDER BY creado_fecha DESC";
-
-				
-			$resultado = $pdo->query($sql);
-			$pedido = $resultado->fetchAll(PDO::FETCH_OBJ);
-
-		/*	foreach($pedido as $i => $pedido) {   
-			}*/
-			
-			if($resultado->rowCount()>0) $mensaje = "Se han encontrado <b>" . $resultado->rowCount() . "</b> pedido(s) <br><br>"; 
-			else $mensaje = "No se han encontrado pedidos";
-	}	
-		
-		catch(PDOException $e){
-			echo 'Excepción: ', $e->getMessage();
-			return null;
-		  }
-		}  	
-		$pdo=null;
-
-	return $pedido;
-	}
 
 function pedido_pagado($id_pedido, $pagado_fecha){
 			
@@ -987,7 +958,33 @@ return $resultado;
 }else{  return null; die("error en la conexión a la BD");} //en caso de no haber conexión, directamente se para el proceso
 
 
+}
+//Esta funcion encuentra la (única)función activa relativa a cada pedido, es decir la última válida, y la anula.
+function factura_activa($id_pedido){
+
+	$pdo = conexion();
+	if($pdo){
+		try{
+		//La búsqueda se realiza en mysql con el comando LIKE
+		$sql = "SELECT factura FROM facturacion 
+				WHERE id_pedido ='$id_pedido' AND estado_fact = 'activa'";		
+
+		$resultado = $pdo->query($sql);
+		$id_factura = $resultado->fetchAll();
+		$pdo = null;
+	}	
+	
+	catch(PDOException $e){
+		echo 'Excepción: ', $e->getMessage();
+		return null;
+		}
+	}  
+	
+return $id_factura;
+
+	
 }	
+
 
 function factura_creada($factura, $albaran, $id_pedido, $nif_cliente){
 			
@@ -1026,7 +1023,7 @@ function factura_creada($factura, $albaran, $id_pedido, $nif_cliente){
 
 }
 
-function factura_cancelada($id_pedido, $cancelado_fecha){
+function factura_cancelada($id_factura, $cancelado_fecha, $rectif){
 			
 	$resultado = false;
 	$pdo = conexion();
@@ -1034,8 +1031,8 @@ function factura_cancelada($id_pedido, $cancelado_fecha){
 		try{$pdo->beginTransaction();
 
 			$sql = "UPDATE facturacion 
-					SET estado_fact = 'anulada', cancelado_fecha = '$cancelado_fecha'
-					WHERE id_pedido = '$id_pedido'" ;
+					SET estado_fact = 'anulada', cancelado_fecha = '$cancelado_fecha', fact_rectif = '$rectif'
+					WHERE factura = '$id_factura'" ;
 
 
 
@@ -1067,7 +1064,6 @@ function factura_cancelada($id_pedido, $cancelado_fecha){
 
 function detalle_pedido($id_pedido)
 {	
-	//$id_pedido = isset($_GET["id_pedido"]) ? $_GET["id_pedido"] : "";
 		$pdo = conexion();
 		if($pdo){
 			try{

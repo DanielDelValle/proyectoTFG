@@ -1,7 +1,7 @@
 <?php
 // controladores.php
 require_once '../vendor/autoload.php';
-require_once 'email.php';
+//require_once 'email.php';
 
 $loader = new \Twig\Loader\FilesystemLoader('templates');
 $twig = new \Twig\Environment($loader);
@@ -395,7 +395,7 @@ function controlador_confirmar_pedido(){
             $notas = $_POST['notas'];
             //si ambas operaciones insert retornan TRUE
             if(insert_pedido($id_pedido, $cliente->nif, $total_precio, $total_kg, $forma_pago, $creado_fecha, $notas) && (insert_productos_pedido($id_pedido, $cesta))){
-                $email = pruebaMail($cliente->email, $cliente->nombre);
+               //$email = pruebaMail($cliente->email, $cliente->nombre);
             exit(header("location:pedido_realizado?id_pedido=$id_pedido"));
           } else $mensaje= "Error al grabar el pedido - por favor, repita el proceso de nuevo";
               
@@ -477,14 +477,48 @@ function controlador_mis_pedidos()
     $total_prods = isset($_SESSION['cesta']) ? count($_SESSION['cesta']) : 0;
     $mensaje='';
     $pedidosArray = pedidos_usuario($nif);
+    $id_pedido = isset($_POST['id_pedido']) ? htmlentities($_POST['id_pedido'],  ENT_QUOTES, "UTF-8") : '';
+
+    $total_precio = isset($_POST['total_precio']) ? htmlentities($_POST['total_precio'],  ENT_QUOTES, "UTF-8") : '';
+    $total_kg = isset($_POST['total_kg']) ? htmlentities($_POST['total_kg'],  ENT_QUOTES, "UTF-8") : '';
+    $forma_pago = isset($_POST['forma_pago']) ? htmlentities($_POST['forma_pago'],  ENT_QUOTES, "UTF-8") : '';
+    $estado_pago = isset($_POST['estado_pago']) ? htmlentities($_POST['estado_pago'],  ENT_QUOTES, "UTF-8") : '';
+    $estado_pedido = isset($_POST['estado_pedido']) ? htmlentities($_POST['estado_pedido'],  ENT_QUOTES, "UTF-8") :'';
+    $creado_fecha = isset($_POST['creado_fecha']) ? htmlentities($_POST['creado_fecha'],  ENT_QUOTES, "UTF-8") : '';
+    $pagado_fecha = isset($_POST['pagado_fecha']) ? htmlentities($_POST['pagado_fecha'],  ENT_QUOTES, "UTF-8") : '';
+    $enviado_fecha = isset($_POST['enviado_fecha']) ? htmlentities($_POST['enviado_fecha'],  ENT_QUOTES, "UTF-8") : '';
+    $entregado_fecha = isset($_POST['entregado_fecha']) ? htmlentities($_POST['entregado_fecha'],  ENT_QUOTES, "UTF-8") : '';
+    $cancelado_fecha = isset($_POST['cancelado_fecha']) ? htmlentities($_POST['cancelado_fecha'],  ENT_QUOTES, "UTF-8") : '';
+    $notas = isset($_POST['notas']) ? htmlentities($_POST['notas'],  ENT_QUOTES, "UTF-8") : '';
+    //$orden = isset($_POST['orden']) ? $_POST['orden'] : '';
+   // $orden = isset($_POST['orden']) ? htmlentities($_POST['orden'],  ENT_QUOTES, "UTF-8") : '';
+    $mensaje='';
+    //$where será un string modificable al que iré anexando cada campo en caso de que no esté vacío. Es decir, tendrá una longitud variable.
+    $where = "WHERE id_pedido LIKE '%$id_pedido%' AND nif_cliente LIKE '%$nif%'";
+    $selected_est_pago = '';
+    $factura = '';
+    $albaran = '';
 
 	global $twig;
 
     if (isset($_POST["buscar"])){ 
- 
-       if($_POST['creado_fecha']!='') {
-         $pedidosArray = pedidos_usuario_fecha($nif, $_POST['creado_fecha']); 
-         $mensaje = "Encontrado(s) ".count($pedidosArray). " pedido(s) en la fecha ".$creado_fecha;}  
+        //$where = "WHERE id_pedido LIKE '%$id_pedido%' ";
+        if($total_precio != '')$where .= "AND total_precio LIKE '%$total_precio%'";
+        if($total_kg != '')$where .= "AND total_kg LIKE '%$total_kg%'";
+        if($forma_pago != ''){$where .= "AND forma_pago LIKE '%$forma_pago%'"; $selected_est_pago = 'selected';}
+        if($estado_pago != ''){$where .= "AND estado_pago LIKE '%$estado_pago%'"; $selected_est_pago = 'selected';}
+        if($estado_pedido != ''){$where .= "AND estado_pedido LIKE '%$estado_pedido%'";$selected_est_pago = 'selected';}
+        if($creado_fecha != '')$where .= "AND creado_fecha LIKE '%$creado_fecha%'";
+        if($pagado_fecha != '')$where .= "AND pagado_fecha LIKE '%$pagado_fecha%'";
+        if($enviado_fecha != '')$where .= "AND enviado_fecha LIKE '%$enviado_fecha%'";
+        if($entregado_fecha != '')$where .= "AND entregado_fecha LIKE '%$entregado_fecha%'";
+        if($cancelado_fecha != '')$where .= "AND cancelado_fecha LIKE '%$cancelado_fecha%'";
+        if($notas != '')$where .= "AND notas LIKE '%$notas%'";
+
+        $pedidosArray = pedidos_busqueda($where, $id_pedido, $nif, $total_precio, $total_kg, $forma_pago, $estado_pago, $estado_pedido, 
+                            $creado_fecha, $pagado_fecha, $enviado_fecha, $entregado_fecha, $cancelado_fecha, $notas); 
+                            //Genero lista de pedidos con el where según criterios de búsqueda combinados
+         $mensaje = "Encontrado(s) ".count($pedidosArray). " pedido(s)";
         }
         
     
@@ -550,19 +584,19 @@ function controlador_pedidos()
     $empleado = datos_empleado($usuario);
     $lista_pedidos = lista_pedidos();
     $checked = isset($_POST['pedido_select']) ? $_POST['pedido_select'] : [];
-    $id_pedido = isset($_POST['id_pedido']) ? $_POST['id_pedido'] : '';
-    $nif = isset($_POST['nif']) ? $_POST['nif'] : '';  //en este caso el DNI es otro campo de búsqueda porque lo utiliza el administrador
-    $total_precio = isset($_POST['total_precio']) ? $_POST['total_precio'] : '';
-    $total_kg = isset($_POST['total_kg']) ? $_POST['total_kg'] : '';
-    $forma_pago = isset($_POST['forma_pago']) ? $_POST['forma_pago'] : '';
-    $estado_pago = isset($_POST['estado_pago']) ? $_POST['estado_pago'] : '';
-    $estado_pedido = isset($_POST['estado_pedido']) ? $_POST['estado_pedido'] :'';
-    $creado_fecha = isset($_POST['creado_fecha']) ? $_POST['creado_fecha'] : '';
-    $pagado_fecha = isset($_POST['pagado_fecha']) ? $_POST['pagado_fecha'] : '';
-    $enviado_fecha = isset($_POST['enviado_fecha']) ? $_POST['enviado_fecha'] : '';
-    $entregado_fecha = isset($_POST['entregado_fecha']) ? $_POST['entregado_fecha'] : '';
-    $cancelado_fecha = isset($_POST['cancelado_fecha']) ? $_POST['cancelado_fecha'] : '';
-    $notas = isset($_POST['notas']) ? $_POST['notas'] : '';
+    $id_pedido = isset($_POST['id_pedido']) ? htmlentities($_POST['id_pedido'],  ENT_QUOTES, "UTF-8") : '';
+    $nif = isset($_POST['nif']) ? htmlentities($_POST['nif'],  ENT_QUOTES, "UTF-8") : '';  //en este caso el DNI es otro campo de búsqueda porque lo utiliza el administrador
+    $total_precio = isset($_POST['total_precio']) ? htmlentities($_POST['total_precio'],  ENT_QUOTES, "UTF-8") : '';
+    $total_kg = isset($_POST['total_kg']) ? htmlentities($_POST['total_kg'],  ENT_QUOTES, "UTF-8") : '';
+    $forma_pago = isset($_POST['forma_pago']) ? htmlentities($_POST['forma_pago'],  ENT_QUOTES, "UTF-8") : '';
+    $estado_pago = isset($_POST['estado_pago']) ? htmlentities($_POST['estado_pago'],  ENT_QUOTES, "UTF-8") : '';
+    $estado_pedido = isset($_POST['estado_pedido']) ? htmlentities($_POST['estado_pedido'],  ENT_QUOTES, "UTF-8") :'';
+    $creado_fecha = isset($_POST['creado_fecha']) ? htmlentities($_POST['creado_fecha'],  ENT_QUOTES, "UTF-8") : '';
+    $pagado_fecha = isset($_POST['pagado_fecha']) ? htmlentities($_POST['pagado_fecha'],  ENT_QUOTES, "UTF-8") : '';
+    $enviado_fecha = isset($_POST['enviado_fecha']) ? htmlentities($_POST['enviado_fecha'],  ENT_QUOTES, "UTF-8") : '';
+    $entregado_fecha = isset($_POST['entregado_fecha']) ? htmlentities($_POST['entregado_fecha'],  ENT_QUOTES, "UTF-8") : '';
+    $cancelado_fecha = isset($_POST['cancelado_fecha']) ? htmlentities($_POST['cancelado_fecha'],  ENT_QUOTES, "UTF-8") : '';
+    $notas = isset($_POST['notas']) ? htmlentities($_POST['notas'],  ENT_QUOTES, "UTF-8") : '';
     //$orden = isset($_POST['orden']) ? $_POST['orden'] : '';
    // $orden = isset($_POST['orden']) ? htmlentities($_POST['orden'],  ENT_QUOTES, "UTF-8") : '';
     $mensaje='';
@@ -571,6 +605,7 @@ function controlador_pedidos()
     $selected_est_pago = '';
     $factura = '';
     $albaran = '';
+    $rectif = '';
     $nif_cliente = '';
 
 
@@ -602,7 +637,7 @@ function controlador_pedidos()
             //If intval($checked == 1 significa que el array "checked" tiene al menos un valor dentro, con lo que hay algún pedido seleccionado)
             if(intval($checked) == 1){
                 foreach($checked as $id_pedido){
-                    $pagado_fecha = date('Y-m-d H:i:s');
+                    $pagado_fecha = date('Y-m-d_H:i:s');
                     $nif_cliente = $_POST ['nif_cliente']; //NECESITO ESTE DATO PARA INCORPORARLO A LAS FACTURAS al marcar como pagado
                     $factura = 'FAC_'.$pagado_fecha.'/'.$contador; //Así aseguro que, aunque marque como pagados 2 pedidos a la vez, el ID factura y albaran sean unicos.
                     $albaran = 'ALB_'.$pagado_fecha.'/'.$contador; 
@@ -668,12 +703,15 @@ function controlador_pedidos()
                 $cancelado_fecha = date('Y-m-d H:i:s');
                 $cuenta = pedido_cancelado($val, $cancelado_fecha);
                 $contador +=$cuenta;
-                $cuenta1 = factura_cancelada($val, $cancelado_fecha);
+                $rectif = 'RECTIF_'.$cancelado_fecha.'/'.$contador;
+                $factura_activa = array_column(factura_activa($val), 'factura');
+                $cuenta1 = factura_cancelada($factura_activa[0], $cancelado_fecha, $rectif); //seleccionamos el texto propiamente del id_factura con la posicion 0 del array
                 $contador1 += $cuenta1;
                 $pedido = detalle_pedido($val);
                 foreach($pedido as $prod){
                 $cuenta2 = actualizar_stock($prod->id_prod, $prod->cantidad, 'sumar');
                 $contador2 +=$cuenta2;
+                var_dump($factura_activa);
                 }
             }
             $delay=2;
@@ -693,7 +731,7 @@ function controlador_pedidos()
     
     global $twig;
     $template = $twig->load('control_pedidos.html');
-	echo $template->render(array ('URI'=>$URI, 'usuario'=>$usuario, 'empleado'=>$empleado, 'factura'=>$factura, 'albaran'=>$albaran, 'where'=>$where, 'id_pedido'=>$id_pedido, 'nif'=> $nif, 'total_precio'=>$total_precio, 'total_kg'=>$total_kg, 
+	echo $template->render(array ('URI'=>$URI, 'usuario'=>$usuario, 'empleado'=>$empleado, 'factura'=>$factura, 'albaran'=>$albaran, 'rectif'=>$rectif, 'where'=>$where, 'id_pedido'=>$id_pedido, 'nif'=> $nif, 'total_precio'=>$total_precio, 'total_kg'=>$total_kg, 
     'forma_pago'=>$forma_pago,'estado_pago'=>$estado_pago, 'estado_pedido'=>$estado_pedido, 'creado_fecha'=>$creado_fecha, 'pagado_fecha'=>$pagado_fecha, 'enviado_fecha'=>$enviado_fecha,
     'entregado_fecha'=>$entregado_fecha, 'cancelado_fecha'=>$cancelado_fecha, 'notas'=>$notas,'lista_pedidos'=>$lista_pedidos, 'mensaje'=>$mensaje));
 

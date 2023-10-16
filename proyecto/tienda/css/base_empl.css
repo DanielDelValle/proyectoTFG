@@ -56,7 +56,7 @@ table {
 	border-radius: 20px;
 	border-style: hidden; /* hide standard table (collapsed) border */
 	box-shadow: 3 0 0 3px; /* this draws the table border  */   /*si pongo 0 0 0 3, los bordes son redondos a pesar de ser collapsed TRUCO*/
-	position:relative;
+
 
 }
 
@@ -133,18 +133,19 @@ a:hover {
 }
 
 
-/*form{
+form{
 	border-radius: 10px;
 	border: 2px solid;
 	border-color: #00806bc9;
 	padding: 5px;
 	background-color: #bac47e85;
-	width:25%;
 	margin-left: auto;
 	margin-right: auto;
+	position:relative;
+
 
 }
-*/
+
 fieldset {
 	border-radius: 20px;
 	border: 2px solid;
@@ -153,6 +154,7 @@ fieldset {
 	position: relative;
 	margin: auto;
 	padding: 15px;
+	display:flex;
 
 }
 
@@ -162,6 +164,7 @@ legend {
 	top: -25px;
 	font-weight: bold;
 }
+
 
 label {
 	display: flex;
