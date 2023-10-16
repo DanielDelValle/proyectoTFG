@@ -8,7 +8,7 @@
 */
 function es_texto($cadena) {
     //definimos el patrón
-    $patron = '/^[a-zA-Zá-úÁ-ÚñÑ\s?]+$/';
+    $patron = '/^[a-zA-Zá-úÁ-ÚñÑ\s?]/';
 	//$patron = '/^[a-zA-Z]+(\s*[a-zA-Z]*)*[a-zA-Z]+$/';
      
     return (preg_match($patron, $cadena));	
@@ -95,7 +95,7 @@ function val_nif($nif){
 function valid_postal($cod_postal){
     $patron = '/^([0-9]){5}+$/';
     return (preg_match($patron, $cod_postal));
- } 
+ }
  
 
 /**
@@ -110,7 +110,22 @@ function valid_tel($tel){
     $patron = '/^(6|7|8|9)+([0-9]){8}+$/';
      //este patrón permite que el número empiece por 6 o 7 para móviles, y por 8 o 9 si se tratase de un fijo (el mismo campo admite ambos valores)
     return (preg_match($patron, $tel));
- } 
+ }
+ 
+/**
+* Comprueba que una cadena contenga exclusivamente caracteres y numeros, y espacios en blanco con \s.
+*
+* @param string $cadena Cadena que se va a comprobar.
+*
+* @return bool Retorna true si es alfanumerico.
+*/
+function valid_direccion($cadena) {
+    //definimos el patrón
+    $patron = '/^[a-zA-Zá-úÁ-ÚñÑ\s?\d?]+$/';
+	//$patron = '/^[a-zA-Z]+(\s*[a-zA-Z]*)*[a-zA-Z]+$/';
+     
+    return (preg_match($patron, $cadena));	
+}
  
 /**
 * Comprueba que una cadena tenga formato de email.
@@ -122,6 +137,7 @@ function valid_tel($tel){
 
 function email_existe($email, $lista_emails) {
     $email = strtolower($email);
+
 	if(in_array($email, $lista_emails))
     return false;
 	else return true;

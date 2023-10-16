@@ -1,6 +1,7 @@
 <?php
 // controladores.php
 require_once '../vendor/autoload.php';
+require_once 'email.php';
 
 $loader = new \Twig\Loader\FilesystemLoader('templates');
 $twig = new \Twig\Environment($loader);
@@ -394,7 +395,7 @@ function controlador_confirmar_pedido(){
             $notas = $_POST['notas'];
             //si ambas operaciones insert retornan TRUE
             if(insert_pedido($id_pedido, $cliente->nif, $total_precio, $total_kg, $forma_pago, $creado_fecha, $notas) && (insert_productos_pedido($id_pedido, $cesta))){
-
+                $email = pruebaMail($cliente->email, $cliente->nombre);
             exit(header("location:pedido_realizado?id_pedido=$id_pedido"));
           } else $mensaje= "Error al grabar el pedido - por favor, repita el proceso de nuevo";
               
@@ -798,6 +799,7 @@ function controlador_iniciar_sesion(){
     $mensaje = "";
     $usuario = isset($_POST["usuario"]) ? htmlspecialchars(strtolower($_POST["usuario"])) : ""; //normalizo en minusculas el email
     $contrasena = isset($_POST["contrasena"]) ? $_POST["contrasena"] : "";
+    $dominio_empleado = 'frutasdelvalle.com';
 
     if (isset($_POST["entrar"])) {
         //Procesar formulario
@@ -807,7 +809,7 @@ function controlador_iniciar_sesion(){
             $dominio = ltrim(strstr($usuario, '@'), '@');    //con esto obtengo lo que va tras la @ para conocer si es un mail de empleado o no
                 //Si el usuario está en la lista de usuarios (tanto cliente como empleado):
                 if(in_array($usuario, $lista_users)){
-                    if ($dominio === 'frutasdelvalle.com') {$user = datos_empleado($usuario);}
+                    if ($dominio === $dominio_empleado) {$user = datos_empleado($usuario);}
                     else {$user = datos_cliente($usuario);}  
                        // echo 'USUARIO EN LISTADO'; 
                         $pass = $user->contrasena;
@@ -934,9 +936,10 @@ function controlador_crear_cuenta()
     $resultado = "";
     $lista_users = lista_users();
     $lista_emails = array_column(lista_users(), 'email'); //extraigo solo el dato "email" de array multidimensional
+    $dominio_empleado = 'frutasdelvalle.com';
 
-    $validaciones = array('val_nif'=> '', 'val_nom'=> '', 'val_ape'=>'', 'val_tel'=>'', 'val_email_existe'=>'', 'val_email'=>'', 'val_dir'=>'',
-                        'val_loc'=>'','val_postal'=>'', 'val_prov'=>'','val_contrasena'=>'');  
+    $validaciones = array('val_nif'=> '', 'val_nom'=> '', 'val_ape'=>'', 'val_tel'=>'', 'val_email_existe'=>'', 'val_email'=>'', 'val_email_hack'=>'', 
+                        'val_dir'=>'','val_loc'=>'','val_postal'=>'', 'val_prov'=>'','val_contrasena'=>'');  
     $datos = [];
     //Con esto consigo que todos los input se filtren para evitar inyeccion de codigo malicioso.
     foreach($_POST as $key => $value){
@@ -950,11 +953,12 @@ function controlador_crear_cuenta()
 
    
     if(isset($_POST['crear_cuenta'])){   
+        $dominio = ltrim(strstr($_POST['email'], '@'), '@'); 
 
         if((val_nif($datos->nif))&&(es_texto($_POST['nombre'])) && (es_texto($_POST['apellidos'])) && 
-        (es_texto($_POST['direccion'])) && (es_texto($_POST['localidad'])) &&(valid_postal($_POST['cod_postal'])) &&
-        (es_texto($_POST['provincia'])) && (valid_tel($_POST['telefono'])) && email_existe($_POST['email'], $lista_emails) && (valid_email(strtolower($_POST['email']))) && 
-        (valid_contrasena($_POST['contrasena'])) && ($_POST['contrasena'] === $_POST['rep_contrasena'])) 
+        (valid_direccion($_POST['direccion'])) && (es_texto($_POST['localidad'])) && (valid_postal($_POST['cod_postal'])) && (es_texto($_POST['provincia'])) 
+        && (valid_tel($_POST['telefono'])) && email_existe($_POST['email'], $lista_emails) && (valid_email(strtolower($_POST['email'])))
+        && ($dominio != $dominio_empleado) && (valid_contrasena($_POST['contrasena'])) && ($_POST['contrasena'] === $_POST['rep_contrasena'])) 
             {
             $creado_fecha = date('Y-m-d H:i:s');
             $resultado = insert_cliente($_POST['nif'], $_POST['nombre'], $_POST['apellidos'], 
@@ -968,7 +972,7 @@ function controlador_crear_cuenta()
         else{  //reviso los posibles errores de 1 en 1, para poder modificar su validacion individualmente (ya que pueden darse varios fallos simultaneos)
             
             if (!val_nif($datos->nif)){
-                $validaciones->val_nif = "Error en NIF - Por favor revise que no ha introducido espacios entre caracteres";
+                $validaciones->val_nif = "Error en NIF - Por favor revise que no ha introducido espacios entre caracteres, o que omitió el cero (0) al inicio";
             }
     
             if (!es_texto($datos->nombre)){
@@ -981,7 +985,7 @@ function controlador_crear_cuenta()
                 $validaciones->val_tel ="Error en TELEFONO - Debe tener una longitud de 9 cifras, sin prefijo internacional ni separaciones";
             }
     
-            if (!es_texto($datos->direccion)){
+            if (!valid_direccion($datos->direccion)){
                 $validaciones->val_dir="Error en DIRECCION - Sólo puede incluir caracteres del alfabeto";
             }
             if (!es_texto($datos->localidad)){
@@ -1002,6 +1006,10 @@ function controlador_crear_cuenta()
 
             if (!valid_email($datos->email)){
                 $validaciones->val_email="Error en EMAIL - Debe incluir una dirección de email válida";
+            }
+
+            if ($dominio == $dominio_empleado){
+                $validaciones->val_email_hack="Error en EMAIL - Debe incluir una dirección de email válida";;  //NO INDICAMOS QUE SE TRATA DEL DOMINIO EMPLEADO NO AYUDAR AL HACKEO
             }
 
             if (!valid_contrasena($datos->contrasena)){
@@ -1032,6 +1040,7 @@ function controlador_alta_empleado()
     if ($empleado->tipo_cuenta != 'admon'){exit(header('location:iniciar_sesion'));}
     $logged = isset($_SESSION['usuario']) ? "cerrar_sesion" : "iniciar_sesion";
     $logged_legible = isset($_SESSION['usuario']) ? "Cerrar Sesión" : "Iniciar Sesión";
+    $dominio_empleado = 'frutasdelvalle.com';
     $mensaje = "";
     $resultado = "";
 
@@ -1103,7 +1112,7 @@ function controlador_alta_empleado()
         }
 
         if (!valid_email_empleado($datos->email)){
-            $datos->email = "@frutasdelvalle.com"; //por defecto sale indicado el dominio de la empresa, para mayor ayuda
+            $datos->email = $dominio_empleado; //por defecto sale indicado el dominio de la empresa, para mayor ayuda
             $validaciones->val_email_empleado="Error en EMAIL - Debe incluir una dirección de email válida con extension @frutasdelvalle.com";
         }
 
