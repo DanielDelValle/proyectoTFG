@@ -1031,7 +1031,7 @@ function factura_activa($id_pedido){
 	if($pdo){
 		try{
 		//La búsqueda se realiza en mysql con el comando LIKE
-		$sql = "SELECT factura FROM facturacion 
+		$sql = "SELECT id_factura FROM facturacion 
 				WHERE id_pedido ='$id_pedido' AND estado_fact = 'activa'";		
 
 		$resultado = $pdo->query($sql);
@@ -1051,15 +1051,15 @@ return $id_factura;
 }	
 
 
-function factura_creada($factura, $albaran, $id_pedido, $nif_cliente){
+function factura_creada($id_factura, $id_albaran, $id_pedido, $nif_cliente){
 			
 	$resultado = false;
 	$pdo = conexion();
 	if($pdo){
 		try{$pdo->beginTransaction();
 
-			$sql = "INSERT INTO facturacion (factura, albaran, id_pedido, nif_cliente) 
-					VALUES ('".$factura."', '".$albaran."', '".$id_pedido."', '".$nif_cliente."');";
+			$sql = "INSERT INTO facturacion (id_factura, id_albaran, id_pedido, nif_cliente) 
+					VALUES ('".$id_factura."', '".$id_albaran."', '".$id_pedido."', '".$nif_cliente."');";
 
 
 			$crearFactura = $pdo->prepare($sql);
@@ -1072,7 +1072,7 @@ function factura_creada($factura, $albaran, $id_pedido, $nif_cliente){
 
 			else {
 				$resultado=false;
-				echo "No pudo crearse la factura para el pedido $factura - por favor, intentelo de nuevo";
+				echo "No pudo crearse la factura para el pedido $id_factura - por favor, intentelo de nuevo";
 				$pdo->rollback();		
 				}	
 			}	
@@ -1097,7 +1097,7 @@ function factura_cancelada($id_factura, $cancelado_fecha, $rectif){
 
 			$sql = "UPDATE facturacion 
 					SET estado_fact = 'anulada', cancelado_fecha = '$cancelado_fecha', fact_rectif = '$rectif'
-					WHERE factura = '$id_factura'" ;
+					WHERE id_factura = '$id_factura'" ;
 
 
 
@@ -1128,6 +1128,30 @@ function factura_cancelada($id_factura, $cancelado_fecha, $rectif){
 }
 
 function detalle_pedido($id_pedido)
+{	
+		$pdo = conexion();
+		if($pdo){
+			try{
+			//La búsqueda se realiza en mysql con el comando LIKE
+			$sql = "SELECT * FROM productos_pedido 
+					WHERE id_pedido ='$id_pedido'";		
+
+			$resultado = $pdo->query($sql);
+			$detallePedidoArray = $resultado->fetchAll(PDO::FETCH_OBJ);
+			$pdo = null;
+		}	
+		
+		catch(PDOException $e){
+			echo 'Excepción: ', $e->getMessage();
+			return null;
+			}
+		}  
+		
+	return $detallePedidoArray;
+						
+}
+
+function detalle_factura($id_factura)
 {	
 		$pdo = conexion();
 		if($pdo){

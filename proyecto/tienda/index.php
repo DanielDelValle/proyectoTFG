@@ -43,6 +43,19 @@ elseif ($URI == 'detalle_cliente' && isset($_GET['nif']))
     controlador_detalle_cliente($_GET['nif']); 
 }
 
+elseif ($URI == 'detalle_factura' && isset($_GET['id_factura'])) 
+{
+
+    controlador_detalle_factura($_GET['id_factura']); 
+}
+
+elseif ($URI == 'detalle_albaran' && isset($_GET['id_albaran'])) 
+{
+
+    controlador_detalle_albaran($_GET['id_albaran']); 
+}
+
+
 elseif ($URI == 'detalle_empleado') 
 {
 

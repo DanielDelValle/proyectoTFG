@@ -185,18 +185,15 @@
             //ALTER TABLE productos_pedido ADD factura VARCHAR(35), albaran VARCHAR(35);  PARA AÑADIR LOS ATRIBUTOS ALBARAN Y FACTURA A LA TABLA QUE DETALLA EL PEDIDO
 
             $sql10="CREATE TABLE IF NOT EXISTS facturacion (
-                factura VARCHAR(30) PRIMARY KEY, 
+                id_factura VARCHAR(30) PRIMARY KEY, 
                 estado_fact ENUM ('activa', 'anulada') DEFAULT 'activa', 
                 fact_rectif VARCHAR(30) DEFAULT NULL,
-                albaran VARCHAR(30),
+                id_albaran VARCHAR(30),
                 id_pedido VARCHAR(30),
                 nif_cliente VARCHAR(9),
                 cancelado_fecha DATETIME DEFAULT NULL
    
                 )";
-
-
-
 
         // CLAVES EXTERNAS PARA PODER UNIR TABLAS SEGÚN NECESIDAD
 

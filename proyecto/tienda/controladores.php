@@ -172,6 +172,24 @@ function controlador_detalle_mercancia($id)
     
 }
 
+function controlador_detalle_factura($id_factura)
+{   $URI = get_URI();    
+    //Con las siguientes 2 lineas restrinjo el acceso a partes solo destinadas a empleados
+    $usuario = checkSession();
+    $base = checkDomain($usuario);   
+    $empleado = datos_empleado($usuario);
+
+    // Petición al modelo para que retorne la lista de productos de la BD
+    $producto = get_object_vars(detalle_factura($id_factura));  //transformo el objeto que devuelve el modelo en array asociativo
+    $mensaje = "";
+
+    
+    global $twig;
+    $template = $twig->load('detalle_mercancia.html');  
+	echo $template->render(array ('URI'=>$URI, 'empleado'=>$empleado, 'base'=>$base, 'producto' => $producto, 'mensaje'=> $mensaje));
+    
+}
+
 function controlador_detalle_cliente($nif)
 {   $URI = get_URI();
     $usuario = checkSession();
@@ -180,7 +198,7 @@ function controlador_detalle_cliente($nif)
     if ($base !== 'base_empl') exit(header('location:iniciar_sesion'));
 
     $empleado = datos_empleado($usuario); 
-   // if ($empleado->tipo_cuenta != 'admon'){exit(header('location:pedidos'));}  // sólo el administrativo puede ver los datos del cliente
+    if ($empleado->tipo_cuenta != 'admon'){exit(header('location:pedidos'));}  // sólo el administrativo puede ver los datos del cliente
     $cliente = datos_cliente_nif($nif);
     $email = $cliente->email;    
     $total_pedidos = count(pedidos_usuario($nif)); //EL NÚM DE ELEMENTOS DEL ARRAY DE LOS PEDIDOS DEL USUARIO
@@ -386,7 +404,7 @@ function controlador_confirmar_pedido(){
         if(isset($_POST["confirmar_pedido"]) && ($forma_pago !='')){
 
             $creado_fecha = date('Y-m-d H:i:s'); //hora y fecha actuales
-            $fecha = date('dm_his');
+            $fecha = date('dmY_his');
             //El ID_PEDIDO contiene información relevante: el COD_POSTAL para facilitar agrupación de pedidos en almacén y transporte eficiente.
                                                         // el NIF para agrupar pedidos por empresa o titular 
                                                         // la fecha y hora en que se hizo para obtener siempre un número único (necesario para que sea PRIMARY KEY).
@@ -496,8 +514,8 @@ function controlador_mis_pedidos()
     //$where será un string modificable al que iré anexando cada campo en caso de que no esté vacío. Es decir, tendrá una longitud variable.
     $where = "WHERE id_pedido LIKE '%$id_pedido%' AND nif_cliente LIKE '%$nif%'";
     $selected_est_pago = '';
-    $factura = '';
-    $albaran = '';
+    $id_factura = '';
+    $id_albaran = '';
 
 	global $twig;
 
@@ -603,8 +621,8 @@ function controlador_pedidos()
     //$where será un string modificable al que iré anexando cada campo en caso de que no esté vacío. Es decir, tendrá una longitud variable.
     $where = "WHERE id_pedido LIKE '%$id_pedido%' ";
     $selected_est_pago = '';
-    $factura = '';
-    $albaran = '';
+    $id_factura = '';
+    $id_albaran = '';
     $rectif = '';
     $nif_cliente = '';
 
@@ -643,12 +661,13 @@ function controlador_pedidos()
                         $mensaje = "Alguno de los pedidos seleccionados ya fue marcado como pagado - no puede realizarse de nuevo";}
                     else{
                     $pagado_fecha = date('Y-m-d H:i:s');
+                    $fecha = date('dmY_his');
                     $nif_cliente = $_POST ['nif_cliente']; //NECESITO ESTE DATO PARA INCORPORARLO A LAS FACTURAS al marcar como pagado
-                    $factura = 'FAC_'.$pagado_fecha.'/'.$contador; //Así aseguro que, aunque marque como pagados 2 pedidos a la vez, el ID factura y albaran sean unicos.
-                    $albaran = 'ALB_'.$pagado_fecha.'/'.$contador; 
+                    $id_factura = 'FAC_'.$fecha.'/'.$contador; //Así aseguro que, aunque marque como pagados 2 pedidos a la vez, el ID factura y albaran sean unicos.
+                    $id_albaran = 'ALB_'.$fecha.'/'.$contador; 
                     $cuenta = pedido_pagado($id_pedido, $pagado_fecha);
                     $contador +=$cuenta; 
-                    $cuenta1 = factura_creada($factura, $albaran, $id_pedido, $nif_cliente);
+                    $cuenta1 = factura_creada($id_factura, $id_albaran, $id_pedido, $nif_cliente);
                     $contador1 +=$cuenta1;    
                     //Obtengo detalles de cada pedido para ahondar en los productos que lo componen, y modificar su stock
                     $pedido = detalle_pedido($id_pedido);               
@@ -724,7 +743,7 @@ function controlador_pedidos()
                 //solo podrá anularse la factura, si esta existe, osea está marcado como pagado y además se encuentre como procesando o como devuelto(la mercancia)
                     if($situacion_pedido->estado_pago == 'pagado'){
                         $rectif = 'RECTIF_'.$cancelado_fecha.'/'.$contador;
-                        $factura_activa = factura_activa($val)->factura; //para obtener la ID del a fact_cuyo estado es activo, y asi solo cancelar dicha fact.
+                        $factura_activa = factura_activa($val)->id_factura; //para obtener la ID del a fact_cuyo estado es activo, y asi solo cancelar dicha fact.
                         $cuenta1 = factura_cancelada($factura_activa, $cancelado_fecha, $rectif); 
                         $contador1 += $cuenta1;
                         $mensaje .= $contador1. " Factura(s) Cancelada(s)";
@@ -764,7 +783,7 @@ function controlador_pedidos()
                 //Aunque es a priori extraño que un pedido se haya entregado sin pagarse, podrían ser pagos a 90 días por parte de empresas
                     if($situacion_pedido->estado_pago == 'pagado'){
                         $rectif = 'RECTIF_'.$cancelado_fecha.'/'.$contador;
-                        $factura_activa = factura_activa($val)->factura; //para obtener la ID del a fact_cuyo estado es activo, y asi solo cancelar dicha fact.
+                        $factura_activa = factura_activa($val)->id_factura; //para obtener la ID del a fact_cuyo estado es activo, y asi solo cancelar dicha fact.
                         $cuenta1 = factura_cancelada($factura_activa, $cancelado_fecha, $rectif); 
                         $contador1 += $cuenta1;
                         $mensaje .= $contador1. " Factura(s) Cancelada(s)";
@@ -788,7 +807,7 @@ function controlador_pedidos()
     
     global $twig;
     $template = $twig->load('control_pedidos.html');
-	echo $template->render(array ('URI'=>$URI, 'usuario'=>$usuario, 'empleado'=>$empleado, 'factura'=>$factura, 'albaran'=>$albaran, 'rectif'=>$rectif, 'where'=>$where, 'id_pedido'=>$id_pedido, 'nif'=> $nif, 'total_precio'=>$total_precio, 'total_kg'=>$total_kg, 
+	echo $template->render(array ('URI'=>$URI, 'usuario'=>$usuario, 'empleado'=>$empleado, 'factura'=>$id_factura, 'id_albaran'=>$id_albaran, 'rectif'=>$rectif, 'where'=>$where, 'id_pedido'=>$id_pedido, 'nif'=> $nif, 'total_precio'=>$total_precio, 'total_kg'=>$total_kg, 
     'forma_pago'=>$forma_pago,'estado_pago'=>$estado_pago, 'estado_pedido'=>$estado_pedido, 'creado_fecha'=>$creado_fecha, 'pagado_fecha'=>$pagado_fecha, 'enviado_fecha'=>$enviado_fecha,
     'entregado_fecha'=>$entregado_fecha, 'cancelado_fecha'=>$cancelado_fecha, 'notas'=>$notas,'lista_pedidos'=>$lista_pedidos, 'mensaje'=>$mensaje));
 

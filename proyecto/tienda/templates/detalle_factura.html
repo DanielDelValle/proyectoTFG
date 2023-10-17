@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block stylesheets %}
+<link rel="stylesheet" type="text/css" href="css/base.css">
+{% endblock %}
+
+{% block content %}	
+				
+
+			<!-- Mostramos una lista de los artículos-->
+			Detalles Factura Nº: {{factura.id_factura}}
+			<img width="400" height="400" src="imagenes/{{producto.nombre}}.jpg"/> 
+			{% set boton_anadir = '' %} 
+			{% set texto_stock = "STOCK DISPONIBLE: #{producto.stock} Kilo(s)"  %}
+			{% if producto.stock == 0 %}    
+				{% set boton_anadir = 'disabled' %}   
+				{% set texto_stock = 'Producto Temporalmente No Disponible' %} 	
+			{% endif %}
+
+				<h2>{{producto.nombre}}</h2>
+				<h2>PRECIO: {{producto.precio}}€ / Kilo</h2>
+				<h2>{{texto_stock}} </h2>
+				<h3>DESCRIPCION: {{producto.descripcion}}</h3>
+
+
+
+				<form action="" method="POST">
+					<button {{boton_anadir}} type="submit" name="anadir_producto" />Añadir Producto a la Cesta</button>
+				</form>
+
+				<form action="index.php" method="POST">
+					<button type="submit" name="volver" value="Volver"/>Volver a Tienda</button>
+				</form>
+{% endblock %}	
