@@ -691,13 +691,18 @@ function controlador_pedidos()
             //If intval($checked == 1 significa que el array "checked" tiene al menos un valor dentro, con lo que hay algún pedido seleccionado)
             if(intval($checked) == 1){                
                 foreach($checked as $id_pedido){
+                    $situacion_pedido = situacion_pedido($id_pedido); 
+                    //solo podrá anularse el pedido, si está procesandose o devuelto (una vez se haya recibido de vuelta la mercancia)
+                    if($situacion_pedido->estado_pago =='pagado' && $situacion_pedido->estado_pedido =='procesando'){
                     $enviado_fecha = date('Y-m-d H:i:s');
                     $cuenta = pedido_enviado($id_pedido, $enviado_fecha);
                     $contador +=$cuenta;
+                    $mensaje = $contador. " Pedido(s) marcado(s) como 'Enviado'";
+                    }else $mensaje = "Alguno de los pedidos no puede marcarse como enviado debido al estado en que se encuentra";
                 }
                 $delay=2;
                 header("Refresh:$delay");
-                $mensaje = $contador. " Pedido(s) marcado(s) como 'Enviado'";
+
             }
     else $mensaje = "Por favor, seleccione al menos un producto para modificar";
 
