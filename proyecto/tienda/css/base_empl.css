@@ -245,6 +245,10 @@ footer {
 	border-width: 3px;
 }
 
+span{
+	display: inline-block;
+}
+
 .continue{
 	border-color: red;
 }

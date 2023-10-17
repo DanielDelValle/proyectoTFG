@@ -46,7 +46,15 @@
         <input type="text" name="notas" id="notas" value="{{notas}}"  ><br>
 
     </fieldset>
-    <button type= "submit" name= "buscar" method= "POST">Buscar</button>
+    <div>
+        <span><input type="radio" name="filtro" class="radio" value = 'todos'/>Todos</span>
+        <span><input type="radio" name="filtro" class="radio" value = 'activos'>Activos</span>
+        <span><input type="radio" name="filtro" class="radio" value = 'cancelados'>Cancelados</span>
+        <span><input type="radio" name="filtro" class="radio" value = 'por_pagar'>Pendientes de Pago</span>
+        <span><input type="radio" name="filtro" class="radio" value = 'por_enviar'>Pendientes de Envío</span>
+        <span><input type="radio" name="filtro" class="radio" value = 'por_devolver'>Pendientes de Devolución</span><br>
+        <button type= "submit" name= "buscar" method= "POST">Buscar</button>
+    </div>
     <fieldset>
     <div>
     <h2 class='titulo'>MIS PEDIDOS</h2>

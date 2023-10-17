@@ -774,7 +774,7 @@ function pedido_pagado($id_pedido, $pagado_fecha){
 		$pdo->beginTransaction();
 				//Actualizo el estado del pago y el del pedido, por si hubiese sido cancelado y reactivado. Establezco fecha de pago.
 		$sql = "UPDATE pedido 
-				SET estado_pago = 'pagado', estado_pedido = 'procesando', pagado_fecha = '$pagado_fecha'
+				SET estado_pago = 'pagado', estado_pedido = 'procesando', pagado_fecha = '$pagado_fecha', cancelado_fecha = NULL
 				WHERE id_pedido = '$id_pedido'" ;
 
 
@@ -924,7 +924,7 @@ function pedido_cancelado($id_pedido, $cancelado_fecha){
 	$pdo->beginTransaction();
 
 	$sql = "UPDATE pedido 
-			SET estado_pedido = 'cancelado', estado_pago = 'devolución', cancelado_fecha = '$cancelado_fecha'
+			SET estado_pedido = 'cancelado', estado_pago = 'pendiente', cancelado_fecha = '$cancelado_fecha'
 			WHERE id_pedido = '$id_pedido'" ;
 
 

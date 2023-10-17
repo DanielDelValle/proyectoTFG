@@ -134,30 +134,29 @@ a:hover {
 
 
 form{
-	border-radius: 10px;
-	border: 2px solid;
-	border-color: #00806bc9;
-	padding: 5px;
-	background-color: #bac47e85;
-	margin-left: auto;
-	margin-right: auto;
-	position:relative;
-
-
-}
-
-fieldset {
-	border-radius: 20px;
-	border: 2px solid;
-	border-color: #00806bc9;
-	padding: 5px;
-	position: relative;
-	margin: auto;
-	padding: 15px;
-	display:flex;
-
-}
-
+	/*	border-radius: 10px;
+		border: 2px solid;
+		border-color: #00806bc9;*/
+		padding: 5px;
+		background-color: #bac47e85;
+		margin-left: auto;
+		margin-right: auto;
+		position:relative;
+	
+	
+	}
+	
+	fieldset {
+		/*border-radius: 20px;
+		border: 2px solid;
+		border-color: #00806bc9;*/
+		padding: 5px;
+		position: relative;
+		margin: auto;
+		padding: 15px;
+		display:flex;
+	}
+	
 legend {
 	position: absolute;
 	margin-left: auto;
@@ -236,6 +235,10 @@ footer {
 	color: #8b4513;
 	margin-top:5%;
 	background: #7cac2e;
+}
+
+span{
+	display: inline-block;
 }
 
 .critical {
