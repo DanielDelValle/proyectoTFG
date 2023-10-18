@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block stylesheets %}
-<link rel="stylesheet" type="text/css" href="css/tarea7.css">
+<link rel="stylesheet" type="text/css" href="css/base.css">
 {% endblock %}
 
 {% block content %}		
@@ -33,23 +33,12 @@
           <tr><td><h2>Total pedido(mercancía + envío): PENDIENTE</h2></td></tr>  
     </table>
   
-
-        <div>
-
-                <!--  el botón "Cerrar Sesion" da la orden de borrar datos de sesión y elimina cookie-->
-
-            <fieldset>
                     <button type="submit" name="borrar_producto" method="POST">Borrar Producto</button>
 
                     <button type="submit" name="vaciar_cesta" method="POST">Vaciar Cesta</button>
                          
                     <button type="submit" name="datos_envio" method="POST">Continuar a Datos Envio</button>
     
-
-
-                </fieldset>
-
-        </div>
     </form>
 
 

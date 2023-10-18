@@ -72,15 +72,24 @@ a{
 }
 
 
-#cesta, #datos_cliente {
+.cesta {
 	color: #8b4513;
 	font-size: 20px;
 	font-weight: bold;
 	width: 100%;
 	margin-left: auto;
 	margin-right: auto;
-	border-radius: 20px;
-	border: solid 3px #b68b2e;
+	padding:25px;
+	display: flex;
+}
+
+.datos_cliente {
+	color: #8b4513;
+	font-size: 20px;
+	font-weight: bold;
+	width: 100%;
+	margin-left: auto;
+	margin-right: auto;
 	padding:25px;
 	display: flex;
 }
@@ -146,4 +155,11 @@ footer {
 	background: #0ef19377;
 }
 
+#banner img {
+	float:left; 
+	margin-left:1%;  
+	margin-top:4px; 
+	transition: transform 1s;
+		
+}
 /*#marco{ padding : 15px, 15px; margin-bottom : 30px; border-style: solid; border-color: red; background-color: black; color: white}

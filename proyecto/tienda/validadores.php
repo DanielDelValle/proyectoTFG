@@ -8,7 +8,8 @@
 */
 function es_texto($cadena) {
     //definimos el patrón
-    $patron = '/^[a-zA-Zá-úÁ-ÚñÑ\s?]/';
+    $patron = '/^[a-zA-Zá-úÁ-ÚñÑ\s?]+$/';
+
 	//$patron = '/^[a-zA-Z]+(\s*[a-zA-Z]*)*[a-zA-Z]+$/';
      
     return (preg_match($patron, $cadena));	

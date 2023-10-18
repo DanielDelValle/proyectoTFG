@@ -1,11 +1,18 @@
-{% extends "base.html" %}
+{% extends "#{base}.html" %}
 
 {% block stylesheets %}
-<link rel="stylesheet" type="text/css" href="css/base.css">
+<link rel="stylesheet" type="text/css" href="css/{{base}}.css">
 {% endblock %}
 
 {% block content %}	
-				
+<!-- ESTA PLANTILLA LA COMPARTEN EMPLEADOS Y CLIENTES, GRACIAS A LA variable BASE y las que se derivan de ella. -->
+{% if base =='base' %}
+{% set detalle = 'producto' %}
+{% set volver = 'mis_pedidos' %}
+{% else %}
+{% set detalle = 'mercancia' %}
+{% set volver = 'control_pedidos' %}
+{% endif %}
 
 			<!-- Mostramos una lista de los artículos-->
 			Detalles Factura Nº: {{factura.id_factura}}

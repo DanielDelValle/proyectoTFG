@@ -585,7 +585,8 @@ function eliminar_cuenta($email){  ///PENDIENTE QUERY QUE FUNCIONE (PROBABLEMENT
 
 			$sql = "DELETE
 					FROM $tipo
-					WHERE email = '$email'";
+					WHERE email = '$email'"
+					;
 
 			$cuenta_eliminada = $pdo->prepare($sql);
 
@@ -916,7 +917,7 @@ return $resultado;
 
 }	
 	
-function pedido_cancelado($id_pedido, $cancelado_fecha){
+function pedido_cancelado($id_pedido, $cancelado_fecha, $estado_pago_nuevo){
 		
 	$pdo = conexion();
 	if($pdo){
@@ -924,7 +925,7 @@ function pedido_cancelado($id_pedido, $cancelado_fecha){
 	$pdo->beginTransaction();
 
 	$sql = "UPDATE pedido 
-			SET estado_pedido = 'cancelado', estado_pago = 'pendiente', cancelado_fecha = '$cancelado_fecha'
+			SET estado_pedido = 'cancelado', estado_pago = '$estado_pago_nuevo', cancelado_fecha = '$cancelado_fecha'
 			WHERE id_pedido = '$id_pedido'" ;
 
 
@@ -953,7 +954,7 @@ return $resultado;
 
 }	
 
-function borrar_cancelados(){ //// REVISAR
+function borrar_cancelados(){
 		
 	$pdo = conexion();
 	if($pdo){
@@ -1157,8 +1158,8 @@ function detalle_factura($id_factura)
 		if($pdo){
 			try{
 			//La búsqueda se realiza en mysql con el comando LIKE
-			$sql = "SELECT * FROM productos_pedido 
-					WHERE id_pedido ='$id_pedido'";		
+			$sql = "SELECT * FROM facturacion 
+					WHERE id_factura ='$id_factura'";		
 
 			$resultado = $pdo->query($sql);
 			$detallePedidoArray = $resultado->fetchAll(PDO::FETCH_OBJ);

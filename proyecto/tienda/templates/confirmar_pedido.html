@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block stylesheets %}
-<link rel="stylesheet" type="text/css" href="css/tarea8.css">
+<link rel="stylesheet" type="text/css" href="css/base.css">
 {% endblock %}
 
 {% block content %}
@@ -9,9 +9,10 @@
 
 <form method="POST" action="" autocomplete>
 
-    <h3 class='titulo'>Confirmar Pedido</h3>
-    <div>
-        <table id="datos_cliente">
+    <h3 class='titulo'>FORMA DE PAGO Y CONFIRMACIÓN DE PEDIDO</h3><br>
+    <fieldset>
+        <legend>DATOS DE ENTREGA</legend>
+        <table class='datos_cliente'>
             <tr>
                 <th>NIF</th>
                 <th>Nombre</th>
@@ -45,72 +46,71 @@
 
 
         </table>
-    </div>
-
-
-    <table id='cesta'>
-        <th>Nombre</th>
-        <th>Id_Producto</th>
-        <th>Cantidad</th>
-        <th>€/Kg</th>
-        <th>Subtotal</th>
-
-        {% for key, producto in cesta %}
-        <tr>
-            <td>{{producto.nombre}}</td>
-            <td>{{producto.id}}</td>
-            <td>{{producto.cantidad}}</td>
-            <td>{{producto.precio}}</td>
-            <td>{{ producto.cantidad * producto.precio}}€</td>
-        </tr>
-        {% endfor %}
-        <tr>
-            <td>
-                <h2>Total Productos: {{total_prods}}</h2>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <h2>Total Peso mercancias: {{total_kg}} Kilo(s)</h2>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <h2>Total Precio mercancias: {{total_precio}} €</h2>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <h2>Total pedido(mercancía + envío): PENDIENTE</h2>
-            </td>
-        </tr>
-    </table>
-
+    </fieldset>
     <fieldset>
-        <legend>FORMA DE PAGO:</legend>
+        <legend>DESGLOSE DE COSTES</legend>
+        <table class='cesta'>
+            <th>Nombre</th>
+            <th>Id_Producto</th>
+            <th>Cantidad</th>
+            <th>€/Kg</th>
+            <th>Subtotal</th>
 
-        <div>
-            <input type="radio" id='bizum' name="forma_pago" value='bizum' />
-            <label for='bizum'>Bizum</label>
-        </div>
-        <div>
-            <input type="radio" id='transferencia_bancaria' name="forma_pago" value='transferencia_bancaria' />
-            <label for='transferencia_bancaria'>Transferencia Bancaria</label>
-        </div>
+            {% for key, producto in cesta %}
+            <tr>
+                <td>{{producto.nombre}}</td>
+                <td>{{producto.id}}</td>
+                <td>{{producto.cantidad}}</td>
+                <td>{{producto.precio}}</td>
+                <td>{{ producto.cantidad * producto.precio}}€</td>
+            </tr>
+            {% endfor %}
+            <tr>
+                <td>
+                    <h2>Total Productos: {{total_prods}}</h2>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <h2>Total Peso mercancias: {{total_kg}} Kilo(s)</h2>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <h2>Total Precio mercancias: {{total_precio}} €</h2>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <h2>Total pedido(mercancía + envío): PENDIENTE</h2>
+                </td>
+            </tr>
+        </table>
+    </fieldset>
+    <fieldset>
+        <legend>FORMA DE PAGO</legend>
+        <input type="radio" id='bizum' name="forma_pago" value='bizum' />
+        <label for='bizum'>Bizum</label>
+        <input type="radio" id='transferencia_bancaria' name="forma_pago" value='transferencia_bancaria' />
+        <label for='transferencia_bancaria'>Transferencia Bancaria</label>
     </fieldset>
 
-    <fieldset id="comentario">
-        <legend><h2>Comentarios sobre su pedido</h2></legend>
-        <textarea name = "notas" rows="10" cols="75" maxlength ="200">Escriba aquí su consulta (horarios de entrega, etc)</textarea>
+ 
+        <legend>COMENTARIOS SOBRE SU PEDIDO</legend>
+        <textarea name="notas" rows="10" cols="75"
+            maxlength="200"></textarea>
         <br>
-        <span class="help">Redacte su comentario con un máximo de 200 caracteres. Intentaremos cumplir con sus peticiones. 
-        <br> Si se trata de una emergencia, puede escribir a nuestro whatsapp: 666555444</span>
+        <p >Indíquenos preferencias de entrega, horario, etc. Intentaremos cumplir con sus
+            peticiones.
+            <br> Si se trata de algo urgente, puede escribir a nuestro whatsapp: 666555444</p>
         <br>
-    </fieldset>
+       
 
-
-  <!--  <input type="submit" value="Guardar y enviar" />-->
     <input type="reset" value="Borrar texto" />
+
+
+    <!--  <input type="submit" value="Guardar y enviar" />-->
+
 
 
     <div>
@@ -124,9 +124,9 @@
     </div>
 </form>
 
-<form method = "GET">   
-
-    <input  type="hidden" name="id_pedido" value="{{id_pedido}}">
+<form method="GET">
+    <input type="hidden" name="id_pedido" value="{{id_pedido}}">
+    <!-- Este campo es necesario para poder enviarse a la URL con el GET cuando se confirme el pedido-->
 </form>
 
 

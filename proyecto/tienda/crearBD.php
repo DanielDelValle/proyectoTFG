@@ -207,8 +207,8 @@
             if($bd->query($sqlFK2)){
                 echo "FOREIGN KEY FK_productos_pedido añadido con éxito<br>";
                 }else echo "Error insertando FOREIGN KEY FK_productos_pedido<br>";
-
-            $sqlFK3 = "ALTER TABLE facturacion ADD CONSTRAINT FK_factura_pedido FOREIGN KEY (id_pedido) REFERENCES pedido (id_pedido) ON DELETE CASCADE ON UPDATE NO ACTION";
+     
+         /*   $sqlFK3 = "ALTER TABLE facturacion ADD CONSTRAINT FK_factura_pedido FOREIGN KEY (id_pedido) REFERENCES pedido (id_pedido) ON DELETE CASCADE ON UPDATE NO ACTION";
             if($bd->query($sqlFK3)){
                 echo "FOREIGN KEY FK_factura_pedido con éxito<br>";
                 }else echo "Error insertando FOREIGN KEY FK_factura_pedido<br>";
@@ -216,10 +216,10 @@
 
             $sqlFK4 = "ALTER TABLE facturacion ADD CONSTRAINT FK_factura_cliente FOREIGN KEY (nif_cliente) REFERENCES cliente (nif) ON DELETE CASCADE ON UPDATE NO ACTION";
             if($bd->query($sqlFK4)){
-                echo "FOREIGN KEY FK_factura_clientecon éxito<br>";
-                }else echo "Error insertando FOREIGN KEY FK_factura_cliente<br>";
+                echo "FOREIGN KEY FK_factura_cliente con éxito<br>";
+                }else echo "Error insertando FOREIGN KEY FK_factura_cliente<br>";*/
 
-    
+    //Las 2 ultimas FK no convienen ya que las facturas desaparecerian al eliminarse un pedido o una cuenta, Y DEBEN FIGURAR
 
 
             }else echo "Error creando BD";   

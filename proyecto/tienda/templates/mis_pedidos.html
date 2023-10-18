@@ -12,107 +12,94 @@
         <legend>Busqueda</legend>
 
         <label for="id_pedido">ID Pedido</label>
-        <input type="text" name="id_pedido" id="id_pedido" value="{{id_pedido}}"  ><br>
+        <input type="text" name="id_pedido" id="id_pedido" value="{{id_pedido}}"><br>
         <label for="nif">NIF</label>
         <input type="text" name="nif" id="nif" value="{{nif}}">
         <label for="total_precio">Total Precio</label>
-        <input type="text" name="total_precio" id="total_precio" value="{{total_precio}}"  ><br>
+        <input type="text" name="total_precio" id="total_precio" value="{{total_precio}}"><br>
         <label for="total_kg">Total Kg</label>
-        <input type="text" name="total_kg" id="total_kg" value="{{total_kg}}"  ><br>
+        <input type="text" name="total_kg" id="total_kg" value="{{total_kg}}"><br>
         <label for="forma_pago">Forma Pago</label>
-        <input type="text" name="forma_pago" id="forma_pago" value="{{forma_pago}}"  ><br>
+        <input type="text" name="forma_pago" id="forma_pago" value="{{forma_pago}}"><br>
         <label for="estado_pago">Estado Pago</label>
-            <select name='estado_pago' id='estado_pago'>
-                <option value = '' ></option>
-                <option value = 'pendiente' > Pendiente</option>
-                <option value = 'pagado' > Pagado</option>
-                <option value = 'devolucion' > Devolucion</option>
-            </select> <br>
+        <select name='estado_pago' id='estado_pago'>
+            <option value=''></option>
+            <option value='pendiente'> Pendiente</option>
+            <option value='pagado'> Pagado</option>
+            <option value='devolucion'> Devolucion</option>
+        </select> <br>
         <label for="estado_pedido">Estado Pedido</label>
-        <input type="text" name="estado_pedido" id="estado_pedido" value="{{estado_pedido}}"  ><br>
+        <input type="text" name="estado_pedido" id="estado_pedido" value="{{estado_pedido}}"><br>
     </fieldset>
     <fieldset>
         <label for="creado_fecha">Fecha Creación</label>
-        <input type="text" name="creado_fecha" id="creado_fecha" value="{{creado_fecha}}"  ><br>
+        <input type="text" name="creado_fecha" id="creado_fecha" value="{{creado_fecha}}"><br>
         <label for="pagado_fecha">Fecha Pago</label>
-        <input type="text" name="pagado_fecha" id="pagado_fecha" value="{{pagado_fecha}}"  ><br>
+        <input type="text" name="pagado_fecha" id="pagado_fecha" value="{{pagado_fecha}}"><br>
         <label for="enviado_fecha">Fecha Envío</label>
-        <input type="text" name="enviado_fecha" id="enviado_fecha" value="{{enviado_fecha}}"  ><br>
+        <input type="text" name="enviado_fecha" id="enviado_fecha" value="{{enviado_fecha}}"><br>
         <label for="entregado_fecha">Fecha Entrega</label>
-        <input type="text" name="entregado_fecha" id="entregado_fecha" value="{{entregado_fecha}}"  ><br>
+        <input type="text" name="entregado_fecha" id="entregado_fecha" value="{{entregado_fecha}}"><br>
         <label for="cancelado_fecha">Fecha Cancelación</label>
-        <input type="text" name="cancelado_fecha" id="cancelado_fecha" value="{{cancelado_fecha}}"  ><br>
+        <input type="text" name="cancelado_fecha" id="cancelado_fecha" value="{{cancelado_fecha}}"><br>
         <label for="notas">Notas</label>
-        <input type="text" name="notas" id="notas" value="{{notas}}"  ><br>
+        <input type="text" name="notas" id="notas" value="{{notas}}"><br>
 
     </fieldset>
     <div>
-        <span><input type="radio" name="filtro" class="radio" value = 'todos'/>Todos</span>
-        <span><input type="radio" name="filtro" class="radio" value = 'activos'>Activos</span>
-        <span><input type="radio" name="filtro" class="radio" value = 'cancelados'>Cancelados</span>
-        <span><input type="radio" name="filtro" class="radio" value = 'por_pagar'>Pendientes de Pago</span>
-        <span><input type="radio" name="filtro" class="radio" value = 'por_enviar'>Pendientes de Envío</span>
-        <span><input type="radio" name="filtro" class="radio" value = 'por_devolver'>Pendientes de Devolución</span><br>
-        <button type= "submit" name= "buscar" method= "POST">Buscar</button>
+        <span><input type="radio" name="filtro" class="radio" value='todos' />Todos</span>
+        <span><input type="radio" name="filtro" class="radio" value='activos'>Activos</span>
+        <span><input type="radio" name="filtro" class="radio" value='cancelados'>Cancelados</span>
+        <span><input type="radio" name="filtro" class="radio" value='por_pagar'>Pendientes de Pago</span>
+        <span><input type="radio" name="filtro" class="radio" value='por_enviar'>Pendientes de Envío</span>
+        <span><input type="radio" name="filtro" class="radio" value='por_devolver'>Pendientes de Devolución</span><br>
+        <button type="submit" name="buscar" method="POST">Buscar</button>
     </div>
     <fieldset>
+            <legend>Pedidos</legend>
+            <table id="datos_cliente">
+                <th></th>
+                <th>Id Pedido</th>
+                <th>Total Peso</th>
+                <th>Total Precio</th>
+                <th>Forma Pago</th>
+                <th>Estado Pago</th>
+                <th>Estado Pedido</th>
+                <th>Fecha Creado</th>
+                <th>Fecha Pago</th>
+                <th>Fecha Envío</th>
+                <th>Fecha Recibido</th>
+                <th>Fecha Cancelación</th>
+                <th>Notas</th>
+                {% for key, pedido in pedidosArray %}
+                <tr>
+                    <td><input {{activo}} type="checkbox" name="pedido_select[]" class="checkbox"
+                            value={{pedido.id_pedido}}></td>
+                    <td><a
+                            href="http://localhost/proyecto/tienda/index.php/detalle_pedido?id_pedido={{pedido.id_pedido}}">&nbsp;{{pedido.id_pedido}}</a>
+                    </td>
+                    <td>{{pedido.total_kg}} Kilo(s)</td>
+                    <td>{{pedido.total_precio}} €</td>
+                    <td>{{pedido.forma_pago}} </td>
+                    <td>{{pedido.estado_pago}} </td>
+                    <td>{{pedido.estado_pedido}} </td>
+                    <td>{{pedido.creado_fecha}} </td>
+                    <td>{{pedido.pagado_fecha}} </td>
+                    <td>{{pedido.enviado_fecha}} </td>
+                    <td>{{pedido.entregado_fecha}} </td>
+                    <td>{{pedido.cancelado_fecha}} </td>
+                    <td>{{pedido.notas}} </td>
+
+                </tr>
+                {% endfor %}
+            </table>
+    </fieldset>
     <div>
-    <h2 class='titulo'>MIS PEDIDOS</h2>
-
-    <table id="datos_cliente">
-        <th></th>
-        <th>Id Pedido</th>
-        <th>Total Peso</th>
-        <th>Total Precio</th>
-        <th>Forma Pago</th>
-        <th>Estado Pago</th>
-        <th>Estado Pedido</th>
-        <th>Fecha Creado</th>
-        <th>Fecha Pago</th>
-        <th>Fecha Envío</th>
-        <th>Fecha Recibido</th>
-        <th>Fecha Cancelación</th>
-        <th>Notas</th>
-    {% for key, pedido in pedidosArray %}
-    <tr>
-        <td><input {{activo}} type="checkbox" name="pedido_select[]" class="checkbox"  value= {{pedido.id_pedido}}></td>
-        <td><a href="http://localhost/proyecto/tienda/index.php/detalle_pedido?id_pedido={{pedido.id_pedido}}">&nbsp;{{pedido.id_pedido}}</a></td>
-        <td>{{pedido.total_kg}} Kilo(s)</td>
-        <td>{{pedido.total_precio}} €</td>
-        <td>{{pedido.forma_pago}} </td>
-        <td>{{pedido.estado_pago}} </td>
-        <td>{{pedido.estado_pedido}} </td>
-        <td>{{pedido.creado_fecha}} </td>
-        <td>{{pedido.pagado_fecha}} </td>
-        <td>{{pedido.enviado_fecha}} </td>
-        <td>{{pedido.entregado_fecha}} </td>
-        <td>{{pedido.cancelado_fecha}} </td>
-        <td>{{pedido.notas}} </td>
-
-    </tr>
-    {% endfor %}
-    </table>
-    <div>
-
         <button type="submit" name="marcar_recibido" method="POST">Marcar Recibido</button>
-        
-        <button class= "critical" type="submit" name="cancelar_pedido" method="POST">Cancelar Pedido</button>
+
+        <button class="critical" type="submit" name="cancelar_pedido" method="POST">Cancelar Pedido</button>
 
         <button type="submit" name="borrar_cancelados" method="POST">Borrar Cancelados</button>
-    </fieldset>
-
-
-    <fieldset >
-    <div>
-
-        <!--   el botón "Cerrar Sesion" da la orden de borrar datos de sesión y elimina cookie-->
-
-
-
-
-
-    </fieldset>
-
     </div>
 </form>
 

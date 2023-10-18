@@ -1,17 +1,16 @@
 {% extends "base.html" %}
 
 {% block stylesheets %}
-<link rel="stylesheet" type="text/css" href="css/tarea8.css">
+<link rel="stylesheet" type="text/css" href="css/base.css">
 {% endblock %}
 
 {% block content %}
 
-
+<h2>Confirmar Datos del Envío</h2>
 <form method="POST" action="" autocomplete>
 
-    <h3 class='titulo'>Confirmar Datos del Envío</h3>
-    <div>
-        <table id="datos_cliente">
+
+        <table class="datos_cliente">
             <tr>
                 <th>NIF</th>
                 <th>Nombre</th>
@@ -45,18 +44,15 @@
 
 
         </table>
-    </div>
 
-    <div>
-        <fieldset>
-            <!--   el botón "Cerrar Sesion" da la orden de borrar datos de sesión y elimina cookie-->
+
 
             <button type="submit" name="volver_cesta" method="POST">Volver a la Cesta</button>
 
             <button type="submit" name="confirmar_datos" method="POST">Confirmar Datos</button>
 
-        </fieldset>
-    </div>
+
+
 
 </form>
 

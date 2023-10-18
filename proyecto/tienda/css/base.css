@@ -54,8 +54,8 @@ table {
 	border-collapse: collapse;
 	position:relative;
 	border-radius: 20px;
-	border-style: hidden; /* hide standard table (collapsed) border */
-	box-shadow: 3 0 0 3px; /* this draws the table border  */   /*si pongo 0 0 0 3, los bordes son redondos a pesar de ser collapsed TRUCO*/
+	border-style: hidden; /*hide standard table (collapsed) border */
+	box-shadow: 3 0 0 3px; /*this draws the table border   si pongo 0 0 0 3, los bordes son redondos a pesar de ser collapsed TRUCO*/
 
 
 }
@@ -134,14 +134,15 @@ a:hover {
 
 
 form{
-	/*	border-radius: 10px;
+		border-radius: 10px;
 		border: 2px solid;
-		border-color: #00806bc9;*/
+		border-color: #00806bc9;
 		padding: 5px;
 		background-color: #bac47e85;
 		margin-left: auto;
 		margin-right: auto;
 		position:relative;
+
 	
 	
 	}
@@ -150,15 +151,13 @@ form{
 		/*border-radius: 20px;
 		border: 2px solid;
 		border-color: #00806bc9;*/
-		padding: 5px;
 		position: relative;
 		margin: auto;
-		padding: 15px;
 		display:flex;
 	}
 	
 legend {
-	position: absolute;
+	position: relative;
 	margin-left: auto;
 	top: -25px;
 	font-weight: bold;
@@ -173,14 +172,12 @@ label {
 }
 
 input {
-
 	padding: .5em;
 	border-radius: 10px;
 	border: 2px solid;
 	border-color: #00806bc9;
 	width: auto;
 	background-color: #dee6b0;
-
 }
 
 
@@ -193,17 +190,16 @@ button {
 	background-color: #d3d01b;
 	width: auto;
 	font-size: 15px;
-
-}
-
-input:hover {
-	background-color: #97be8b;
 }
 
 button:hover {
 	background-color: #97be8b;
 }
 
+
+input:hover {
+	background-color: #97be8b;
+}
 
 input:focus {
 	outline: 2px dashed #ff8c00;
@@ -241,6 +237,7 @@ span{
 	display: inline-block;
 }
 
+
 .critical {
 	border-color: red;
 	border-width: 3px;
@@ -269,16 +266,7 @@ span{
 	
 }
 
-
-#banner img {
-	float:left; 
-	margin-left:1%;  
-	margin-top:4px; 
-	transition: transform 1s;
-		
-}
-
-#titular {
+.titular {
 	color:#aa702e;
 	float:left;
 	margin-left: 5%;
@@ -289,15 +277,53 @@ span{
 	border-collapse: collapse;
 
 }
-#titular th, #titular td, #titular tr{
+.titular th, .titular td, .titular tr{
 border:none;
 text-align: left;
 }
 
-#titular td{
+.titular td{
 	border:3px double;
 	padding-inline-end: 10px;
 	padding-inline-start: 10px;
 
 	}
+
+.datos_cliente {
+	color: #8b4513;
+	font-size: 20px;
+	font-weight: bold;
+	width: auto;
+	margin-left: auto;
+	margin-right: auto;
+	padding:25px;
+	display: flex;
+}	
+
+.cesta{
+	color: #8b4513;
+	font-size: 20px;
+	font-weight: bold;
+	width: auto;
+	margin-left: auto;
+	margin-right: auto;
+	padding:25px;
+	display: flex;
+}
 	
+
+
+#banner img {
+	float:left; 
+	margin-left:1%;  
+	margin-top:4px; 
+		
+}
+#sugerencias{
+	color: #0080FF;
+	display: inline;
+}
+
+
+
+
