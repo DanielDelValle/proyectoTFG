@@ -32,11 +32,10 @@ $(document).ready(function(){
 {% block busqueda %}
 
 <form accept-charset="UTF-8"> 
-    <legend>Búsqueda de producto por nombre</legend>
 <!--
     Cada vez que tecleamos algo en este field se ejecutará mostrar_sugerencias 
 -->
-<label for "busqueda">Introduzca el término a buscar</label>
+<label for "busqueda">Introduzca el producto a buscar</label>
 <input type="text" id="busqueda">
  
 <!-- En el span con id="sugerencias" mostraremos las coincidencias -->
@@ -54,7 +53,7 @@ $(document).ready(function(){
 			{% for producto in productos %}
 			<li>
                     <h2>ID PRODUCTO: {{producto.id_prod}}</h2>
-                    <img src="imagenes/{{producto.nombre}}.jpg"/>
+                    <img class= "imagen" src="imagenes/{{producto.nombre}}.jpg"/>
                     
                     <h2>{{producto.nombre}}</h2>
   

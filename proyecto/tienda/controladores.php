@@ -1244,11 +1244,11 @@ function controlador_alta_empleado()
             $datos[$key] = htmlspecialchars($value, ENT_COMPAT, 'UTF-8'); //aplico htmlspecialchars a cada elemento del array 
         }
     }
-    var_dump($datos);
+
 
     $validaciones= (object) $validaciones; //CONVIERTO A OBJETOS PARA MAYOR FACILIDAD DE USO EN LA PLANTILLA TWIG
     $datos = (object)$datos;
-    var_dump($datos);
+
     
     if(isset($_POST['confirmar_alta'])){ 
             //valid_nif($_POST['nif']) && 

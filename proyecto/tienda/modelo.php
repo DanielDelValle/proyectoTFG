@@ -650,7 +650,7 @@ function insert_pedido($id_pedido, $nif, $total_precio, $total_kg, $forma_pago, 
 	$pdo = conexion();
 	if($pdo){
 		try{
-			$notas=utf8_decode($notas);
+			$notas=utf8_decode($notas);//para evitar errores con los caracteres especiales (ñ, Ñ, vocales acentuadas, etc)
 			$sql = "INSERT INTO pedido(id_pedido, nif_cliente, total_precio, total_kg, forma_pago, creado_fecha, enviado_fecha, entregado_fecha, notas) 
 					VALUES ('".$id_pedido."', '".$nif."', '".$total_precio."', '".$total_kg."', '".$forma_pago."', '".$creado_fecha."', NULL, NULL, '".$notas."');";
 

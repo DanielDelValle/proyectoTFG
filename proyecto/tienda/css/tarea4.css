@@ -8,6 +8,7 @@ h3   {font-size:25px;color: #309c30; font-weight: bold; margin-top:75px;margin-b
 	height:160px; 
 	background-position: center center;	
 	background: url("../imagenes/banner.png") no-repeat #80bdc5;
+	margin-top:0;
 }
 
 .titulo   {font-size:50px;color: #309c30; font-weight: bold; margin-top:75px;margin-bottom:75px;}
@@ -36,6 +37,19 @@ fieldset {
 	border:2px solid;
 	border-color:#00806bc9;
 	padding:5px;
+	position:relative;
+	margin:auto;
+	padding:15px;
+}
+
+
+legend{
+	position:absolute;
+	margin-left: auto;
+	top:-25px;
+	font-weight: bold;
+
+		
 }
 
 label {
@@ -69,23 +83,6 @@ button {
 
   }
 
- 
-fieldset{
-	position:relative;
-	margin:auto;
-	padding:15px;
-	
-
-
-}
-legend{
-	position:absolute;
-	margin-left: auto;
-	top:-25px;
-	font-weight: bold;
-
-		
-}
 select{
 	padding:.5em;
 	border-radius:10px;

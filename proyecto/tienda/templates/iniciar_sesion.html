@@ -1,23 +1,18 @@
 {% extends "base.html" %}
 
 {% block stylesheets %}
-<link rel="stylesheet" type="text/css" href="css/tarea4.css">
+<link rel="stylesheet" type="text/css" href="css/base.css">
 {% endblock %}
 
 {% block toolbar %}      
 <!-- indicando el block en vacio, anulo la herencia de base.html (en la pantalla login, no conviene ni es necesario que haya toolbar) -->
 {% endblock %}
 
-{% block content %}		
-
-
-			
+{% block content %}				
 
 		 <h1>Inicio de Sesión</h1>
 
 			 <form action="" method="POST">
-	 
-					 <legend>Acceso a usuarios</legend>
 	 
 					 <label for="usuario">Usuario</label>
 					 <input type="text" name="usuario" id="usuario" value= {{usuario}}  >
