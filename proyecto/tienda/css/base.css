@@ -127,7 +127,7 @@ a {
 
 
 a:hover {
-	font-size: 100%;
+	font-size: 120%;
     text-decoration: underline;
 	background-color:#89ad506e;
 }
@@ -157,14 +157,15 @@ form{
 	}
 	
 legend {
-	position: relative;
+	/*float:left;*/
+	/*position: relative;*/
 	margin-left: auto;
 	top: -25px;
 	font-weight: bold;
 }
 
 label {
-	display: flex;
+
 	justify-content: center;
 	padding:0.5em;
 	font-size: 18px;
@@ -177,6 +178,7 @@ input {
 	border: 2px solid;
 	border-color: #00806bc9;
 	width: auto;
+	margin:auto;
 	background-color: #dee6b0;
 }
 

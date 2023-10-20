@@ -1,7 +1,7 @@
-{% extends "base.html" %}
+{% extends "base_empl.html" %}
 
 {% block stylesheets %}
-<link rel="stylesheet" type="text/css" href="css/base.css">
+<link rel="stylesheet" type="text/css" href="css/base_empl.css">
 {% endblock %}
 
 {% block script %}
@@ -28,10 +28,16 @@ $(document).ready(function(){
 
 {% endblock %}
 
+{% block login %}
+
+<a href = "http://localhost/proyecto/tienda/index.php/{{logged}}">{{logged_legible}}</a><br>
+
+
+{% endblock %}
 
 {% block busqueda %}
 
-<form accept-charset="UTF-8"> 
+<form> 
     <legend>Búsqueda de producto por nombre</legend>
 <!--
     Cada vez que tecleamos algo en este field se ejecutará mostrar_sugerencias 
@@ -48,22 +54,24 @@ $(document).ready(function(){
 
 {% block content %}
 
-
-        <ul style="list-style: none">
+        <table>
+            <th>Id Producto</th>
+            <th>Nombre</th>
+            <th>Stock (Kg)</th>
+            <th>Precio (€/Kg)</th>
+            <th>Total Ventas (Kg)</th>
+            <th>Total Ventas (€)</th>
             <!-- Mostramos una lista de los artículos-->
 			{% for producto in productos %}
-			<li>
-                    <h2>ID PRODUCTO: {{producto.id_prod}}</h2>
-                    <img src="imagenes/{{producto.nombre}}.jpg"/>
-                    
-                    <h2>{{producto.nombre}}</h2>
-  
-					<a href="http://localhost/proyecto/tienda/index.php/detalle_producto?id={{producto.id_prod}}">Detalle</a>
-					<br>
-					<br>
-            </li>
-			{% endfor %}
-        </ul>
-
-
+                <tr>	
+                <td>{{producto.id_prod}}</td>	
+                <td><a href="http://localhost/proyecto/tienda/index.php/detalle_{{detalle}}?id={{producto.id_prod}}">{{producto.nombre}}</a></td>	
+                <td>{{producto.stock}}</td>	
+                <td>{{producto.precio}} </td>	
+                <td>{{ventas_kg}}</td>	
+                <td>{{ventas_euros}} </td>	
+                </tr>
+            {% endfor %}
+        </table>
+</form>
 {% endblock %}	

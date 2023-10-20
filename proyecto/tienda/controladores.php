@@ -1,7 +1,7 @@
 <?php
 // controladores.php
 require_once '../vendor/autoload.php';
-//require_once 'email.php';
+require_once 'email.php';
 
 $loader = new \Twig\Loader\FilesystemLoader('templates');
 $twig = new \Twig\Environment($loader);
@@ -96,7 +96,24 @@ function controlador_mercancia()
 	echo $template->render(array ('URI'=>$URI, 'empleado'=>$empleado, 'productos' => $productos));
 }
 
+function controlador_stock()
+{ $URI = get_URI();
+    $usuario = checkSession();
+    $base = checkDomain($usuario);   
+    $empleado = datos_empleado($usuario);
+    if ($empleado->tipo_cuenta != 'admon'){exit(header('location:iniciar_sesion'));} //solo ADMON puede manipular cuentas de usuario
+    $logged = isset($_SESSION['usuario']) ? "cerrar_sesion" : "iniciar_sesion";
+    $logged_legible = isset($_SESSION['usuario']) ? "Cerrar Sesión" : "Iniciar Sesión";
+    $productos = lista_productos();
+    $mensaje = '';
 
+
+    global $twig;
+    $template = $twig->load('control_stock.html');  
+	echo $template->render(array ('URI'=>$URI, 'empleado'=>$empleado, 'productos' => $productos, 'mensaje'=> $mensaje, 'logged'=>$logged, 'logged_legible'=>$logged_legible));
+    
+
+}
 
 function controlador_detalle_producto($id)
 {   
@@ -401,6 +418,8 @@ function controlador_confirmar_pedido(){
             case "transferencia_bancaria":
                 $forma_pago = 'transferencia bancaria';                 
         }
+
+
     }
         if(isset($_POST["confirmar_pedido"]) && ($forma_pago !='')){
 
@@ -411,11 +430,11 @@ function controlador_confirmar_pedido(){
                                                         // la fecha y hora en que se hizo para obtener siempre un número único (necesario para que sea PRIMARY KEY).
 
             $id_pedido = $cliente->cod_postal."-".$cliente->nif."-".$fecha; 
-            $notas = htmlentities($_POST['notas'], ENT_COMPAT,'UTF-8');
+            $notas = utf8_encode($_POST['notas']);
            
             //si ambas operaciones insert retornan TRUE
             if(insert_pedido($id_pedido, $cliente->nif, $total_precio, $total_kg, $forma_pago, $creado_fecha, $notas) && (insert_productos_pedido($id_pedido, $cesta))){
-               //$email = pruebaMail($cliente->email, $cliente->nombre);
+             //  $email = pruebaMail($cliente->email, $cliente->nombre);
             exit(header("location:pedido_realizado?id_pedido=$id_pedido"));
           } else $mensaje= "Error al grabar el pedido - por favor, repita el proceso de nuevo";
               

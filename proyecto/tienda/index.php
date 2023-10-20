@@ -123,6 +123,11 @@ elseif ($URI == 'control_cuentas')
 		controlador_cuentas(); 
 }
 
+elseif ($URI == 'control_stock')
+{      
+		controlador_stock(); 
+}
+
 elseif ($URI == 'mi_cesta')
 {      
 		controlador_mi_cesta(); 

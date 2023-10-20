@@ -1,7 +1,7 @@
 {% extends "base_empl.html" %}
 
 {% block stylesheets %}
-<link rel="stylesheet" type="text/css" href="css/tarea8.css">
+<link rel="stylesheet" type="text/css" href="css/base_empl.css">
 {% endblock %}
 
 {% block script %}
@@ -35,22 +35,23 @@ $(document).ready(function(){
 
 {% endblock %}
 
+
 {% block busqueda %}
 
-<p><h1>Búsqueda de producto por nombre</h1></p>
 <form> 
+    <legend>Búsqueda de producto por nombre</legend>
 <!--
     Cada vez que tecleamos algo en este field se ejecutará mostrar_sugerencias 
 -->
-<p>Introduzca el término a buscar</p><input type="text" id="busqueda">
-</form>
+<label for "busqueda">Introduzca el término a buscar</label>
+<input type="text" id="busqueda">
+ 
 <!-- En el span con id="sugerencias" mostraremos las coincidencias -->
-<p><strong>Sugerencias:</strong> <span id="sugerencias"></span></p>
-            </div>			
-        </nav>
-        
+<p><strong>Sugerencias:</strong> <span id="sugerencias"></span></p>	
+  
 
 {% endblock %}
+
 
 
 {% block content %}
