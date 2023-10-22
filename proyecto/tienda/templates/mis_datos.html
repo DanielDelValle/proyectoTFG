@@ -7,11 +7,10 @@
 {% block content %}
 
 <form method="POST" action="" autocomplete>
-    <fieldset>
-    <div>
-    <h2 class='titulo'>MIS DATOS PERSONALES</h2>
 
-    <table id="datos_cliente">
+        <h2 class='titular'>MIS DATOS PERSONALES</h2>
+
+        <table>
             <tr>
                 <th>NIF</th>
                 <th>Nombre</th>
@@ -22,13 +21,10 @@
                 <td>{{cliente.nombre}}</td>
                 <td>{{cliente.apellidos}}</td>
             </tr>
-    </table>
-    </div>
-</fieldset>     
-<fieldset>   
-    <div>
-    <h2 class='titulo'>MIS DATOS DE CONTACTO</h2>
-    <table id="datos_cliente">
+
+        </table>
+        <h2 class='titular'>MIS DATOS DE CONTACTO</h2>
+        <table>
             <tr>
                 <th>Email</th>
                 <th>Telefono</th>
@@ -50,14 +46,9 @@
                 <td>{{cliente.provincia}}</td>
             </tr>
 
-
         </table>
-    </div>
-</fieldset>
-<fieldset>   
-    <div>
-    <h2 class='titulo'>OTROS DATOS</h2>
-    <table id="datos_cliente">
+        <h2 class='titular'>OTROS DATOS</h2>
+        <table>
             <tr>
                 <th>Fecha Creación de la Cuenta</th>
                 <th>Estado de la Cuenta</th>
@@ -69,26 +60,18 @@
 
 
         </table>
-    </div>
-</fieldset>
-
-<fieldset>
-    <div>
-
-        <!--   el botón "Cerrar Sesion" da la orden de borrar datos de sesión y elimina cookie-->
-
-        <button type="submit" name="editar_datos" method="POST">Editar Datos</button>
-
-        <button type="submit" name="cambiar_contrasena" method="POST">Cambiar Contrasena</button>
-
-        <button type="submit" name="guardar_cambios" method="POST">Guardar Cambios</button>
-
-        <button class= "critical" type="submit" name="eliminar_cuenta" method="POST">Eliminar Mi Cuenta</button>
 
 
-    </fieldset>
+    <button type="submit" name="editar_datos" method="POST">Editar Datos</button>
 
-    </div>
+    <button type="submit" name="cambiar_contrasena" method="POST">Cambiar Contrasena</button>
+
+    <button type="submit" name="guardar_cambios" method="POST">Guardar Cambios</button>
+
+    <button class="critical" type="submit" name="eliminar_cuenta" method="POST">Eliminar Mi Cuenta</button>
+
+
+
 </form>
 
 

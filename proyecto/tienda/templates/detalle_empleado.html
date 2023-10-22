@@ -1,98 +1,81 @@
 {% extends "base_empl.html" %}
 
 {% block stylesheets %}
-<link rel="stylesheet" type="text/css" href="css/tarea7.css">
+<link rel="stylesheet" type="text/css" href="css/base_empl.css">
 {% endblock %}
 
 {% block content %}
 
 <form method="POST" action="" autocomplete>
-    <fieldset>
-    <div>
-    <h2 class='titulo'>MIS DATOS PERSONALES</h2>
 
-    <table id="datos_empleado">
-            <tr>
-                <th>NIF</th>
-                <th>Nombre</th>
-                <th>Apellidos</th>
-            </tr>
-            <tr>
-                <td>{{empleado.nif}}</td>
-                <td>{{empleado.nombre}}</td>
-                <td>{{empleado.apellidos}}</td>
-            </tr>
+    <h2 class='titular'>MIS DATOS PERSONALES</h2>
+
+    <table>
+        <tr>
+            <th>NIF</th>
+            <th>Nombre</th>
+            <th>Apellidos</th>
+        </tr>
+        <tr>
+            <td>{{empleado.nif}}</td>
+            <td>{{empleado.nombre}}</td>
+            <td>{{empleado.apellidos}}</td>
+        </tr>
+
     </table>
-    </div>
-</fieldset>     
-<fieldset>   
-    <div>
-    <h2 class='titulo'>MIS DATOS DE CONTACTO</h2>
-    <table id="datos_empleado">
-            <tr>
-                <th>Email</th>
-                <th>Telefono</th>
-            </tr>
-            <tr>
-                <td>{{empleado.email}}</td>
-                <td>{{empleado.telefono}}</td>
-            </tr>
-            <tr>
-                <th>Direccion</th>
-                <th>Localidad</th>
-                <th>Codigo Postal</th>
-                <th>Provincia</th>
-            </tr>
-            <tr>
-                <td>{{empleado.direccion}}</td>
-                <td>{{empleado.localidad}}</td>
-                <td>{{empleado.cod_postal}}</td>
-                <td>{{empleado.provincia}}</td>
-            </tr>
+    <h2 class='titular'>MIS DATOS DE CONTACTO</h2>
+    <table>
+        <tr>
+            <th>Email</th>
+            <th>Telefono</th>
+        </tr>
+        <tr>
+            <td>{{empleado.email}}</td>
+            <td>{{empleado.telefono}}</td>
+        </tr>
+        <tr>
+            <th>Direccion</th>
+            <th>Localidad</th>
+            <th>Codigo Postal</th>
+            <th>Provincia</th>
+        </tr>
+        <tr>
+            <td>{{empleado.direccion}}</td>
+            <td>{{empleado.localidad}}</td>
+            <td>{{empleado.cod_postal}}</td>
+            <td>{{empleado.provincia}}</td>
+        </tr>
 
-
-        </table>
-    </div>
-</fieldset>
-<fieldset>   
-    <div>
-    <h2 class='titulo'>OTROS DATOS</h2>
-    <table id="datos_empleado">
-            <tr>
-                <th> Tipo de Cuenta</th>
-                <th>Fecha Creación de la Cuenta</th>
-                <th>Estado de la Cuenta</th>
-            </tr>
-            <tr>
-                <td>{{empleado.tipo_cuenta}}</td>
-                <td>{{empleado.creado_fecha}}</td>
-                <td>{{empleado.estado_cuenta}}</td>
-            </tr>
-
-
-        </table>
-    </div>
-</fieldset>
-
-<fieldset>
-    <div>
-
-        <!--   el botón "Cerrar Sesion" da la orden de borrar datos de sesión y elimina cookie-->
-
-        <button type="submit" name="editar_datos" method="POST">Editar Datos</button>
-
-        <button type="submit" name="cambiar_contrasena" method="POST">Cambiar Contrasena</button>
-
-        <button type="submit" name="guardar_cambios" method="POST">Guardar Cambios</button>
-
-  
+    </table>
+    <h2 class='titular'>OTROS DATOS</h2>
+    <table>
+        <tr>
+            <th>Tipo de Cuenta</th>
+            <th>Fecha Creación de la Cuenta</th>
+            <th>Estado de la Cuenta</th>
+        </tr>
+        <tr>
+            <td>{{empleado.tipo_cuenta}}</td>
+            <td>{{empleado.creado_fecha}}</td>
+            <td>{{empleado.estado_cuenta}}</td>
+        </tr>
 
 
 
-    </fieldset>
+    </table>
 
-    </div>
+<button type="submit" name="editar_datos" method="POST">Editar Datos</button>
+
+<button type="submit" name="cambiar_contrasena" method="POST">Cambiar Contrasena</button>
+
+<button type="submit" name="guardar_cambios" method="POST">Guardar Cambios</button>
+
+<button class="critical" type="submit" name="eliminar_cuenta" method="POST">Eliminar Mi Cuenta</button>
+
+
+
 </form>
+
 
 
 

@@ -7,13 +7,12 @@
 {% block content %}	
 				
 
-			<!-- Mostramos una lista de los artículos-->
-			Detalles Producto ID: {{producto.id_prod}}
-			<img width="400" height="400" src="imagenes/{{producto.nombre}}.jpg"/> 
-				<h2>{{producto.nombre}}</h2>
-				<h2>PRECIO: {{producto.precio}}€ / Kilo</h2>
-				<h2>STOCK DISPONIBLE: {{producto.stock}} Kilo(s)</h2>
-				<h3>DESCRIPCION: {{producto.descripcion}}</h3>
+			<h2>{{producto.nombre}} - ID Producto: {{producto.id_prod}}</h2> 
+			<img width="400" height="400" src="imagenes/{{producto.nombre}}.jpg"/> 			
+			<h2>PRECIO: {{producto.precio}}€ / Kilo</h2>
+			<h2>STOCK DISPONIBLE: {{producto.stock}} </h2>
+			<h2>{{texto_stock}} </h2>
+			<h3>DESCRIPCION: {{producto.descripcion}}</h3>
 
 
 				<form action="index.php/mercancia" method="POST">

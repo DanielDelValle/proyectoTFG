@@ -52,14 +52,9 @@ $(document).ready(function(){
             <!-- Mostramos una lista de los artículos-->
 			{% for producto in productos %}
 			<li>
-                    <h2>ID PRODUCTO: {{producto.id_prod}}</h2>
-                    <img class= "imagen" src="imagenes/{{producto.nombre}}.jpg"/>
-                    
-                    <h2>{{producto.nombre}}</h2>
-  
-					<a href="http://localhost/proyecto/tienda/index.php/detalle_producto?id={{producto.id_prod}}">Detalle</a>
-					<br>
-					<br>
+                <a href="http://localhost/proyecto/tienda/index.php/detalle_producto?id={{producto.id_prod}}"><h2>{{producto.nombre}}</h2></a>
+                    <img width="400" height="400" src="imagenes/{{producto.nombre}}.jpg"/>                   
+
             </li>
 			{% endfor %}
         </ul>

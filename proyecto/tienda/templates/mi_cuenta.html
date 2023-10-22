@@ -6,28 +6,24 @@
 
 
 {% block content %}	
-        <h3 class='titulo'>Bienvenido {{cliente.nombre}}</h3>
+        <h2 class='titular'>Bienvenido {{cliente.nombre}}</h2>
 
-        <div>
             <form method="POST"  action="" autocomplete>
 
 
                 <nav>
                     <!-- Menú de navegación -->
-                    <div>
-                        <ul class="menu">
+                        <ul>
                     
                                 <li><a href="index.php/mis_datos">Mis Datos</a></li>    
-                                <li><a href="index.php/mis_pedidos" >Mis Pedidos</a></li>        
-                                
+                                <li><a href="index.php/mis_pedidos" >Mis Pedidos</a></li>                          
                                 
                         </ul>        
-                    </div>
                 </nav>    
                 
                 <!--  el botón "Cerrar Sesion" da la orden de borrar datos de sesión y elimina cookie-->
-                </fieldset>
+               
             </form>
-        </div>
+
 
 {% endblock %}	

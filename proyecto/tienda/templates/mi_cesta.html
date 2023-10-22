@@ -4,12 +4,13 @@
 <link rel="stylesheet" type="text/css" href="css/base.css">
 {% endblock %}
 
-{% block content %}		
+{% block content %}	
+<h2 class='titular'>Cesta de {{cliente.nombre}}</h2>	
 
 <form method="POST"  action="" autocomplete>
 
-    <h3 class='titulo'>CESTA DE {{cliente.nombre}}</h3>
-    <table id ='cesta' >
+
+    <table>
         <th></th>
         <th>Nombre</th>
         <th>Id_Producto</th>
@@ -27,10 +28,10 @@
     </table>
     <table>
 
-          <tr><td><h2>Total Productos: {{total_prods}}</h2></td></tr>
-          <tr><td><h2>Total Peso mercancias: {{total_kg}} Kilo(s)</h2></td></tr>
-          <tr><td><h2>Total Precio mercancias: {{total_precio}} €</h2></td></tr>    
-          <tr><td><h2>Total pedido(mercancía + envío): PENDIENTE</h2></td></tr>  
+          <tr><td><h3>Total Productos: {{total_prods}}</h3></td></tr>
+          <tr><td><h3>Total Peso mercancias: {{total_kg}} Kilo(s)</h3></td></tr>
+          <tr><td><h3>Total Precio mercancias: {{total_precio}} €</h3></td></tr>    
+          <tr><td><h3>Total pedido(mercancía + envío): PENDIENTE</h3></td></tr>  
     </table>
   
                     <button type="submit" name="borrar_producto" method="POST">Borrar Producto</button>
