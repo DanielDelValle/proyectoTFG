@@ -5,34 +5,28 @@
 {% endblock %}
 
 
-{% block content %}	
-        <h3 class='titulo'>BIENVENIDO {{empleado.nombre}}</h3>
-
-        <div>
-            <form method="POST"  action="" autocomplete>
+{% block content %}
+<h2 class='titulo'>Bienvenido {{empleado.nombre}}</h2>
 
 
-                <nav>
-                    <!-- Menú de navegación -->
-                    <div>
-                        <ul class="menu">
-                    
-                                <li><a href="index.php/detalle_empleado">Mis Datos</a></li>    
-                                <li><a href="index.php/control_pedidos" >Pedidos</a></li>   
-                                <li><a href="index.php/control_stock" >Stock</a></li>
-                                <li><a href="index.php/control_cuentas" >Cuentas</a></li>                                      
-                                <li><a href="index.php/alta_empleado" >Alta Empleado</a></li>     
- 
-                                
-                                
-                        </ul>        
-                    </div>
-                </nav>    
-                
-                <!--  el botón "Cerrar Sesion" da la orden de borrar datos de sesión y elimina cookie-->
+<form method="POST" action="" autocomplete>
 
-                </fieldset>
-            </form>
-        </div>
+    <nav>
+        <!-- Menú de navegación -->
 
-{% endblock %}	
+        <ul class="menu">
+
+            <li><a href="index.php/detalle_empleado">Mis Datos</a></li>
+            <li><a href="index.php/control_pedidos">Pedidos</a></li>
+            <li><a href="index.php/control_stock">Stock</a></li>
+            <li><a href="index.php/control_cuentas">Cuentas</a></li>
+            <li><a href="index.php/alta_empleado">Alta Empleado</a></li>
+        </ul>
+
+    </nav>
+
+    </fieldset>
+</form>
+
+
+{% endblock %}

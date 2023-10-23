@@ -1,38 +1,28 @@
 {% extends "base_empl.html" %}
 
 {% block stylesheets %}
-<link rel="stylesheet" type="text/css" href="css/tarea7.css">
+<link rel="stylesheet" type="text/css" href="css/base_empl.css">
 {% endblock %}
 
 
-{% block content %}	
-        <h3 class='titulo'>BIENVENIDO {{empleado.nombre}}</h3>
-
-        <div>
-            <form method="POST"  action="" autocomplete>
+{% block content %}
+<h2 class='titulo'>Bienvenido {{empleado.nombre}}</h2>
 
 
-                <nav>
-                    <!-- Menú de navegación -->
-                    <div>
-                        <ul class="menu">
-                    
-                                <li><a href="index.php/mis_datos">Mis Datos</a></li>
-                                <li><a href="index.php/control_pedidos" >Pedidos</a></li>   
-                                <li><a href="index.php/control_stock" >Control de Stock</a></li>   
-                                     
- 
-                                
-                                
-                        </ul>        
-                    </div>
-                </nav>    
-                
-                <!--  el botón "Cerrar Sesion" da la orden de borrar datos de sesión y elimina cookie-->
+    <form method="POST" action="" autocomplete>
 
-                    <button type="submit" name="cerrar_sesion" method="POST">Cerrar Sesion</button>
-                </fieldset>
-            </form>
-        </div>
+        <nav>
+            <ul class="menu">
 
-{% endblock %}	
+                <li><a href="index.php/detalle_empleado">Mis Datos</a></li>
+                <li><a href="index.php/control_pedidos">Pedidos</a></li>
+                <li><a href="index.php/control_stock">Control de Stock</a></li>
+
+            </ul>
+        </nav>
+
+        </fieldset>
+    </form>
+
+
+{% endblock %}

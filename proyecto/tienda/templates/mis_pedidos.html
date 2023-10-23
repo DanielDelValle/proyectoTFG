@@ -46,7 +46,7 @@
 
     </fieldset>
     <fieldset class="opcion_radio">
-        <input type="radio" name="filtro" class="radio" value='todos'/>
+        <input type="radio" name="filtro" class="radio" value='todos' />
         <label for="filtro">Todos</label>
         <input type="radio" name="filtro" class="radio" value='activos'>
         <label for="filtro">Activos</label>
@@ -58,54 +58,53 @@
         <label for="filtro">Pendientes de Envío</label>
         <input type="radio" name="filtro" class="radio" value='por_devolver'><br>
         <label for="filtro">Pendientes de Devolución</label>
-        
     </fieldset>
     <br><button type="submit" name="buscar" method="POST">Buscar</button>
     <fieldset>
         <legend>Pedidos</legend>
-            <table>
-                <th></th>
-                <th>Id Pedido</th>
-                <th>Total Peso</th>
-                <th>Total Precio</th>
-                <th>Forma Pago</th>
-                <th>Estado Pago</th>
-                <th>Estado Pedido</th>
-                <th>Fecha Creado</th>
-                <th>Fecha Pago</th>
-                <th>Fecha Envío</th>
-                <th>Fecha Recibido</th>
-                <th>Fecha Cancelación</th>
-                <th>Notas</th>
-                {% for key, pedido in pedidosArray %}
-                <tr>
-                    <td><input {{activo}} type="checkbox" name="pedido_select[]" class="checkbox"
-                            value={{pedido.id_pedido}}></td>
-                    <td><a
-                            href="http://localhost/proyecto/tienda/index.php/detalle_pedido?id_pedido={{pedido.id_pedido}}">&nbsp;{{pedido.id_pedido}}</a>
-                    </td>
-                    <td>{{pedido.total_kg}} Kilo(s)</td>
-                    <td>{{pedido.total_precio}} €</td>
-                    <td>{{pedido.forma_pago}} </td>
-                    <td>{{pedido.estado_pago}} </td>
-                    <td>{{pedido.estado_pedido}} </td>
-                    <td>{{pedido.creado_fecha}} </td>
-                    <td>{{pedido.pagado_fecha}} </td>
-                    <td>{{pedido.enviado_fecha}} </td>
-                    <td>{{pedido.entregado_fecha}} </td>
-                    <td>{{pedido.cancelado_fecha}} </td>
-                    <td>{{pedido.notas}} </td>
+        <table>
+            <th></th>
+            <th>Id Pedido</th>
+            <th>Total Peso</th>
+            <th>Total Precio</th>
+            <th>Forma Pago</th>
+            <th>Estado Pago</th>
+            <th>Estado Pedido</th>
+            <th>Fecha Creado</th>
+            <th>Fecha Pago</th>
+            <th>Fecha Envío</th>
+            <th>Fecha Recibido</th>
+            <th>Fecha Cancelación</th>
+            <th>Notas</th>
+            {% for key, pedido in pedidosArray %}
+            <tr>
+                <td><input {{activo}} type="checkbox" name="pedido_select[]" class="checkbox"
+                        value={{pedido.id_pedido}}></td>
+                <td><a
+                        href="http://localhost/proyecto/tienda/index.php/detalle_pedido?id_pedido={{pedido.id_pedido}}">&nbsp;{{pedido.id_pedido}}</a>
+                </td>
+                <td>{{pedido.total_kg}} Kilo(s)</td>
+                <td>{{pedido.total_precio}} €</td>
+                <td>{{pedido.forma_pago}} </td>
+                <td>{{pedido.estado_pago}} </td>
+                <td>{{pedido.estado_pedido}} </td>
+                <td>{{pedido.creado_fecha}} </td>
+                <td>{{pedido.pagado_fecha}} </td>
+                <td>{{pedido.enviado_fecha}} </td>
+                <td>{{pedido.entregado_fecha}} </td>
+                <td>{{pedido.cancelado_fecha}} </td>
+                <td>{{pedido.notas}} </td>
 
-                </tr>
-                {% endfor %}
-            </table>
-        </fieldset>
+            </tr>
+            {% endfor %}
+        </table>
+    </fieldset>
 
-        <button type="submit" name="marcar_recibido" method="POST">Marcar Recibido</button>
+    <button type="submit" name="marcar_recibido" method="POST">Marcar Recibido</button>
 
-        <button class="critical" type="submit" name="cancelar_pedido" method="POST">Cancelar Pedido</button>
+    <button class="critical" type="submit" name="cancelar_pedido" method="POST">Cancelar Pedido</button>
 
-        <button type="submit" name="borrar_cancelados" method="POST">Borrar Cancelados</button>
+    <button type="submit" name="borrar_cancelados" method="POST">Borrar Cancelados</button>
 
 
 

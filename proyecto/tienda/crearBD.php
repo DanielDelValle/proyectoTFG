@@ -126,7 +126,7 @@
             $sql5 = "INSERT INTO producto (nombre, precio, stock, descripcion)
                         VALUES('Naranja de Zumo', 2.50, 30.0, 'Naranjas de zumo valencianas'), 
                         ('Naranja de Mesa', 2.00, 20.0, 'Naranjas de mesa'), 
-                        ('Fresón de Palos', 5.50, 20.0, 'Caja de 2Kg de fresón de Palos de la Frontera'),
+                        ('Fresón de Palos', 5.50, 20.0, 'Fresón de Palos de la Frontera'),
                         ('Plátano de Canarias', 2.19, 50.5, 'El auténtico plátano de Canarias'),
                         ('Aguacate Nacional', 4.50, 30.0, 'Aguacate cultivado en la Axarquía (España)'),
                         ('Limón', 1.99, 20.0, 'Limón nacional procedente de cultivo sostenible'),

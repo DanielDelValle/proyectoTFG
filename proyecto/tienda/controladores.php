@@ -252,7 +252,8 @@ function controlador_mis_datos()
     $logged = isset($_SESSION['usuario']) ? "cerrar_sesion" : "iniciar_sesion";
     $logged_legible = isset($_SESSION['usuario']) ? "Cerrar Sesión" : "Iniciar Sesión";
     $total_prods = isset($_SESSION['cesta']) ? count($_SESSION['cesta']) : 0;
-
+    $cesta = checkCesta();
+    $total_prods = $_SESSION['total_prods'];
     if (isset($_POST["volver_cuenta"])) exit(header("location:mi_cuenta"));
     if (isset($_POST["mis_pedidos"])) exit(header("location:mis_pedidos"));
 
@@ -264,7 +265,7 @@ function controlador_mis_datos()
    
     global $twig;
     $template = $twig->load('mis_datos.html');
-	echo $template->render(array ('URI'=>$URI, 'usuario' =>$usuario, 'cliente'=> $cliente, 'logged'=>$logged, 'logged_legible'=>$logged_legible));
+	echo $template->render(array ('URI'=>$URI, 'usuario' =>$usuario, 'cliente'=> $cliente, 'logged'=>$logged, 'logged_legible'=>$logged_legible, 'total_prods'=>$total_prods));
 
 }
 
@@ -1126,7 +1127,7 @@ function controlador_crear_cuenta()
     $lista_users = lista_users();
     $lista_emails = array_column(lista_users(), 'email'); //extraigo solo el dato "email" de array multidimensional (todos los emails registrados)
     $dominio_empleado = 'frutasdelvalle.com';
-
+    $total_prods ='';
     $validaciones = array('val_nif'=> '', 'val_nom'=> '', 'val_ape'=>'', 'val_tel'=>'', 'val_email_existe'=>'', 'val_email'=>'', 'val_email_hack'=>'', 
                         'val_dir'=>'','val_loc'=>'','val_postal'=>'', 'val_prov'=>'','val_contrasena'=>'');  
     $datos = [];

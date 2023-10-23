@@ -1,75 +1,78 @@
 <!-- base.html  -->
 <!doctype html>
 <html lang="es">
- 
+
 <head>
 
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <base href="http://localhost/proyecto/tienda/" />  <!-- Establezco url "base" de la que parten de forma relativa el resto, simplificando las redirecciones-->
-  <!--  <link rel="stylesheet" type="text/css" href="css/base.css">-->
+    <base href="http://localhost/proyecto/tienda/" />
+    <!-- Establezco url "base" de la que parten de forma relativa el resto, simplificando las redirecciones-->
+    <!--  <link rel="stylesheet" type="text/css" href="css/base.css">-->
     {% block stylesheets %}
-  
+
     {% endblock %}
 
     {% block script %}
 
     {% endblock %}
-    
-    {% block migas_pan %}
-    <p>Estás en: <u><b>{{URI}}</b> </u> </p>
-    {% endblock %}
+
 
 </head>
 
-    <body>
-		<header class="banner"></header>
-        
-        {% block toolbar %}      
-        <nav>
-            <!-- Menú de navegación -->
-			<div>
-                <ul class="sidemenu">
-            
-                        <li><a href="index.php">Nuestos Productos</a></li>    
-                        <li><a href="index.php/mi_cuenta" >Mi Cuenta</a></li>        
-                        <li><a href="index.php/mi_cesta" >Mi Cesta ( {{total_prods}} )</a></li>        
-                        <li><a href="index.php/contacto">Contacto</a></li>  
-                        <li><a href="index.php/{{logged}}">{{logged_legible}}</a></li>
-                        
-                        
-                </ul>        
-            </div>
-        </nav>    
-        {% endblock %}
-        
-        <!-- En este bloque se cargará el contenido -->
-        <div>  
-        {% block busqueda %}
-    
-        {% endblock %}
-        </div>
-        <div>  
-        {% block mensaje %}
-        <p class='mensaje'>{{mensaje}}</p><br>
-        {% endblock %}
-        </div>
+<body>
+    <header class="banner"></header>
 
-		<div>
-        {% block content %}
+    {% block migas_pan %}
+    <p id='migas_pan'>Estás en:&nbsp&nbsp<u> {{URI}} </u> </p>
+    {% endblock %}
 
-        {% endblock %}
-        </div>
+
+    {% block toolbar %}
+    <nav>
+        <!-- Menú de navegación -->
+
+        <ul class="sidemenu">
+
+            <li><a href="index.php">Nuestos Productos</a></li>
+            <li><a href="index.php/mi_cuenta">Mi Cuenta</a></li>
+            <li><a href="index.php/mi_cesta">Mi Cesta ( {{total_prods}} )</a></li>
+            <li><a href="index.php/contacto">Contacto</a></li>
+            <li><a href="index.php/{{logged}}">{{logged_legible}}</a></li>
+
+
+        </ul>
+
+    </nav>
+    {% endblock %}
+
+    <!-- En este bloque se cargará el contenido -->
+
+    {% block busqueda %}
+
+    {% endblock %}
+
+
+    {% block mensaje %}
+    <p class='mensaje'>{{mensaje}}</p><br>
+    {% endblock %}
 
 
 
-        <footer>
-            <!-- Contenido del footer -->
-            2023 Daniel del Valle Gonzalez Proyecto Fin de FP
-        </footer>
+    {% block content %}
 
-    </body>
+    {% endblock %}
+
+
+
+
+    <footer>
+        <!-- Contenido del footer -->
+        2023 Daniel del Valle Gonzalez - Proyecto Fin de FP
+    </footer>
+
+</body>
 
 
 </html>

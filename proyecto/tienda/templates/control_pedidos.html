@@ -6,6 +6,11 @@
 
 {% block content %}
 
+{% set marcar_pagado = '' %} 
+{% if empleado.tipo_cuenta =='almacén' %}    
+	{% set marcar_pagado = 'disabled' %}   
+{% endif %}
+
 <form method="POST" action="" autocomplete accept-charset="UTF-8">
 
     <fieldset>
@@ -48,18 +53,25 @@
         <label for="notas">Notas</label>
 
     </fieldset>
-    <div>
-        <span><input type="radio" name="filtro" class="radio" value='todos' />Todos</span>
-        <span><input type="radio" name="filtro" class="radio" value='activos'>Activos</span>
-        <span><input type="radio" name="filtro" class="radio" value='cancelados'>Cancelados</span>
-        <span><input type="radio" name="filtro" class="radio" value='por_pagar'>Pendientes de Pago</span>
-        <span><input type="radio" name="filtro" class="radio" value='por_enviar'>Pendientes de Envío</span>
-        <span><input type="radio" name="filtro" class="radio" value='por_devolver'>Pendientes de Devolución</span><br>
-        <button type="submit" name="buscar" method="POST">Buscar</button>
-    </div>
+    <fieldset class="opcion_radio">
+        <input type="radio" name="filtro" class="radio" value='todos' />
+        <label for="filtro">Todos</label>
+        <input type="radio" name="filtro" class="radio" value='activos'>
+        <label for="filtro">Activos</label>
+        <input type="radio" name="filtro" class="radio" value='cancelados'>
+        <label for="filtro">Cancelados</label>
+        <input type="radio" name="filtro" class="radio" value='por_pagar'>
+        <label for="filtro">Pendientes de Pago</label>
+        <input type="radio" name="filtro" class="radio" value='por_enviar'>
+        <label for="filtro">Pendientes de Envío</label>
+        <input type="radio" name="filtro" class="radio" value='por_devolver'><br>
+        <label for="filtro">Pendientes de Devolución</label>
+    </fieldset>
+    <br>
+    <button type="submit" name="buscar" method="POST">Buscar</button>
     <fieldset>
         <legend>Pedidos</legend>
-        <table id='datos_cliente'>
+        <table>
             <th></th>
             <th>Id Pedido</th>
             <th>Nif Cliente</th>
@@ -99,20 +111,18 @@
             {% endfor %}
         </table>
     </fieldset>
-    <div>
-        <button class='critical_green' type="submit" name="marcar_pagado" method="POST">Marcar Pagado</button>
 
-        <button type="submit" name="marcar_enviado" method="POST">Marcar Enviado</button>
+    <button class='critical_green' type="submit" name="marcar_pagado" method="POST">Marcar Pagado</button>
 
-        <button type="submit" name="marcar_entregado" method="POST">Marcar Entregado</button>
+    <button type="submit" name="marcar_enviado" method="POST">Marcar Enviado</button>
 
-        <button class='critical' type="submit" name="mercancia_devuelta" method="POST">Mercancia Devuelta</button>
+    <button type="submit" name="marcar_entregado" method="POST">Marcar Entregado</button>
 
-        <button class='critical' type="submit" name="cancelar_pedido" method="POST">Cancelar Pedido</button>
+    <button class='critical' type="submit" name="mercancia_devuelta" method="POST">Mercancia Devuelta</button>
 
-        <button type="submit" name="borrar_cancelados" method="POST">Borrar Cancelados</button>
+    <button class='critical' type="submit" name="cancelar_pedido" method="POST">Cancelar Pedido</button>
 
-    </div>
+    <button type="submit" name="borrar_cancelados" method="POST">Borrar Cancelados</button>
 </form>
 
 

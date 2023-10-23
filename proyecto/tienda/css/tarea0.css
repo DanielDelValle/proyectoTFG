@@ -151,6 +151,4 @@ input:hover{
 input:focus{
 	outline: 2px dashed darkorange;
 
-input[type=url]{
-
 }

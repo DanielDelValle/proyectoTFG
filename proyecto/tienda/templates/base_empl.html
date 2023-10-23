@@ -1,75 +1,75 @@
 <!-- base.html  -->
 <!doctype html>
 <html lang="es">
- 
+
 <head>
 
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <base href="http://localhost/proyecto/tienda/" />  <!-- Establezco url "base" de la que parten de forma relativa el resto, simplificando las redirecciones-->
-  <!--  <link rel="stylesheet" type="text/css" href="css/base_empl.css">-->
+    <base href="http://localhost/proyecto/tienda/" />
+    <!-- Establezco url "base" de la que parten de forma relativa el resto, simplificando las redirecciones-->
+    <!--  <link rel="stylesheet" type="text/css" href="css/base_empl.css">-->
     {% block stylesheets %}
-  
+
     {% endblock %}
 
     {% block script %}
 
     {% endblock %}
-    
-    {% block migas_pan %}
-    <p>Estás en: <u><b>{{URI}}</b> </u> </p>
-    {% endblock %}
+
 
 </head>
 
-    <body>
-		<header class="banner"></header>
-        
-        {% block toolbar %}      
-        <nav>
-            <!-- Menú de navegación -->
-			<div>
-                <ul class="sidemenu">
-            
-                        <li><a href="index.php/mercancia">Mercancía</a></li>     
-                        <li><a href="index.php/home_{{empleado.tipo_cuenta}}"> Home {{empleado.tipo_cuenta}}</a></li>
-                        <li><a href="index.php/cerrar_sesion">Cerrar Sesión</a></li>
-                                               
-                </ul>        
-            </div>
-        </nav>    
-        {% endblock %}
-        <div>  
+<body>
+    <header class="banner"></header>
 
-        
-        <!-- En este bloque se cargará el contenido -->
-        <div>  
-        {% block busqueda %}
-    
-        {% endblock %}
-        </div>
-        <div>  
-        {% block mensaje %}
-        <p class='mensaje'>{{mensaje}}</p><br>
-        {% endblock %}
-        </div>
-		<div>
-        {% block content %}
+    {% block migas_pan %}
+    <p id='migas_pan'>Estás en:&nbsp&nbsp<u> {{URI}} </u> </p>
+    {% endblock %}
+
+    {% block toolbar %}
+    <nav>
+        <!-- Menú de navegación -->
+
+        <ul class="sidemenu">
+
+            <li><a href="index.php/mercancia">Mercancía</a></li>
+            <li><a href="index.php/home_{{empleado.tipo_cuenta}}"> Home {{empleado.tipo_cuenta}}</a></li>
+            <li><a href="index.php/cerrar_sesion">Cerrar Sesión</a></li>
+
+        </ul>
+
+    </nav>
+    {% endblock %}
 
 
 
-        {% endblock %}
-        </div>
+    <!-- En este bloque se cargará el contenido -->
+
+    {% block busqueda %}
+
+    {% endblock %}
+
+    {% block mensaje %}
+    <p class='mensaje'>{{mensaje}}</p><br>
+    {% endblock %}
+
+    {% block content %}
 
 
 
-        <footer>
-            <!-- Contenido del footer -->
-            2023 Daniel del Valle Gonzalez Proyecto Fin de FP
-        </footer>
+    {% endblock %}
 
-    </body>
+
+
+
+    <footer>
+        <!-- Contenido del footer -->
+        2023 Daniel del Valle Gonzalez - Proyecto Fin de FP
+    </footer>
+
+</body>
 
 
 </html>
