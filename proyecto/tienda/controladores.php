@@ -215,7 +215,7 @@ function controlador_detalle_cliente($nif)
     if ($base !== 'base_empl') exit(header('location:iniciar_sesion'));
 
     $empleado = datos_empleado($usuario); 
-    if ($empleado->tipo_cuenta != 'admon'){exit(header('location:pedidos'));}  // sólo el administrativo puede ver los datos del cliente
+    if ($empleado->tipo_cuenta != 'admon'){exit(header('location:control_pedidos'));}  // sólo el administrativo puede ver los datos del cliente
     $cliente = datos_cliente_nif($nif);
     $email = $cliente->email;    
     $total_pedidos = count(pedidos_usuario($nif)); //EL NÚM DE ELEMENTOS DEL ARRAY DE LOS PEDIDOS DEL USUARIO
@@ -279,7 +279,6 @@ function controlador_mi_cesta()
     $cesta = checkCesta();
     $_SESSION['cesta'] = $cesta;
     $mensaje = "";
-
 	global $twig;
 
 
@@ -309,9 +308,27 @@ function total_kg(){
     foreach((($_SESSION['cesta'])) as $i) {
         $total_kg += $i['cantidad'];
         }$_SESSION['total_kg'] = $total_kg;
-    return (int)$total_kg;
+    return $total_kg;
     }
 $total_kg = total_kg();
+
+function coste_envio($total_kg){
+    if($total_kg == 0) $coste_envio=0;
+    elseif (($total_kg > 0) && ($total_kg <= 10)) {    //SI EL PESO ES IGUAL O MENOR DE 10KG, EL ENVIO CUESTA 7.5€. DE 10 EN ADELANTE, CUESTA 15€
+        $coste_envio = 7.5; 
+    }else $coste_envio = 15; 
+    $_SESSION['coste_envio'] = $coste_envio;
+    return $coste_envio;
+}
+$coste_envio = coste_envio($total_kg);
+
+function total_pedido(){
+    $total_pedido = $_SESSION['total_precio'] + $_SESSION['coste_envio'];
+    $_SESSION['total_pedido'] = $total_pedido;
+    return $total_pedido;
+}
+$total_pedido = total_pedido();
+
 
 function borrar_producto(){
     $mensaje="";
@@ -354,9 +371,9 @@ function vaciar_cesta(){
         $mensaje = vaciar_cesta();
     }
 
-
+    var_dump($_SESSION['total_pedido']);
     $template = $twig->load('mi_cesta.html');
-	echo $template->render(array ('URI'=>$URI, 'usuario' =>$usuario, 'cliente'=> $cliente, 'cesta' => $cesta, 'mensaje' =>$mensaje, 'logged'=>$logged, 'logged_legible'=>$logged_legible, 'total_kg'=> $total_kg, 'total_prods'=> $total_prods, 'total_precio' => $total_precio));
+	echo $template->render(array ('URI'=>$URI, 'usuario' =>$usuario, 'cliente'=> $cliente, 'cesta' => $cesta, 'mensaje' =>$mensaje, 'logged'=>$logged, 'logged_legible'=>$logged_legible, 'total_kg'=> $total_kg, 'total_prods'=> $total_prods,  'coste_envio'=>$coste_envio, 'total_precio' =>$total_precio, 'total_pedido'=>$total_pedido ));
 
 
 }
@@ -383,7 +400,7 @@ function controlador_datos_envio(){
 
     global $twig;
     $template = $twig->load('datos_envio.html');
-	echo $template->render(array ('URI'=>$URI, 'usuario' =>$usuario, 'cliente'=>$cliente, 'mensaje' => $mensaje, 'logged'=>$logged, 'logged_legible'=>$logged_legible, 'total_prods'=>$total_prods, 'total_kg'=> $total_kg, 'total_precio'=>$total_precio));
+	echo $template->render(array ('URI'=>$URI, 'usuario' =>$usuario, 'cliente'=>$cliente, 'mensaje' => $mensaje, 'logged'=>$logged, 'logged_legible'=>$logged_legible));
 
 }
 
@@ -398,9 +415,12 @@ function controlador_confirmar_pedido(){
     $total_precio = $_SESSION['total_precio'];
     $total_kg = $_SESSION['total_kg'];
     $total_prods = $_SESSION['total_prods'];
+    $coste_envio = $_SESSION['coste_envio'];
+    $total_pedido = $_SESSION['total_pedido'];
     $mensaje="";
     $id_pedido= isset($_POST['id_pedido'])? $_POST['id_pedido']: '';
     $forma_pago='';
+    
     
     
     if(isset($_POST["volver_cesta"])){
@@ -434,17 +454,17 @@ function controlador_confirmar_pedido(){
             $notas = utf8_encode($_POST['notas']);
            
             //si ambas operaciones insert retornan TRUE
-            if(insert_pedido($id_pedido, $cliente->nif, $total_precio, $total_kg, $forma_pago, $creado_fecha, $notas) && (insert_productos_pedido($id_pedido, $cesta))){
+            if(insert_pedido($id_pedido, $cliente->nif, $total_precio, $total_kg, $coste_envio, $forma_pago, $creado_fecha, $notas) && (insert_productos_pedido($id_pedido, $cesta))){
              //  $email = pruebaMail($cliente->email, $cliente->nombre);
             exit(header("location:pedido_realizado?id_pedido=$id_pedido"));
           } else $mensaje= "Error al grabar el pedido - por favor, repita el proceso de nuevo";
               
 
         } else $mensaje = "Por favor, seleccione una forma de pago";
-
+        var_dump('forma_pago');
     global $twig;
     $template = $twig->load('confirmar_pedido.html');
-    echo $template->render(array ('URI'=>$URI, 'usuario' =>$usuario, 'cliente'=>$cliente, 'cesta' => $cesta, 'logged'=>$logged, 'logged_legible'=>$logged_legible, 'mensaje' => $mensaje, 'id_pedido'=>$id_pedido, 'total_prods'=>$total_prods, 'total_kg'=> $total_kg, 'total_precio'=>$total_precio));
+    echo $template->render(array ('URI'=>$URI, 'usuario' =>$usuario, 'cliente'=>$cliente, 'cesta' => $cesta, 'logged'=>$logged, 'logged_legible'=>$logged_legible, 'mensaje' => $mensaje, 'id_pedido'=>$id_pedido, 'total_prods'=>$total_prods, 'total_kg'=> $total_kg, 'total_precio'=>$total_precio, 'coste_envio'=>$coste_envio, 'total_pedido'=>$total_pedido));
 }
 
 
@@ -461,6 +481,8 @@ function controlador_pedido_realizado($id_pedido){
     $total_precio = $_SESSION['total_precio'];
     $total_kg = $_SESSION['total_kg'];
     $total_prods = $_SESSION['total_prods'];
+    $coste_envio = $_SESSION['coste_envio'];
+    $total_pedido = $_SESSION['total_pedido'];
     unset($_SESSION['cesta']);      //eliminamos cesta pues ya se ha transformado en pedido  // COMENTAR CUANDO NECESITE HACER PRUEBAS
     if(isset($_POST["ver_productos"])){
         exit(header("location:index.php"));
@@ -480,7 +502,7 @@ function controlador_pedido_realizado($id_pedido){
 
     global $twig;
     $template = $twig->load('pedido_realizado.html');
-	echo $template->render(array ('URI'=>$URI, 'usuario' =>$usuario, 'nif'=>$nif,'cliente'=>$cliente, 'cesta' => $cesta, 'id_pedido'=> $id_pedido, 'logged'=>$logged, 'logged_legible'=>$logged_legible, 'mensaje' => $mensaje, 'total_prods'=>$total_prods, 'total_precio'=>$total_precio, 'total_kg'=>$total_kg));
+	echo $template->render(array ('URI'=>$URI, 'usuario' =>$usuario, 'nif'=>$nif,'cliente'=>$cliente, 'cesta' => $cesta, 'id_pedido'=> $id_pedido, 'logged'=>$logged, 'logged_legible'=>$logged_legible, 'mensaje' => $mensaje, 'total_prods'=>$total_prods, 'total_precio'=>$total_precio, 'total_kg'=>$total_kg, 'coste_envio'=>$coste_envio, 'total_pedido'=>$total_pedido));
 
 }
 
@@ -657,6 +679,8 @@ function controlador_pedidos()
     $base = checkDomain($usuario);   
     if ($base != 'base_empl') exit(header('location:iniciar_sesion'));
     $empleado = datos_empleado($usuario);
+    $funcion_admon = '';
+    if ($empleado->tipo_cuenta =='almacen')$funcion_admon = 'hidden';
     $lista_pedidos = lista_pedidos();
     $checked = isset($_POST['pedido_select']) ? $_POST['pedido_select'] : [];
     $id_pedido = isset($_POST['id_pedido']) ? htmlentities($_POST['id_pedido'],  ENT_QUOTES, "UTF-8") : '';
@@ -682,8 +706,9 @@ function controlador_pedidos()
     $id_albaran = '';
     $rectif = '';
     $nif_cliente = '';
-    $filtro = isset($_POST['filtro']) ? $_POST['cancelado_fecha'] : 0;
     //PENDIENTE QUE EL FILTRO DE PEDIDOS FUNCIONE
+    $filtro = isset($_POST['filtro']) ? $_POST['cancelado_fecha'] : 0;
+
  
 
     if (isset($_POST["buscar"])){ 
@@ -883,7 +908,7 @@ function controlador_pedidos()
     
     global $twig;
     $template = $twig->load('control_pedidos.html');
-	echo $template->render(array ('URI'=>$URI, 'usuario'=>$usuario, 'empleado'=>$empleado, 'factura'=>$id_factura, 'id_albaran'=>$id_albaran, 'rectif'=>$rectif, 'where'=>$where, 'id_pedido'=>$id_pedido, 'nif'=> $nif, 'total_precio'=>$total_precio, 'total_kg'=>$total_kg, 
+	echo $template->render(array ('URI'=>$URI, 'usuario'=>$usuario, 'empleado'=>$empleado, 'funcion_admon'=>$funcion_admon,'factura'=>$id_factura, 'id_albaran'=>$id_albaran, 'rectif'=>$rectif, 'where'=>$where, 'id_pedido'=>$id_pedido, 'nif'=> $nif, 'total_precio'=>$total_precio, 'total_kg'=>$total_kg, 
     'forma_pago'=>$forma_pago,'estado_pago'=>$estado_pago, 'estado_pedido'=>$estado_pedido, 'creado_fecha'=>$creado_fecha, 'pagado_fecha'=>$pagado_fecha, 'enviado_fecha'=>$enviado_fecha,
     'entregado_fecha'=>$entregado_fecha, 'cancelado_fecha'=>$cancelado_fecha, 'notas'=>$notas,'lista_pedidos'=>$lista_pedidos, 'mensaje'=>$mensaje));
 

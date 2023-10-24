@@ -6,10 +6,6 @@
 
 {% block content %}
 
-{% set marcar_pagado = '' %} 
-{% if empleado.tipo_cuenta =='almacén' %}    
-	{% set marcar_pagado = 'disabled' %}   
-{% endif %}
 
 <form method="POST" action="" autocomplete accept-charset="UTF-8">
 
@@ -74,7 +70,7 @@
         <table>
             <th></th>
             <th>Id Pedido</th>
-            <th>Nif Cliente</th>
+            <th {{funcion_admon}}>Nif Cliente</th>
             <th>Total Peso</th>
             <th>Total Precio</th>
             <th>Forma Pago</th>
@@ -93,7 +89,7 @@
                 <td><a href="http://localhost/proyecto/tienda/index.php/detalle_pedido?id_pedido={{pedido.id_pedido}}">{{pedido.id_pedido}}
                 </td>
                 <!--Con el input hidden recojo el valor del DNI para poder añadirlo a las facturas generadas al marcarlo como pagado-->
-                <td><input type="hidden" name="nif_cliente" value={{pedido.nif_cliente}}><a
+                <td {{funcion_admon}} ><input type="hidden" name="nif_cliente" value={{pedido.nif_cliente}}><a
                         href="http://localhost/proyecto/tienda/index.php/detalle_cliente?nif={{pedido.nif_cliente}}">{{pedido.nif_cliente}}</a>
                 </td>
                 <td>{{pedido.total_kg}} Kilo(s)</td>
@@ -112,17 +108,17 @@
         </table>
     </fieldset>
 
-    <button class='critical_green' type="submit" name="marcar_pagado" method="POST">Marcar Pagado</button>
+    <button class='critical_green' type="submit" {{funcion_admon}} name="marcar_pagado" method="POST">Marcar Pagado</button>
 
     <button type="submit" name="marcar_enviado" method="POST">Marcar Enviado</button>
 
-    <button type="submit" name="marcar_entregado" method="POST">Marcar Entregado</button>
+    <button type="submit" name="marcar_entregado" {{funcion_admon}} method="POST">Marcar Entregado</button>
 
     <button class='critical' type="submit" name="mercancia_devuelta" method="POST">Mercancia Devuelta</button>
 
-    <button class='critical' type="submit" name="cancelar_pedido" method="POST">Cancelar Pedido</button>
+    <button class='critical' type="submit" {{funcion_admon}} name="cancelar_pedido" method="POST">Cancelar Pedido</button>
 
-    <button type="submit" name="borrar_cancelados" method="POST">Borrar Cancelados</button>
+    <button type="submit" name="borrar_cancelados" {{funcion_admon}} method="POST">Borrar Cancelados</button>
 </form>
 
 

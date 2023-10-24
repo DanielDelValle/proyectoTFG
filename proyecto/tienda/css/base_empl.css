@@ -49,7 +49,6 @@ h3 {
 table {
 	color: #b68b2e;;
 	font-size: 20px;
-	font-weight: bold;
 	width:auto;
 	margin-left: auto;
 	margin-right: auto;
@@ -68,7 +67,6 @@ table {
 th{
 	color: #8b4513;
 	font-size: 23px;
-	font-weight: bold;
 	margin-bottom:1.5em;
 	border: double 3px ;
 	border-collapse: collapse;
@@ -87,6 +85,32 @@ tr {
 	border: 3px double rgb(124, 71, 71);
 
 }*/
+
+#cesta {
+	border:3px double ;
+	padding:3em;
+	border-radius:3em;
+
+}
+
+#cesta th{
+	float:left;
+	border:none;
+	margin-right:5em;
+	font-size: 1.2em;
+	font-weight:normal;
+}
+
+#cesta td{
+	float: right;
+	border:none;
+}
+
+
+#cesta tr {
+	border:none;
+}
+
 
 
 .formulario th, .formulario tr,  .formulario td {
@@ -115,10 +139,13 @@ tr {
     border:0;
     height:1.4em;
 	width:1.4em;
+	margin-right:0;
+	margin-left:1.2em;
 }
 
 .opcion_radio{
 display:inline-flex;
+
 
 }
 
@@ -149,7 +176,6 @@ li a{
 a {
 	color: #8b6b13;
 	font-size: 1.3em;
-	font-weight: bold;
 
 }
 
@@ -170,6 +196,7 @@ form{
 	margin-left: auto;
 	margin-right: auto;
 	position:relative;
+
 	
 	}
 	
@@ -195,7 +222,7 @@ legend {
 
 label {
 	justify-content: center;
-	padding-left:0.5em;
+	margin-bottom:1em;
 	font-size: 1.2em;
 	font-weight: bold;
 	display: flex;
@@ -228,9 +255,9 @@ input {
 	height:2.5em;
 	width:14em;
 	background-color: #dee6b054;
-	margin-left: 1em;
+	margin-right: 1.1em;
 	margin-bottom:1.4em;
-	font-weight: bold;
+	/*font-weight: bold;*/
 	
 }
 
@@ -249,6 +276,8 @@ select{
 	height:2.8em;
 	width:14em;
 	text-align:center;
+	margin-right: 1.1em;
+	margin-bottom:1.4em;
 	background-color: #b0e0e6;
 }
 
@@ -299,9 +328,10 @@ span{
 	margin-top:0; 
 }
 
+
 #migas_pan{
 	font-weight: bold;
-	font-size:1.2em;
+	font-size:1.1em;
 	display:flex;
 	align-self: left;
 	margin-left:2em;

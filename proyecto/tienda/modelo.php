@@ -645,14 +645,14 @@ function insert_productos_pedido($id_pedido, $cesta){
 }
 
 
-function insert_pedido($id_pedido, $nif, $total_precio, $total_kg, $forma_pago, $creado_fecha, $notas){
+function insert_pedido($id_pedido, $nif, $total_precio, $total_kg, $coste_envio, $forma_pago, $creado_fecha, $notas){
 
 	$pdo = conexion();
 	if($pdo){
 		try{
 			$notas=utf8_decode($notas);//para evitar errores con los caracteres especiales (ñ, Ñ, vocales acentuadas, etcf)
-			$sql = "INSERT INTO pedido(id_pedido, nif_cliente, total_precio, total_kg, forma_pago, creado_fecha, enviado_fecha, entregado_fecha, notas) 
-					VALUES ('".$id_pedido."', '".$nif."', '".$total_precio."', '".$total_kg."', '".$forma_pago."', '".$creado_fecha."', NULL, NULL, '".$notas."');";
+			$sql = "INSERT INTO pedido(id_pedido, nif_cliente, total_precio, total_kg, coste_envio, forma_pago, creado_fecha, enviado_fecha, entregado_fecha, notas) 
+					VALUES ('".$id_pedido."', '".$nif."', '".$total_precio."', '".$total_kg."', '".$coste_envio."', '".$forma_pago."', '".$creado_fecha."', NULL, NULL, '".$notas."');";
 
 
 		$insertarPedido = $pdo->query($sql);
@@ -706,7 +706,7 @@ function pedidos_usuario($nif){
 		if($pdo){
 			try{
 			//La búsqueda se realiza en mysql con el comando LIKE
-			$sql = "SELECT p.id_pedido, p.nif_cliente, p.total_precio, p.total_kg, p.forma_pago, p.estado_pago, p.estado_pedido, p.creado_fecha, p.enviado_fecha, p.entregado_fecha, p.cancelado_fecha, p.notas
+			$sql = "SELECT p.id_pedido, p.nif_cliente, p.total_precio, p.total_kg, p.coste_envio, p.forma_pago, p.estado_pago, p.estado_pedido, p.creado_fecha, p.enviado_fecha, p.entregado_fecha, p.cancelado_fecha, p.notas
 					FROM pedido p JOIN cliente c ON p.nif_cliente = c.nif
 					WHERE p.nif_cliente LIKE '%$nif%'
 					ORDER BY p.creado_fecha DESC";
@@ -734,14 +734,14 @@ function pedidos_usuario($nif){
 	return $pedidosArray;
 	}
 
-	function pedidos_busqueda($where, $id_pedido, $nif, $total_precio, $total_kg, $forma_pago, $estado_pago, $estado_pedido, 
+	function pedidos_busqueda($where, $id_pedido, $nif, $total_precio, $total_kg, $coste_envio, $forma_pago, $estado_pago, $estado_pedido, 
 								$creado_fecha, $pagado_fecha, $enviado_fecha, $entregado_fecha, $cancelado_fecha, $notas){ 
 
 		$pdo = conexion();
 		if($pdo){
 			try{
 
-				$sql = "SELECT id_pedido, nif_cliente, total_precio, total_kg, forma_pago, estado_pago, estado_pedido, creado_fecha, pagado_fecha, enviado_fecha, entregado_fecha, cancelado_fecha, notas
+				$sql = "SELECT id_pedido, nif_cliente, total_precio, total_kg, coste_envio, forma_pago, estado_pago, estado_pedido, creado_fecha, pagado_fecha, enviado_fecha, entregado_fecha, cancelado_fecha, notas
 					FROM pedido $where 
 					ORDER BY creado_fecha DESC";
 

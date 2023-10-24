@@ -20,12 +20,12 @@
 			<th>Nombre</th>
 			<th>Cantidad</th>
 			<!-- pedido.0.id_pedido para acceder a la id_pedido del primer producto ( está en todos pero sólo la necesito 1 vez)-->
-			<h2>Detalles Pedido Nº: &nbsp&nbsp {{pedido.0.id_pedido}}</h2>   
+			<h2>Detalles Pedido Nº: &nbsp&nbsp <p>{{pedido.0.id_pedido}}</p></h2>
 			{% for key, producto in pedido %}
 			<tr>	
 			<td>	{{producto.id_prod}}</td>	
 			<td><a href="http://localhost/proyecto/tienda/index.php/detalle_{{detalle}}?id={{producto.id_prod}}">{{producto.nombre}}</a></td>	
-			<td>	{{producto.cantidad}} Kilo(s)</td>	
+			<td>	{{producto.cantidad}} Kg</td>	
 			</tr>
 			{% endfor %}
 		</table><!-- al estar fuera del bucle for, simplemente selecciono el primer y unico valor del array, osea el de indice "0"-->

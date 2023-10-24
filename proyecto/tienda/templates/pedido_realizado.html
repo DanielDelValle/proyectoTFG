@@ -10,59 +10,82 @@
 
 <form method="POST" action="" autocomplete>
 
-    <h3 class='titulo'>Pedido Nº &nbsp&nbsp <u><a href="http://localhost/proyecto/tienda/index.php/detalle_pedido?id_pedido={{id_pedido}}">{{id_pedido}}</a></u>  &nbsp&nbsp realizado con éxito</h3>
-    <div>
-        <table id="datos_cliente">
-            <tr>
-                <th>NIF</th>
+    <h3>Pedido Nº &nbsp&nbsp <a href="http://localhost/proyecto/tienda/index.php/detalle_pedido?id_pedido={{id_pedido}}">{{id_pedido}}</a>  &nbsp&nbsp realizado con éxito</h3>
+ 
+        <fieldset>
+            <legend>DATOS DE ENTREGA</legend>
+            <table>
+                <tr>
+                    <th>NIF</th>
+                    <th>Nombre</th>
+                    <th>Apellidos</th>
+                </tr>
+                <tr>
+                    <td>{{cliente.nif}}</td>
+                    <td>{{cliente.nombre}}</td>
+                    <td>{{cliente.apellidos}}</td>
+                </tr>
+                <tr>
+                    <th>Email</th>
+                    <th>Telefono</th>
+                </tr>
+                <tr>
+                    <td>{{cliente.email}}</td>
+                    <td>{{cliente.telefono}}</td>
+                </tr>
+                <tr>
+                    <th>Direccion</th>
+                    <th>Localidad</th>
+                    <th>Codigo Postal</th>
+                    <th>Provincia</th>
+                </tr>
+                <tr>
+                    <td>{{cliente.direccion}}</td>
+                    <td>{{cliente.localidad}}</td>
+                    <td>{{cliente.cod_postal}}</td>
+                    <td>{{cliente.provincia}}</td>
+                </tr>
+            </table>
+            
+        </fieldset>
+        <fieldset>
+            <legend>DESGLOSE DE COSTES</legend>
+            <table>
                 <th>Nombre</th>
-                <th>Apellidos</th>
-            </tr>
-            <tr>
-                <td>{{cliente.nif}}</td>
-                <td>{{cliente.nombre}}</td>
-                <td>{{cliente.apellidos}}</td>
-            </tr>
-            <tr>
-                <th>Telefono</th>
-                <th>Email</th>
-            </tr>
-            <tr>
-                <td>{{cliente.email}}</td>
-                <td>{{cliente.telefono}}</td>
-            </tr>
-            <tr>
-                <th>Direccion</th>
-                <th>Localidad</th>
-                <th>Codigo Postal</th>
-                <th>Provincia</th>
-            </tr>
-            <tr>
-                <td>{{cliente.direccion}}</td>
-                <td>{{cliente.localidad}}</td>
-                <td>{{cliente.cod_postal}}</td>
-                <td>{{cliente.provincia}}</td>
-            </tr>
-
-
-        </table>
-    </div>
-
-
-    <table id ='cesta' >
-        <th>Nombre</th><th>Id_Producto</th><th>Cantidad</th><th>€/Kg</th><th>Subtotal</th>
+                <th>Id_Producto</th>
+                <th>Cantidad</th>
+                <th>€/Kg</th>
+                <th>Subtotal</th>
     
-            {% for key, producto in cesta %}
-            <tr>
-            <td>
-            {{producto.nombre}}</td><td>{{producto.id}}</td><td>{{producto.cantidad}}</td><td>{{producto.precio}}</td><td>{{ producto.cantidad * producto.precio}}€</td>
-            </tr>    
-            {% endfor %}       
-              <tr><td><h2>Total Productos: {{total_prods}}</h2></td></tr>
-              <tr><td><h2>Total Peso mercancias: {{total_kg}} Kilo(s)</h2></td></tr>
-              <tr><td><h2>Total Precio mercancias: {{total_precio}} €</h2></td></tr>    
-              <tr><td><h2>Total pedido(mercancía + envío): PENDIENTE</h2></td></tr>  
-    </table>
+                {% for key, producto in cesta %}
+                <tr>
+                    <td>{{producto.nombre}}</td>
+                    <td>{{producto.id_prod}}</td>
+                    <td>{{producto.cantidad}}</td>
+                    <td>{{producto.precio}}</td>
+                    <td>{{ producto.cantidad * producto.precio}}€</td>
+                </tr>
+                {% endfor %}
+    
+                <tr>
+                    <th>Total Peso mercancias:</th>
+                    <td>{{total_kg}} Kg</td>
+                </tr>
+                <tr>
+                    <th>Total Precio mercancias: </th>
+                    <td>{{total_precio}} €</td>
+                </tr>
+                <tr>
+                    <th>Coste de Envío: </th>
+                    <td>{{coste_envio}} €</td>
+                </tr>
+                <tr>
+                    <th><u>TOTAL A PAGAR:</u></th>
+                    <td>{{total_pedido}}€</td>
+                </tr>
+            </table>
+        </fieldset>
+        
 
             <!--   el botón "Cerrar Sesion" da la orden de borrar datos de sesión y elimina cookie-->
 

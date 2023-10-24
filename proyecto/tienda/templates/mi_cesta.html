@@ -5,32 +5,33 @@
 {% endblock %}
 
 {% block content %}	
-<h2 class='titular'>Cesta de {{cliente.nombre}}</h2>	
+<h2>Cesta de {{cliente.nombre}}</h2>	
 
 <form method="POST"  action="" autocomplete>
 
 
-    <table class='formulario'>
+    <table>
         <th></th>
         <th>Nombre</th>
-        <th>Cantidad</th>
+        <th>ID Producto</th>
+        <th>Cantidad(Kg)</th>
         <th>€/Kg</th>
         <th>Subtotal</th>
 
         {% for key, producto in cesta %}
         <tr>
         <td><input type="checkbox" name="productos_borrar[]" class="checkbox"  value= {{producto.id_prod}}></td>
-            <td><a href="http://localhost/proyecto/tienda/index.php/detalle_producto?id={{producto.id_prod}}">{{producto.nombre}}</a></td><td>{{producto.cantidad}}</td><td>{{producto.precio}}</td><td>{{ producto.cantidad * producto.precio}}€</td>
+            <td><a href="http://localhost/proyecto/tienda/index.php/detalle_producto?id={{producto.id_prod}}">{{producto.nombre}}</a><td>{{producto.id_prod}}</td><td>{{producto.cantidad}}</td><td>{{producto.precio}}</td><td>{{ producto.cantidad * producto.precio}}€</td>
         </tr>
     
         {% endfor %}  
     </table>
-    <table id='cesta'>
+    <table id='tabla2'>
 
-          <tr><th>Total Peso mercancias:</th> <td>{{total_kg}} Kilo(s)</td></tr>
+          <tr><th>Total Peso mercancias:</th> <td>{{total_kg}} Kg</td></tr>
           <tr><th>Total Precio mercancias: </th><td>{{total_precio}} €</td></tr>    
-          <tr><th>Costes de Envío: </th><td>{{costes_envio}} €</td></tr>    
-          <tr><th><u>TOTAL A PAGAR:</u></th><td>{{total_precio + costes_envio}}€</td></tr>  
+          <tr><th>Coste de Envío: </th><td>{{coste_envio}} €</td></tr>    
+          <tr><th><u>TOTAL A PAGAR:</u></th><td>{{total_pedido}}€</td></tr>  
     </table >
   
                     <button type="submit" name="borrar_producto" method="POST">Borrar Producto</button>
