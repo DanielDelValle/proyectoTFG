@@ -86,9 +86,10 @@
             $sql3="CREATE TABLE IF NOT EXISTS pedido (
                 id_pedido VARCHAR(30) PRIMARY KEY,        
                 nif_cliente VARCHAR(9),
-                total_precio DECIMAL(7),
-                total_kg DECIMAL (5),
-                coste_envio (DECIMAL (5),
+                total_mercancia DECIMAL(6),
+                total_kg DECIMAL (6),
+                coste_envio DECIMAL (6),
+                total_pedido DECIMAL (6),
                 forma_pago ENUM ('bizum', 'transferencia bancaria'),
                 estado_pago ENUM ('pendiente', 'pagado', 'devolución') DEFAULT 'pendiente',
                 estado_pedido ENUM ('procesando', 'enviado', 'entregado', 'devuelto', 'cancelado') DEFAULT 'procesando',
@@ -155,8 +156,8 @@
 
 
             //Insertar datos iniciales tabla PEDIDO (los 2 valores NULL corresponden a los datetime que quiero esten vacios por defecto)
-            $sql7= "INSERT INTO pedido (id_pedido, nif_cliente, total_precio, total_kg, coste_envio, forma_pago, creado_fecha, pagado_fecha, enviado_fecha, entregado_fecha, notas)
-                    VALUES('ajkp', '53665340S', 355.68, 3.0, 15.0, 'bizum', '2023-08-21 02:55:00' ,NULL, NULL, NULL, 'Entregar antes del lunes 30/07'                        
+            $sql7= "INSERT INTO pedido (id_pedido, nif_cliente, total_mercancia, total_kg, coste_envio, total_pedido, forma_pago, creado_fecha, pagado_fecha, enviado_fecha, entregado_fecha, notas)
+                    VALUES('ajkp', '53665340S', 40.00, 3.0, 15.0, 55.00, 'bizum', '2023-08-21 02:55:00' ,NULL, NULL, NULL, 'Entregar antes del lunes 30/07'                        
             
             )";
 
@@ -195,6 +196,10 @@
                 cancelado_fecha DATETIME DEFAULT NULL
    
                 )";
+            if($bd->query($sql10)){
+                echo "Tabla FACTURACION creada con éxito<br>";
+            }else echo "Error creando tabla FACTURACION";
+
 
         // CLAVES EXTERNAS PARA PODER UNIR TABLAS SEGÚN NECESIDAD
 

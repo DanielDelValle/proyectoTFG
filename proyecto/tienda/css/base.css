@@ -18,7 +18,7 @@ html, body {
 }*/
 
 h1 {
-	font-size: 3em;
+	font-size: 2em;
 	color: #8b4513;
 	font-weight: bold;
 	margin-bottom:2em;
@@ -26,7 +26,7 @@ h1 {
 
 h2 {
 	font-weight: bold;
-	font-size: 2em;
+	font-size: 1.5em;
 	margin-top:1em;
 	color:#aa702e;
 	width:auto;
@@ -37,7 +37,7 @@ h2 {
 }
 
 h3 {
-	font-size: 1.5em;
+	font-size: 1.2em;
 	color:#aa702e;
 	font-weight: bold;
 	margin-bottom:1em;
@@ -58,20 +58,18 @@ table {
 
 th{
 	color: #8b4513;
-	padding-left:0.5em;
-	padding-right:0.5em;
+	padding-left:0.4em;
+	padding-right:0.4em;
 	border:none;
-}
-
-.tabla2 {
-	color: #138b49;
 }
 
 .tabla2 th{
 	float:left;
+	margin-right:4em;
 }
 .tabla2 td{
 	float:right;
+	margin-left:4em;
 
 }
 
@@ -80,6 +78,7 @@ th{
 .checkbox{
 	width: 1.3em; 
 	height: 1.3em; 
+	margin-top:1.5em;
 
 }
 
@@ -206,8 +205,8 @@ input {
 	border-radius: 0.7em;
 	border: 2px solid;
 	border-color: #00806bc9;
-	height:2.5em;
-	width:14em;
+	height:2em;
+	width:12em;
 	background-color: #dee6b054;
 	margin-right: 1.1em;
 	margin-bottom:1.4em;
@@ -240,8 +239,8 @@ select{
 	border-radius:0.7em;
 	border:2px solid;
 	border-color: #00806bc9;
-	height:2.8em;
-	width:14em;
+	height:2.5em;
+	width:12em;
 	text-align:center;
 	margin-right: 1.1em;
 	margin-bottom:1.4em;

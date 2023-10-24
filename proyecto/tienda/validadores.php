@@ -122,7 +122,7 @@ function valid_tel($tel){
 */
 function valid_direccion($cadena) {
     //definimos el patrón
-    $patron = '/^[a-zA-Zá-úÁ-ÚñÑ\s?\d?]+$/';
+    $patron = '/^[a-zA-Zá-úÁ-ÚñÑ0-9\s?]+$/';
 	//$patron = '/^[a-zA-Z]+(\s*[a-zA-Z]*)*[a-zA-Z]+$/';
      
     return (preg_match($patron, $cadena));	

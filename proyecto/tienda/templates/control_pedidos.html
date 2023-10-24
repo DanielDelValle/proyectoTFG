@@ -17,10 +17,10 @@
         <input type="text" name="id_pedido" id="id_pedido" value="{{id_pedido}}"><br>
         <label for="nif">NIF</label>
         <input type="text" name="nif" id="nif" value="{{nif}}">
-        <label for="total_precio">Total Precio</label>
-        <input type="text" name="total_precio" id="total_precio" value="{{total_precio}}"><br>
-        <label for="total_kg">Total Kg</label>
+        <label for="total_kg">Peso</label>
         <input type="text" name="total_kg" id="total_kg" value="{{total_kg}}"><br>
+        <label for="total_pedido">Total Pedido</label>
+        <input type="text" name="total_pedido" id="total_pedido" value="{{total_pedido}}"><br>
         <label for="forma_pago">Forma Pago</label>
         <input type="text" name="forma_pago" id="forma_pago" value="{{forma_pago}}"><br>
         <label for="estado_pago">Estado Pago</label>
@@ -72,7 +72,7 @@
             <th>Id Pedido</th>
             <th {{funcion_admon}}>Nif Cliente</th>
             <th>Total Peso</th>
-            <th>Total Precio</th>
+            <th>Total Pedido</th>
             <th>Forma Pago</th>
             <th>Estado Pago</th>
             <th>Estado Pedido</th>
@@ -93,7 +93,7 @@
                         href="http://localhost/proyecto/tienda/index.php/detalle_cliente?nif={{pedido.nif_cliente}}">{{pedido.nif_cliente}}</a>
                 </td>
                 <td>{{pedido.total_kg}} Kilo(s)</td>
-                <td>{{pedido.total_precio}} €</td>
+                <td>{{pedido.total_pedido}} €</td>
                 <td>{{pedido.forma_pago}} </td>
                 <td>{{pedido.estado_pago}} </td>
                 <td>{{pedido.estado_pedido}} </td>

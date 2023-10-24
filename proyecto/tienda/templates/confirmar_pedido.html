@@ -46,7 +46,7 @@
         </table>
         
     </fieldset>
-    <fieldset>
+    <fieldset class='campo'>
         <legend>DESGLOSE DE COSTES</legend>
         <table>
             <th>Nombre</th>
@@ -64,13 +64,14 @@
                 <td>{{ producto.cantidad * producto.precio}}€</td>
             </tr>
             {% endfor %}
-
+        </table>
+        <table id='tabla2'>
             <tr>
                 <th>Total Peso mercancias:</th>
                 <td>{{total_kg}} Kg</td>
             </tr>
             <tr>
-                <th>Total Precio mercancias: </th>
+                <th>Total coste Mercancias: </th>
                 <td>{{total_precio}} €</td>
             </tr>
             <tr>
@@ -87,10 +88,10 @@
     <fieldset class = 'campo'>
         <legend>FORMA DE PAGO</legend>
         <label for='bizum'>Bizum</label>
-        <input class='radio' type="radio" id='bizum' name="forma_pago" value='bizum' />
+        <input class='radio' type="radio"  name="forma_pago" value='bizum' />
         <label for='transferencia_bancaria'>Transferencia Bancaria</label>
-        <input class='radio' type="radio" id='transferencia_bancaria' name="forma_pago"
-            value='transferencia_bancaria' />
+        <input class='radio' type="radio"  name="forma_pago" value='transferencia bancaria' />
+           
     </fieldset>
     <fieldset class = 'campo'>
         <legend>COMENTARIOS SOBRE SU PEDIDO</legend>

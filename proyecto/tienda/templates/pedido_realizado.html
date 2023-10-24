@@ -48,7 +48,7 @@
             </table>
             
         </fieldset>
-        <fieldset>
+        <fieldset class = 'campo'>
             <legend>DESGLOSE DE COSTES</legend>
             <table>
                 <th>Nombre</th>
@@ -63,10 +63,11 @@
                     <td>{{producto.id_prod}}</td>
                     <td>{{producto.cantidad}}</td>
                     <td>{{producto.precio}}</td>
-                    <td>{{ producto.cantidad * producto.precio}}€</td>
+                    <td>{{producto.cantidad * producto.precio}}€</td>
                 </tr>
                 {% endfor %}
-    
+                </table>
+                <table id = 'tabla2'>
                 <tr>
                     <th>Total Peso mercancias:</th>
                     <td>{{total_kg}} Kg</td>
