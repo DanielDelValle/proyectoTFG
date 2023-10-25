@@ -63,15 +63,13 @@ th{
 	border:none;
 }
 
-.tabla2 {
-	color: #138b49;
-}
-
 .tabla2 th{
 	float:left;
+	margin-right:4em;
 }
 .tabla2 td{
 	float:right;
+	margin-left:4em;
 
 }
 
@@ -123,8 +121,6 @@ li a{
 
 a {
 	color: #8b6b13;
-	font-size: 1.3em;
-
 }
 
 
@@ -207,8 +203,8 @@ input {
 	border-radius: 0.7em;
 	border: 2px solid;
 	border-color: #00806bc9;
-	height:2.5em;
-	width:14em;
+	height:2em;
+	width:12em;
 	background-color: #dee6b054;
 	margin-right: 1.1em;
 	margin-bottom:1.4em;
@@ -241,8 +237,8 @@ select{
 	border-radius:0.7em;
 	border:2px solid;
 	border-color: #00806bc9;
-	height:2.8em;
-	width:14em;
+	height:2.5em;
+	width:12em;
 	text-align:center;
 	margin-right: 1.1em;
 	margin-bottom:1.4em;
@@ -285,8 +281,13 @@ span{
 	border-width: 4px;
 }
 
-.continue{
-	border-color: red;
+.importante{
+	color:red;
+	font-weight:bold;
+	font-size: 1.1em;
+	display:flex;
+	margin-left:30%;
+	text-align: left;
 }
 
 .banner {
@@ -314,6 +315,11 @@ span{
 	
 }
 
+#sugerencias{
+	color: #0080FF;
+	display: inline;
+}
+
 .titular {
 	color:#aa702e;
 	width:auto;
@@ -327,14 +333,6 @@ span{
 	padding-inline-start: 10px;
 
 	}*/
-
-
-
-#sugerencias{
-	color: #0080FF;
-	display: inline;
-}
-
 
 
 /*footer{ 

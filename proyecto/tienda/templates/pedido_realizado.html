@@ -10,8 +10,8 @@
 
 <form method="POST" action="" autocomplete>
 
-    <h3>Pedido Nº &nbsp&nbsp <a href="http://localhost/proyecto/tienda/index.php/detalle_pedido?id_pedido={{id_pedido}}">{{id_pedido}}</a>  &nbsp&nbsp realizado con éxito</h3>
- 
+    <h2>Pedido Nº &nbsp&nbsp <a href="http://localhost/proyecto/tienda/index.php/detalle_pedido?id_pedido={{id_pedido}}">{{id_pedido}}</a>  &nbsp&nbsp realizado con éxito</h2>
+    <h2 class='importante'><b>IMPORTANTE: Por favor, asegúrese de indicar el ID de pedido como concepto del pago</b></h2><br>
         <fieldset>
             <legend>DATOS DE ENTREGA</legend>
             <table>
@@ -81,8 +81,12 @@
                     <td>{{coste_envio}} €</td>
                 </tr>
                 <tr>
+                    <th>Forma de Pago:</th>
+                    <td class='upper'>{{forma_pago}}</td>
+                </tr>
+                <tr>
                     <th><u>TOTAL A PAGAR:</u></th>
-                    <td>{{total_pedido}}€</td>
+                    <td><b>{{total_pedido}}€</b></td>
                 </tr>
             </table>
         </fieldset>

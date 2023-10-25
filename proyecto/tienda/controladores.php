@@ -420,6 +420,7 @@ function controlador_confirmar_pedido(){
     $mensaje="";
     $id_pedido= isset($_POST['id_pedido'])? $_POST['id_pedido']: '';
     $forma_pago=isset($_POST['forma_pago'])? $_POST['forma_pago']: '';
+    $_SESSION['forma_pago'] = $forma_pago;
     
     
     
@@ -433,10 +434,10 @@ function controlador_confirmar_pedido(){
 
     if(isset($_POST['forma_pago'])){
         switch($_POST['forma_pago']){
-            case 'bizum':
+            case "bizum":
                 $forma_pago = 'bizum';
 // cuidado con '' y "" - para SQL conviene usar ''
-            case 'transferencia_bancaria':
+            case "transferencia_bancaria":
                 $forma_pago = 'transferencia bancaria';                 
         }
 
@@ -478,12 +479,13 @@ function controlador_pedido_realizado($id_pedido){
     $logged_legible = isset($_SESSION['usuario']) ? "Cerrar Sesión" : "Iniciar Sesión";
     $id_pedido= $_GET['id_pedido'];
     $nif = $cliente->nif;
-    $mensaje="";
+    $mensaje= '';
+    $total_prods = $_SESSION['total_prods'];
     $total_mercancia = $_SESSION['total_mercancia'];
     $total_kg = $_SESSION['total_kg'];
-    $total_prods = $_SESSION['total_prods'];
     $coste_envio = $_SESSION['coste_envio'];
     $total_pedido = $_SESSION['total_pedido'];
+    $forma_pago = $_SESSION['forma_pago'];
     unset($_SESSION['cesta']);      //eliminamos cesta pues ya se ha transformado en pedido  // COMENTAR CUANDO NECESITE HACER PRUEBAS
     if(isset($_POST["ver_productos"])){
         exit(header("location:index.php"));
@@ -503,7 +505,7 @@ function controlador_pedido_realizado($id_pedido){
 
     global $twig;
     $template = $twig->load('pedido_realizado.html');
-	echo $template->render(array ('URI'=>$URI, 'usuario' =>$usuario, 'nif'=>$nif,'cliente'=>$cliente, 'cesta' => $cesta, 'id_pedido'=> $id_pedido, 'logged'=>$logged, 'logged_legible'=>$logged_legible, 'mensaje' => $mensaje, 'total_prods'=>$total_prods, 'total_mercancia'=>$total_mercancia, 'total_kg'=>$total_kg, 'coste_envio'=>$coste_envio, 'total_pedido'=>$total_pedido));
+	echo $template->render(array ('URI'=>$URI, 'usuario' =>$usuario, 'nif'=>$nif,'cliente'=>$cliente, 'cesta' => $cesta, 'id_pedido'=> $id_pedido, 'logged'=>$logged, 'logged_legible'=>$logged_legible, 'mensaje' => $mensaje, 'total_prods'=>$total_prods, 'total_mercancia'=>$total_mercancia, 'total_kg'=>$total_kg, 'coste_envio'=>$coste_envio, 'total_pedido'=>$total_pedido, 'forma_pago'=>$forma_pago));
 
 }
 
@@ -1193,48 +1195,48 @@ function controlador_crear_cuenta()
         else{  //reviso los posibles errores de 1 en 1, para poder modificar su validacion individualmente (ya que pueden darse varios fallos simultaneos)
             
             if (!val_nif($datos->nif)){
-                $validaciones->val_nif = "Error en NIF - Por favor revise que no ha introducido espacios entre caracteres, o que omitió el cero (0) al inicio";
+                $validaciones->val_nif = "NIF - Por favor revise que no ha introducido espacios entre caracteres, o que omitió el cero (0) al inicio";
             }
     
             if (!es_texto($datos->nombre)){
-                $validaciones->val_nom = "Error en NOMBRE - Sólo puede incluir caracteres del alfabeto";
+                $validaciones->val_nom = "NOMBRE - Sólo puede incluir caracteres del alfabeto";
             }
             if (!es_texto($datos->apellidos)){
-                $validaciones->val_ape="Error en APELLIDOS - Sólo puede incluir caracteres del alfabeto";
+                $validaciones->val_ape="APELLIDOS - Sólo puede incluir caracteres del alfabeto";
             }
             if (!valid_tel($datos->telefono)){ 
-                $validaciones->val_tel ="Error en TELEFONO - Debe tener una longitud de 9 cifras, sin prefijo internacional ni separaciones";
+                $validaciones->val_tel ="TELEFONO - Debe tener una longitud de 9 cifras, sin prefijo internacional ni separaciones";
             }
     
             if (!valid_direccion($datos->direccion)){
-                $validaciones->val_dir="Error en DIRECCION - Sólo puede incluir caracteres del alfabeto y numeros";
+                $validaciones->val_dir="DIRECCION - Sólo puede incluir caracteres del alfabeto y numeros";
             }
             if (!es_texto($datos->localidad)){
-                $validaciones->val_loc="Error en LOCALIDAD - Sólo puede incluir caracteres del alfabeto";
+                $validaciones->val_loc="LOCALIDAD - Sólo puede incluir caracteres del alfabeto";
             }
     
             if (!valid_postal($datos->cod_postal)){
-                $validaciones->val_postal="Error en CÓDIGO POSTAL - Debe tener una longitud de 5 cifras";
+                $validaciones->val_postal="CÓDIGO POSTAL - Debe tener una longitud de 5 cifras";
             }
     
             if (!es_texto($datos->provincia)){
-                $validaciones->val_prov="Error en PROVINCIA - Debe intdroducir una provincia española";
+                $validaciones->val_prov="PROVINCIA - Debe intdroducir una provincia española";
             }
 
             if (!email_existe($datos->email, $lista_emails)){
-                $validaciones->val_email_existe= "Error en EMAIL - El email introducido ya tiene una cuenta registrada";
+                $validaciones->val_email_existe= "EMAIL - El email introducido ya tiene una cuenta registrada";
             }
 
             if (!valid_email($datos->email)){
-                $validaciones->val_email="Error en EMAIL - Debe incluir una dirección de email válida";
+                $validaciones->val_email="EMAIL - Debe incluir una dirección de email válida";
             }
 
             if ($dominio == $dominio_empleado){
-                $validaciones->val_email_hack="Error en EMAIL - Debe incluir una dirección de email válida";;  //NO INDICAMOS QUE SE TRATA DEL DOMINIO EMPLEADO NO AYUDAR AL HACKEO
+                $validaciones->val_email_hack="EMAIL - Debe incluir una dirección de email válida";;  //NO INDICAMOS QUE SE TRATA DEL DOMINIO EMPLEADO NO AYUDAR AL HACKEO
             }
 
             if (!valid_contrasena($datos->contrasena)){
-                $validaciones->val_contrasena ="Error en CONTRASEÑA- Debe tener al menos 8 caracteres, incluyendo mayúsculas, minúsculas, cifras y signos especiales.";
+                $validaciones->val_contrasena ="CONTRASEÑA- Debe tener al menos 8 caracteres, incluyendo mayúsculas, minúsculas, cifras y signos especiales.";
             }
             if($_POST['contrasena'] != $_POST['rep_contrasena']){
                 $validaciones->val_contrasena ="Las CONTRASEÑAS no coinciden - por favor, revíselo";
@@ -1303,44 +1305,44 @@ function controlador_alta_empleado()
         //PENDIENTE VALIDADOR DE NIF
     else{  
         if (!val_nif($datos->nif)){
-            $validaciones->val_nif = "ERROR en NIF - Por favor revise que no contenga espacios y la letra sea correcta";
+            $validaciones->val_nif = "NIF - Por favor revise que no contenga espacios y la letra sea correcta";
         }
 
         if (!es_texto($datos->nombre)){
-            $validaciones->val_nom = "Error en NOMBRE - Sólo puede incluir caracteres del alfabeto";
+            $validaciones->val_nom = "NOMBRE - Sólo puede incluir caracteres del alfabeto";
         }
         if (!es_texto($datos->apellidos)){
-            $validaciones->val_ape="Error en APELLIDOS - Sólo puede incluir caracteres del alfabeto";
+            $validaciones->val_ape="APELLIDOS - Sólo puede incluir caracteres del alfabeto";
         }
         if (!valid_tel($datos->telefono)){ 
-            $validaciones->val_tel ="Error en TELEFONO - Debe tener una longitud de 9 cifras, sin prefijo internacional ni separaciones";
+            $validaciones->val_tel ="TELEFONO - Debe tener una longitud de 9 cifras, sin prefijo internacional ni separaciones";
         }
 
         if (!es_texto($datos->direccion)){
-            $validaciones->val_dir="Error en DIRECCION - Sólo puede incluir caracteres alfanuméricos";
+            $validaciones->val_dir="DIRECCION - Sólo puede incluir caracteres alfanuméricos";
         }
         if (!es_texto($datos->localidad)){
-            $validaciones->val_loc="Error en LOCALIDAD - Sólo puede incluir caracteres del alfabeto";
+            $validaciones->val_loc="LOCALIDAD - Sólo puede incluir caracteres del alfabeto";
         }
 
         if (!valid_postal($datos->cod_postal)){
-            $validaciones->val_postal="Error en CÓDIGO POSTAL - Debe tener una longitud de 5 cifras";
+            $validaciones->val_postal="CÓDIGO POSTAL - Debe tener una longitud de 5 cifras";
         }
 
         if (!es_texto($datos->provincia)){
-            $validaciones->val_prov= "Error en PROVINCIA - Debe seleccionar una provincia española";
+            $validaciones->val_prov= "PROVINCIA - Debe seleccionar una provincia española";
         }
         if (!email_existe($datos->email, $lista_emails)){
-            $validaciones->val_email_existe= "Error en EMAIL - El email introducido ya tiene una cuenta registrada";
+            $validaciones->val_email_existe= "EMAIL - El email introducido ya tiene una cuenta registrada";
         }
 
         if (!valid_email_empleado($datos->email)){
             $datos->email = $dominio_empleado; //por defecto sale indicado el dominio de la empresa, para mayor ayuda
-            $validaciones->val_email_empleado="Error en EMAIL - Debe incluir una dirección de email válida con extension @frutasdelvalle.com";
+            $validaciones->val_email_empleado="EMAIL - Debe incluir una dirección de email válida con extension @frutasdelvalle.com";
         }
 
         if (!valid_contrasena($datos->contrasena)){
-            $validaciones->val_contrasena ="Error en CONTRASEÑA- Debe tener al menos 8 caracteres, incluyendo mayúsculas, minúsculas, cifras y signos especiales.";
+            $validaciones->val_contrasena ="CONTRASEÑA - Debe tener al menos 8 caracteres, incluyendo mayúsculas, minúsculas, cifras y signos especiales.";
         }
         if($_POST['contrasena'] != $_POST['rep_contrasena']){
             $validaciones->val_contrasena ="Las CONTRASEÑAS no coinciden - por favor, revíselo";
@@ -1352,7 +1354,6 @@ function controlador_alta_empleado()
         }
     }
     if(isset($_POST['volver_home'])){  exit(header('location:home_admon'));}
-    echo($_POST['tipo_cuenta']);
     global $twig;
     $template = $twig->load('alta_empleado.html');
     echo $template->render(array ('URI'=>$URI, 'usuario' =>$usuario, 'empleado'=>$empleado, 'validaciones'=>$validaciones, 'datos'=>$datos, 'logged'=>$logged, 'logged_legible'=>$logged_legible, 'mensaje'=>$mensaje));	

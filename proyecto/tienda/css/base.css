@@ -121,8 +121,6 @@ li a{
 
 a {
 	color: #8b6b13;
-	font-size: 1.3em;
-
 }
 
 
@@ -283,9 +281,15 @@ span{
 	border-width: 4px;
 }
 
-.continue{
-	border-color: red;
+.importante{
+	color:red;
+	font-weight:bold;
+	font-size: 1.1em;
+	display:flex;
+	margin-left:30%;
+	text-align: left;
 }
+
 
 .banner {
 	height: 160px;
