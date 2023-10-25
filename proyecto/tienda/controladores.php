@@ -432,27 +432,9 @@ function controlador_confirmar_pedido(){
         exit(header("location:datos_envio"));
     }
 
-    if(isset($_POST['forma_pago'])){
-        switch($_POST['forma_pago']){
-            case "bizum":
-                $forma_pago = 'bizum';
-// cuidado con '' y "" - para SQL conviene usar ''
-            case "transferencia_bancaria":
-                $forma_pago = 'transferencia bancaria';                 
-        }
 
-
-    }
-        if(isset($_POST["confirmar_pedido"])){
-            if(isset($_POST['forma_pago'])){
-                switch($_POST['forma_pago']){
-                    case "bizum":
-                        $forma_pago = 'bizum';
-        // cuidado con '' y "" - para SQL conviene usar ''
-                    case "transferencia_bancaria":
-                        $forma_pago = 'transferencia bancaria';                 
-                }
-       // ($forma_pago !='')){
+        if(isset($_POST["confirmar_pedido"]) && (isset($_POST['forma_pago']))){
+   
 
             $creado_fecha = date('Y-m-d H:i:s'); //hora y fecha actuales
             $fecha = date('dmY_his');
@@ -462,16 +444,16 @@ function controlador_confirmar_pedido(){
 
             $id_pedido = $cliente->cod_postal."-".$cliente->nif."-".$fecha; 
             $notas = utf8_encode($_POST['notas']);
-           
-            //si ambas operaciones insert retornan TRUE
-            if(insert_pedido($id_pedido, $cliente->nif, $total_mercancia, $total_kg, $coste_envio, $total_pedido, $_SESSION['forma_pago'], $creado_fecha, $notas) && (insert_productos_pedido($id_pedido, $cesta))){
+
+                //si ambas operaciones insert retornan TRUE
+  if(insert_pedido($id_pedido, $cliente->nif, $total_mercancia, $total_kg, $coste_envio, $total_pedido, $forma_pago, $creado_fecha, $notas) && (insert_productos_pedido($id_pedido, $cesta))){
              //  $email = pruebaMail($cliente->email, $cliente->nombre);
             exit(header("location:pedido_realizado?id_pedido=$id_pedido"));
           } else $mensaje= "Error al grabar el pedido - por favor, repita el proceso de nuevo";
               
 
         } else $mensaje = "Por favor, seleccione una forma de pago";
-    }
+
 
     global $twig;
     $template = $twig->load('confirmar_pedido.html');
