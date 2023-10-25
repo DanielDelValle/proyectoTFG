@@ -626,8 +626,8 @@ function insert_productos_pedido($id_pedido, $cesta){
 				foreach($cesta as $producto){
 
 					//$sql .= "INSERT INTO pedido_productos (id_pedido, id_prod, cantidad) VALUES ('".$id_pedido."', '".$producto['id_prod']."', '".$producto['cantidad']."');";
-					$sql .= "INSERT INTO productos_pedido (id_pedido, id_prod, nombre, cantidad) 
-					VALUES ('".$id_pedido."', '".$producto['id_prod']."', '".$producto['nombre']."', '".$producto['cantidad']."');";
+					$sql .= "INSERT INTO productos_pedido (id_pedido, id_prod, nombre, cantidad, precio) 
+					VALUES ('".$id_pedido."', '".$producto['id_prod']."', '".$producto['nombre']."', '".$producto['cantidad']."' , '".$producto['precio']."');";
 				}
 				
 			$insertarProductosPedido = $mysqli->multi_query($sql);
@@ -1052,7 +1052,7 @@ return $id_factura;
 }	
 
 
-function factura_creada($id_factura, $id_albaran, $id_pedido, $nif_cliente){
+function facturacion_creada($id_factura, $id_albaran, $id_pedido, $nif_cliente){
 			
 	$resultado = false;
 	$pdo = conexion();
@@ -1089,7 +1089,51 @@ function factura_creada($id_factura, $id_albaran, $id_pedido, $nif_cliente){
 
 }
 
-function factura_cancelada($id_factura, $cancelado_fecha, $rectif){
+function factura_creada($id_factura, $id_pedido, $nif, $nombre, $direccion, $localidad, $cod_postal, $provincia,
+						$total_mercancia, $coste_envio, $base_imponible, $iva, $total_pedido, $forma_pago, $creado_fecha, $contenido){
+			
+	$resultado = false;
+	$pdo = conexion();
+	if($pdo){
+		try{$pdo->beginTransaction();
+
+			$sql = "INSERT INTO factura (id_factura, id_pedido, nif, nombre, direccion, localidad, cod_postal, provincia, total_mercancia, coste_envio, base_imponible,
+											iva, total_pedido, forma_pago, creado_fecha, contenido ) 
+					VALUES ('".$id_factura."', '".$id_pedido."', '".$nif."', '".$nombre."', '".$direccion."', '".$localidad."', '".$cod_postal."', '".$provincia."',
+							'".$total_mercancia."', '".$coste_envio."', '".$base_imponible."', '".$iva."', '".$total_pedido."', '".$forma_pago."', 
+							'".$creado_fecha."', '".$contenido."'			
+				
+				);";
+
+
+			$crearFactura = $pdo->prepare($sql);
+
+			if(($crearFactura->execute())>0){ //si la consulta ha retornado algún resultado ---          
+				$pdo->commit();
+				$resultado = $crearFactura->rowCount(); // --- entonces retorno el número de autores afectados (borrados)
+				$pdo = null;
+			}
+
+			else {
+				$resultado=false;
+				echo "No pudo crearse la factura para el pedido $id_factura - por favor, intentelo de nuevo";
+				$pdo->rollback();		
+				}	
+			}	
+	catch(PDOException $e){
+		echo 'Excepción: ', $e->getMessage();
+		$resultado = false;				
+		}
+	$pdo = null;
+	return $resultado;
+
+	}else{  return null; die("error en la conexión a la BD");} //en caso de no haber conexión, directamente se para el proceso
+
+
+}
+
+
+function factura_cancelada($id_factura, $rectif){
 			
 	$resultado = false;
 	$pdo = conexion();
@@ -1097,7 +1141,7 @@ function factura_cancelada($id_factura, $cancelado_fecha, $rectif){
 		try{$pdo->beginTransaction();
 
 			$sql = "UPDATE facturacion 
-					SET estado_fact = 'anulada', cancelado_fecha = '$cancelado_fecha', fact_rectif = '$rectif'
+					SET estado_fact = 'anulada', fact_rectif = '$rectif'
 					WHERE id_factura = '$id_factura'" ;
 
 
@@ -1128,7 +1172,30 @@ function factura_cancelada($id_factura, $cancelado_fecha, $rectif){
 
 }
 
-function detalle_pedido($id_pedido)
+
+function datos_pedido($id_pedido)
+{	
+		$pdo = conexion();
+		if($pdo){
+			try{
+			$sql = "SELECT * FROM pedido
+					WHERE id_pedido ='$id_pedido'";	
+
+			$resultado = $pdo->query($sql);
+			$datosPedido = $resultado->fetchObject();
+			$pdo = null;
+		}	
+		
+		catch(PDOException $e){
+			echo 'Excepción: ', $e->getMessage();
+			return null;
+			}
+		}  
+		
+	return $datosPedido;
+		
+}
+function items_pedido($id_pedido)
 {	
 		$pdo = conexion();
 		if($pdo){
@@ -1151,17 +1218,17 @@ function detalle_pedido($id_pedido)
 						
 }
 
-function detalle_factura($id_factura)
+function datos_factura($id_factura)
 {	
 		$pdo = conexion();
 		if($pdo){
 			try{
 			//La búsqueda se realiza en mysql con el comando LIKE
-			$sql = "SELECT * FROM facturacion 
+			$sql = "SELECT * FROM factura 
 					WHERE id_factura ='$id_factura'";		
 
 			$resultado = $pdo->query($sql);
-			$detallePedidoArray = $resultado->fetchAll(PDO::FETCH_OBJ);
+			$datosFactura = $resultado->fetchObject();
 			$pdo = null;
 		}	
 		
@@ -1171,7 +1238,33 @@ function detalle_factura($id_factura)
 			}
 		}  
 		
-	return $detallePedidoArray;
+	return $datosFactura;
+						
+}
+
+
+
+function datos_facturacion($id_factura)
+{	
+		$pdo = conexion();
+		if($pdo){
+			try{
+			//La búsqueda se realiza en mysql con el comando LIKE
+			$sql = "SELECT * FROM facturacion 
+					WHERE id_factura ='$id_factura'";		
+
+			$resultado = $pdo->query($sql);
+			$datosFacturacion = $resultado->fetchObject();
+			$pdo = null;
+		}	
+		
+		catch(PDOException $e){
+			echo 'Excepción: ', $e->getMessage();
+			return null;
+			}
+		}  
+		
+	return $datosFacturacion;
 						
 }
 

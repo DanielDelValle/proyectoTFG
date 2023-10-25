@@ -18,10 +18,10 @@ html, body {
 }*/
 
 h1 {
-	font-size: 2em;
+	font-size: 1.8em;
 	color: #8b4513;
 	font-weight: bold;
-	margin-bottom:2em;
+	margin-bottom:1.7em;
 }
 
 h2 {
@@ -72,6 +72,7 @@ th{
 	margin-left:4em;
 
 }
+
 
 
 
@@ -338,7 +339,31 @@ span{
 	color: #0080FF;
 	display: inline;
 }
+.imprimible *{
+	color:black;
+	
+}
+		
+/*.izq{
 
+}
+
+.izq td{
+
+
+}
+
+		
+.dcha{
+
+}
+
+.dcha td{
+
+}*/
+
+/*.membrete{
+}*/
 
 
 /*footer{ 

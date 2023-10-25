@@ -101,7 +101,7 @@ function controlador_stock()
     $usuario = checkSession();
     $base = checkDomain($usuario);   
     $empleado = datos_empleado($usuario);
-    if ($empleado->tipo_cuenta != 'admon'){exit(header('location:iniciar_sesion'));} //solo ADMON puede manipular cuentas de usuario
+  //  if ($empleado->tipo_cuenta != 'admon'){exit(header('location:iniciar_sesion'));} //solo ADMON puede manipular cuentas de usuario
     $logged = isset($_SESSION['usuario']) ? "cerrar_sesion" : "iniciar_sesion";
     $logged_legible = isset($_SESSION['usuario']) ? "Cerrar Sesión" : "Iniciar Sesión";
     $productos = lista_productos();
@@ -189,21 +189,30 @@ function controlador_detalle_mercancia($id)
     
 }
 
-function controlador_detalle_factura($id_factura)
+function controlador_detalle_factura($id_factura)////////////este se lllama detallle_ffactura
 {   $URI = get_URI();    
     //Con las siguientes 2 lineas restrinjo el acceso a partes solo destinadas a empleados
     $usuario = checkSession();
     $base = checkDomain($usuario);   
     $empleado = datos_empleado($usuario);
+    $cliente = datos_cliente($usuario);
+    $logged = isset($_SESSION['usuario']) ? "cerrar_sesion" : "iniciar_sesion";
+    $logged_legible = isset($_SESSION['usuario']) ? "Cerrar Sesión" : "Iniciar Sesión";
 
-    // Petición al modelo para que retorne la lista de productos de la BD
-    $factura = detalle_factura($id_factura);  //transformo el objeto que devuelve el modelo en array asociativo
+    $facturacion = datos_facturacion($id_factura);  
+    $factura = datos_factura($id_factura);
+    $pedido = items_pedido($facturacion->id_pedido);
+    $contenido= unserialize ($factura->contenido);  //DESHAGO EL "SERIALIZE" QUE PERMITIA GUARDAR EL ARRAY EN LA BBDD, PARA PODER INTERPRETARLO
     $mensaje = "";
 
-    
+ //   var_dump($facturacion);
+  //  var_dump($factura);
+  //  var_dump($pedido);
+ //   var_dump($cliente);
+
     global $twig;
-    $template = $twig->load('detalle_factura.html');  
-	echo $template->render(array ('URI'=>$URI, 'empleado'=>$empleado, 'usuario'=>$usuario,'base'=>$base, 'factura' => $factura, 'mensaje'=> $mensaje));
+    $template = $twig->load('detalle_factura.html');  ////////////este se lllama detallle_ffactura
+	echo $template->render(array ('URI'=>$URI, 'empleado'=>$empleado, 'usuario'=>$usuario,'base'=>$base, 'facturacion' => $facturacion, 'factura'=>$factura, 'pedido'=>$pedido, 'contenido'=>$contenido, 'mensaje'=> $mensaje, 'logged'=>$logged, 'logged_legible'=>$logged_legible));
     
 }
 
@@ -371,7 +380,6 @@ function vaciar_cesta(){
         $mensaje = vaciar_cesta();
     }
 
-    var_dump($_SESSION['total_pedido']);
     $template = $twig->load('mi_cesta.html');
 	echo $template->render(array ('URI'=>$URI, 'usuario' =>$usuario, 'cliente'=> $cliente, 'cesta' => $cesta, 'mensaje' =>$mensaje, 'logged'=>$logged, 'logged_legible'=>$logged_legible, 'total_kg'=> $total_kg, 'total_prods'=> $total_prods,  'coste_envio'=>$coste_envio, 'total_mercancia' =>$total_mercancia, 'total_pedido'=>$total_pedido ));
 
@@ -420,7 +428,7 @@ function controlador_confirmar_pedido(){
     $mensaje="";
     $id_pedido= isset($_POST['id_pedido'])? $_POST['id_pedido']: '';
     $forma_pago=isset($_POST['forma_pago'])? $_POST['forma_pago']: '';
-
+    $_SESSION['forma_pago'] = $forma_pago;
     
     
     
@@ -510,13 +518,17 @@ function controlador_detalle_pedido($id_pedido)
     // Petición al modelo para que retorne la lista de productos de la BD
     $_SESSION['cesta'] = checkCesta();
     $total_prods = (isset($_SESSION['usuario']) && isset($_SESSION['cesta'])) ? count($_SESSION['cesta']) : 0;
-    $pedido = detalle_pedido($id_pedido);  //transformo el objeto que devuelve el modelo en array de objetos
-    $facturas = facturacion_pedido($id_pedido);
+    $pedido = items_pedido($id_pedido);  //transformo el objeto que devuelve el modelo en array de objetos
+    $facturacion = facturacion_pedido($id_pedido);
     $mensaje = "";
+    $funcion_admon = '';
+    if ($base == 'base_empl') {
+        if ($empleado->tipo_cuenta =='almacen')$funcion_admon = 'hidden';}
+
     global $twig;
     $template = $twig->load('detalle_pedido.html');  
-	echo $template->render(array ('URI'=>$URI, 'base'=>$base, 'empleado'=>$empleado,'pedido' => $pedido, 'facturas'=>$facturas, 'total_prods'=>$total_prods, 'mensaje'=> $mensaje, 'logged'=>$logged, 'logged_legible'=>$logged_legible));
-    //return $pedido;
+	echo $template->render(array ('URI'=>$URI, 'base'=>$base, 'empleado'=>$empleado,'pedido' => $pedido, 'facturacion'=>$facturacion, 'total_prods'=>$total_prods, 'mensaje'=> $mensaje, 'logged'=>$logged, 'logged_legible'=>$logged_legible, 'funcion_admon'=>$funcion_admon));
+   
 
 
 }
@@ -631,7 +643,7 @@ function controlador_mis_pedidos()
                     $contador1 += $cuenta1;
                     $mensaje .= $contador1. " Factura(s) Cancelada(s)";
                     //Recorremos cada pedido modificado, para actualizar el stock de cada producto que lo compone
-                    $pedido = detalle_pedido($id_pedido);
+                    $pedido = items_pedido($id_pedido);
                     //Es en este momento cuando la mercancia se devuelve (suma) al stock.
                     foreach($pedido as $prod){
                     $cuenta2 = actualizar_stock($prod->id_prod, $prod->cantidad, 'sumar');
@@ -701,6 +713,7 @@ function controlador_pedidos()
     $id_albaran = '';
     $rectif = '';
     $nif_cliente = '';
+    $contenido = [];
     //PENDIENTE QUE EL FILTRO DE PEDIDOS FUNCIONE
     $filtro = isset($_POST['filtro']) ? $_POST['cancelado_fecha'] : 0;
 
@@ -741,20 +754,35 @@ function controlador_pedidos()
                     else{
                     $pagado_fecha = date('Y-m-d H:i:s');
                     $fecha = date('dmY_his');
-                    $nif_cliente = $_POST ['nif_cliente']; //NECESITO ESTE DATO PARA INCORPORARLO A LAS FACTURAS al marcar como pagado
+                    $nif_cliente = $_POST['nif_cliente']; //NECESITO ESTE DATO PARA INCORPORARLO A LAS FACTURAS al marcar como pagado
                     $id_factura = 'FAC_'.$fecha.'/'.$contador; //Así aseguro que, aunque marque como pagados 2 pedidos a la vez, el ID factura y albaran sean unicos.
                     $id_albaran = 'ALB_'.$fecha.'/'.$contador; 
                     $cuenta = pedido_pagado($id_pedido, $pagado_fecha);
                     $contador +=$cuenta; 
-                    $cuenta1 = factura_creada($id_factura, $id_albaran, $id_pedido, $nif_cliente);
-                    $contador1 +=$cuenta1;    
+                    facturacion_creada($id_factura, $id_albaran, $id_pedido, $nif_cliente);
+                    //obtengo datos del cliente para la factura, de la BBDD
+                    $cliente = datos_cliente_nif($nif_cliente);
+                    $nombre = $cliente->nombre ." ". $cliente->apellidos;
+                    //obtengo datos del pedido para la factura, de la BBDD
+                    $pedido = datos_pedido($id_pedido);
+                    $total_mercancia = $pedido->total_mercancia;
+                    $coste_envio = $pedido->coste_envio;
+                    $total_pedido = $pedido->total_pedido;
+                    $iva = $total_pedido*0.21;
+                    $base_imponible = $total_pedido-$iva; 
+
                     //Obtengo detalles de cada pedido para ahondar en los productos que lo componen, y modificar su stock, en el momento de marcar como pagado
-                    $pedido = detalle_pedido($id_pedido);               
-                    foreach($pedido as $prod){
+                    $pedido_items = items_pedido($id_pedido);               
+                    foreach($pedido_items as $prod){
                         $cuenta2 = actualizar_stock($prod->id_prod, $prod->cantidad, 'restar');
-                        $contador2 +=$cuenta2;
-                        $mensaje = $contador. " Pedido(s) marcados como Pagado(s) - ".$contador2. " Stock Actualizado(s) -". $contador1." Factura(s) Generada(s)";       
+                        $contador2 +=$cuenta2;     
+                        $contenido[] = $prod; //creo un array vacio para introducir todos los contenidos del pedido
                         }
+                        $contenido = serialize($contenido); //CONVIERTO EL ARRAY EN TEXTO PARA PODER GUARDARLO EN BBDD
+                        $cuenta1 = factura_creada($id_factura, $id_pedido, $nif_cliente, $nombre, $cliente->direccion, $cliente->localidad, $cliente->cod_postal, $cliente->provincia,
+                        $total_mercancia, $coste_envio, $base_imponible, $iva, $total_pedido, $pedido->forma_pago, $pagado_fecha, $contenido);
+                        $contador1 +=$cuenta1;    
+                        $mensaje = $contador. " Pedido(s) marcados como Pagado(s) - ".$contador2. " Stock Actualizado(s) -". $contador1." Factura(s) Generada(s)";  
                     }
                 }
                 $delay=3;
@@ -821,7 +849,7 @@ function controlador_pedidos()
                     $cuenta = mercancia_devuelta($val);
                     $contador +=$cuenta;
                     //Recorremos cada pedido modificado, para actualizar el stock de cada producto que lo compone
-                    $pedido = detalle_pedido($val);
+                    $pedido = items_pedido($val);
                     //Es en este momento cuando la mercancia se devuelve al stock, y hasta que no se paga el pedido, no se descuenta.
                     foreach($pedido as $prod){
                     $cuenta2 = actualizar_stock($prod->id_prod, $prod->cantidad, 'sumar');
@@ -878,7 +906,7 @@ function controlador_pedidos()
                     $contador1 += $cuenta1;
                     $mensaje .= $contador1. " Factura(s) Cancelada(s)";
                     //Recorremos cada pedido modificado, para actualizar el stock de cada producto que lo compone
-                    $pedido = detalle_pedido($val);
+                    $pedido = items_pedido($val);
                     //Es en este momento cuando la mercancia se devuelve (suma) al stock.
                     foreach($pedido as $prod){
                     $cuenta2 = actualizar_stock($prod->id_prod, $prod->cantidad, 'sumar');
@@ -1028,7 +1056,7 @@ function controlador_iniciar_sesion(){
                         $tipo_cuenta = $user->tipo_cuenta;
 
                     if ($estado === 'activo' ){
-                     //   if(password_verify($contrasena, $pass)){ 
+                     if(password_verify($contrasena, $pass)){ 
                         //Login correcto
                         //Establecer sesion autentificada
                         $_SESSION["usuario"] = $usuario;    
@@ -1041,7 +1069,7 @@ function controlador_iniciar_sesion(){
                             case 'admon': exit(header("location:home_admon"));
                             case 'almacen': exit(header("location:home_almacen"));
                             }
-                //    } else $mensaje = "Usuario y/o contraseña incorrectos";   
+                   } else $mensaje = "Usuario y/o contraseña incorrectos";   
                     
                 } elseif ($estado === 'pendiente') {
                                 $mensaje = "Por favor, confirme su cuenta de usuario a través del email que recibió";

@@ -6,36 +6,56 @@
 
 {% block content %}	
 <!-- ESTA PLANTILLA LA COMPARTEN EMPLEADOS Y CLIENTES, GRACIAS A LA variable BASE y las que se derivan de ella. -->
-{% if base =='base' %}
-{% set detalle = 'producto' %}
-{% set volver = 'mis_pedidos' %}
-{% else %}
-{% set detalle = 'mercancia' %}
-{% set volver = 'control_pedidos' %}
-{% endif %}
+	<div class = "imprimible"><br>
 
-			<!-- Mostramos una lista de los artículos-->
-			Detalles Factura Nº: {{factura.id_factura}}
-			<img width="400" height="400" src="imagenes/{{producto.nombre}}.jpg"/> 
-			{% set boton_anadir = '' %} 
-			{% set texto_stock = "STOCK DISPONIBLE: #{producto.stock} Kilo(s)"  %}
-			{% if producto.stock == 0 %}    
-				{% set boton_anadir = 'disabled' %}   
-				{% set texto_stock = 'Producto Temporalmente No Disponible' %} 	
-			{% endif %}
+			<h1>Factura Nº: &nbsp&nbsp {{facturacion.id_factura}}</h1>
 
-				<h2>{{producto.nombre}}</h2>
-				<h2>PRECIO: {{producto.precio}}€ / Kilo</h2>
-				<h2>{{texto_stock}} </h2>
-				<h3>DESCRIPCION: {{producto.descripcion}}</h3>
+			<h3>Pedido Nº: &nbsp&nbsp {{facturacion.id_pedido}}</h3>
+			<h3>Factura Rectificativa Nº: &nbsp&nbsp {{facturacion.fact_rectif}}</h3>
 
+	
+				<img width="150" height="100" src="imagenes/banner.png"> 
+			<table class ='dcha'>
+				<tr><td>FRUTAS DEL VALLE S.L.U</td></tr>
+				<tr><td>123456789A</td></tr>
+				<tr><td>Avenida de las Huertas, 39</td></tr>
+				<tr><td>58550 ALMERIA</td></tr>
+			</table>
+			
+			<table class ='izq'>
+				<tr><td><b>{{factura.nif}}</b></td></tr>
+				<tr><td>{{factura.nombre}}</td></tr>
+				<tr><td>{{factura.direccion}}</td></tr>	
+				<tr><td>{{factura.localidad}}</td></tr>
+				<tr class='upper'><td>{{factura.cod_postal}}&nbsp{{factura.provincia}}</td></tr>
+			</table>
+			<table>
+				<tr><th>CONCEPTO</th></tr>
+				<th>Id Producto</th>
+				<th>Nombre</th>
+				<th>Cantidad</th>
+				<th>Precio/Kg</th>
+				<th>Subtotal</th>
+				{% for key, producto in contenido %}
+				<tr>	
+				<td>	{{producto.id_prod}}</td>	
+				<td><a href="http://localhost/proyecto/tienda/index.php/detalle_{{detalle}}?id={{producto.id_prod}}">{{producto.nombre}}</a></td>	
+				<td>	{{producto.cantidad}} Kg</td>	
+				<td>	{{producto.precio}} €</td>	
+				<td>	{{producto.cantidad * producto.precio}} €</td>	
+				</tr>
+				{% endfor %}
+			</table>
+			<table class ='dcha'>
+				<tr><th>Total Precio mercancias: </th><td>{{factura.total_mercancia}} €</td></tr>    
+				<tr><th>Coste de Envío: </th><td>{{factura.coste_envio}} €</td></tr>    
+				<tr><th>Base Imponible: </th><td>{{factura.base_imponible}} €</td></tr>    
+				<tr><th>IVA: </th><td>{{factura.iva}} €</td></tr>    
+				<tr><th>TOTAL PAGADO:</th><td><b>{{factura.total_pedido}}€</b></td></tr>  
+			</table>
+		<div><br></br>
 
-
-				<form action="" method="POST">
-					<button {{boton_anadir}} type="submit" name="anadir_producto" />Añadir Producto a la Cesta</button>
-				</form>
-
-				<form action="index.php" method="POST">
-					<button type="submit" name="volver" value="Volver"/>Volver a Tienda</button>
-				</form>
+			<form action="index.php" method="POST">
+				<button type="submit" name="volver" value="Volver"/>Volver a Tienda</button>
+			</form>
 {% endblock %}	

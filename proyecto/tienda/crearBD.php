@@ -24,8 +24,8 @@
             $sql0="CREATE TABLE IF NOT EXISTS producto (
                 id_prod INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
                 nombre VARCHAR(25),
-                precio DECIMAL(5),
-                stock DECIMAL(10),
+                precio DECIMAL(8,2),
+                stock DECIMAL(8,2),
                 descripcion VARCHAR(250)
                 )";
             if($bd->query($sql0)){
@@ -33,7 +33,7 @@
             }else echo "Error creando tabla PRODUCTO";
 
             $sql1 ="CREATE TABLE IF NOT EXISTS empleado (
-                nif VARCHAR(9) PRIMARY KEY,
+                nif VARCHAR(12) PRIMARY KEY,
                 nombre VARCHAR(30),
                 apellidos VARCHAR(50),
                 email VARCHAR(50),
@@ -58,7 +58,7 @@
 
 
             $sql2 ="CREATE TABLE IF NOT EXISTS cliente (
-                nif VARCHAR(9) PRIMARY KEY,
+                nif VARCHAR(12) PRIMARY KEY,
                 nombre VARCHAR(30),
                 apellidos VARCHAR(50),
                 email VARCHAR(50),
@@ -85,11 +85,11 @@
 
             $sql3="CREATE TABLE IF NOT EXISTS pedido (
                 id_pedido VARCHAR(30) PRIMARY KEY,        
-                nif_cliente VARCHAR(9),
-                total_mercancia DECIMAL(6),
-                total_kg DECIMAL (6),
-                coste_envio DECIMAL (6),
-                total_pedido DECIMAL (6),
+                nif_cliente VARCHAR(12),
+                total_mercancia DECIMAL (8,2),
+                total_kg DECIMAL (8,2),
+                coste_envio DECIMAL (8,2),
+                total_pedido DECIMAL (8,2),
                 forma_pago ENUM ('bizum', 'transferencia bancaria'),
                 estado_pago ENUM ('pendiente', 'pagado', 'devolución') DEFAULT 'pendiente',
                 estado_pedido ENUM ('procesando', 'enviado', 'entregado', 'devuelto', 'cancelado') DEFAULT 'procesando',
@@ -99,7 +99,6 @@
                 entregado_fecha DATETIME DEFAULT NULL,
                 cancelado_fecha DATETIME DEFAULT NULL,
                 notas VARCHAR (200)
-
                 )";
                 
                                     
@@ -113,7 +112,8 @@
                 id_pedido VARCHAR(30),      
                 id_prod INTEGER NOT NULL,
                 nombre VARCHAR(25),
-                cantidad DECIMAL(5)
+                cantidad DECIMAL(5,2),
+                precio DECIMAL(5,2),
                 )";
                                     
             if($bd->query($sql4)){
@@ -187,18 +187,46 @@
             //ALTER TABLE productos_pedido ADD factura VARCHAR(35), albaran VARCHAR(35);  PARA AÑADIR LOS ATRIBUTOS ALBARAN Y FACTURA A LA TABLA QUE DETALLA EL PEDIDO
 
             $sql10="CREATE TABLE IF NOT EXISTS facturacion (
-                id_factura VARCHAR(30) PRIMARY KEY, 
+                id_factura VARCHAR(35) PRIMARY KEY, 
                 estado_fact ENUM ('activa', 'anulada') DEFAULT 'activa', 
                 fact_rectif VARCHAR(30) DEFAULT NULL,
-                id_albaran VARCHAR(30),
-                id_pedido VARCHAR(30),
+                id_albaran VARCHAR(35),
+                id_pedido VARCHAR(35),
                 nif_cliente VARCHAR(9),
-                cancelado_fecha DATETIME DEFAULT NULL
    
                 )";
             if($bd->query($sql10)){
                 echo "Tabla FACTURACION creada con éxito<br>";
             }else echo "Error creando tabla FACTURACION";
+
+
+
+            $sql11="CREATE TABLE IF NOT EXISTS factura (
+                    id_factura VARCHAR(35) PRIMARY KEY,
+                    id_pedido  VARCHAR(35),
+                    nif VARCHAR(12),
+                    nombre VARCHAR (80),    
+                    direccion VARCHAR(50),
+                    localidad VARCHAR(50),
+                    cod_postal INTEGER (5),
+                    provincia VARCHAR (30),
+                    total_mercancia DECIMAL (8,2),
+                    coste_envio DECIMAL (8,2),
+                    base_imponible DECIMAL (8,2),
+                    iva DECIMAL (8,2),
+                    total_pedido DECIMAL (8,2),
+                    forma_pago ENUM ('bizum', 'transferencia bancaria'),
+                    creado_fecha DATETIME DEFAULT NULL,
+                    cancelado_fecha DATETIME DEFAULT NULL,
+                    fact_rectif VARCHAR (35) DEFAULT NULL,
+                    contenido VARCHAR (750))
+   
+                )";
+            if($bd->query($sql11)){
+                echo "Tabla FACTURACION creada con éxito<br>";
+            }else echo "Error creando tabla FACTURACION";
+ 
+
 
 
         // CLAVES EXTERNAS PARA PODER UNIR TABLAS SEGÚN NECESIDAD
@@ -213,15 +241,20 @@
             if($bd->query($sqlFK2)){
                 echo "FOREIGN KEY FK_productos_pedido añadido con éxito<br>";
                 }else echo "Error insertando FOREIGN KEY FK_productos_pedido<br>";
-     
-         /*   $sqlFK3 = "ALTER TABLE facturacion ADD CONSTRAINT FK_factura_pedido FOREIGN KEY (id_pedido) REFERENCES pedido (id_pedido) ON DELETE CASCADE ON UPDATE NO ACTION";
+
+            $sqlFK3 = "ALTER TABLE factura ADD CONSTRAINT FK_factura_facturacion FOREIGN KEY (id_factura) REFERENCES facturacion (id_factura) ON DELETE CASCADE ON UPDATE NO ACTION";
             if($bd->query($sqlFK3)){
+                echo "FOREIGN KEY FK_factura_facturacion añadido con éxito<br>";
+                }else echo "Error insertando FOREIGN KEY FK_factura_facturacion<br>";       
+     
+         /*   $sqlFK4 = "ALTER TABLE facturacion ADD CONSTRAINT FK_factura_pedido FOREIGN KEY (id_pedido) REFERENCES pedido (id_pedido) ON DELETE CASCADE ON UPDATE NO ACTION";
+            if($bd->query($sqlFK4)){
                 echo "FOREIGN KEY FK_factura_pedido con éxito<br>";
                 }else echo "Error insertando FOREIGN KEY FK_factura_pedido<br>";
 
 
-            $sqlFK4 = "ALTER TABLE facturacion ADD CONSTRAINT FK_factura_cliente FOREIGN KEY (nif_cliente) REFERENCES cliente (nif) ON DELETE CASCADE ON UPDATE NO ACTION";
-            if($bd->query($sqlFK4)){
+            $sqlFK5 = "ALTER TABLE facturacion ADD CONSTRAINT FK_factura_cliente FOREIGN KEY (nif_cliente) REFERENCES cliente (nif) ON DELETE CASCADE ON UPDATE NO ACTION";
+            if($bd->query($sqlFK5)){
                 echo "FOREIGN KEY FK_factura_cliente con éxito<br>";
                 }else echo "Error insertando FOREIGN KEY FK_factura_cliente<br>";*/
 

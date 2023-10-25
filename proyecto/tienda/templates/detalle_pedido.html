@@ -19,19 +19,21 @@
 			<th>Id Producto</th>
 			<th>Nombre</th>
 			<th>Cantidad</th>
+			<th>Precio/Kg</th>
 			<!-- pedido.0.id_pedido para acceder a la id_pedido del primer producto ( está en todos pero sólo la necesito 1 vez)-->
-			<h2>Detalles Pedido Nº: &nbsp&nbsp <p>{{pedido.0.id_pedido}}</p></h2>
+			<h1>Detalles Pedido Nº: &nbsp&nbsp <p class = 'titular'>{{pedido.0.id_pedido}}</p></h1>
 			{% for key, producto in pedido %}
 			<tr>	
 			<td>	{{producto.id_prod}}</td>	
 			<td><a href="http://localhost/proyecto/tienda/index.php/detalle_{{detalle}}?id={{producto.id_prod}}">{{producto.nombre}}</a></td>	
 			<td>	{{producto.cantidad}} Kg</td>	
+			<td>	{{producto.precio}} €</td>	
 			</tr>
 			{% endfor %}
 		</table><!-- al estar fuera del bucle for, simplemente selecciono el primer y unico valor del array, osea el de indice "0"-->
-		<h2>Factura Nº: &nbsp&nbsp <a href="http://localhost/proyecto/tienda/index.php/detalle_factura?id_factura={{facturas.0.id_factura}}">{{facturas.0.id_factura}}</a></h2>  
-		<h2> Albaran Nº: &nbsp&nbsp <a href="http://localhost/proyecto/tienda/index.php/detalle_albaran?id_albaran={{facturas.0.id_albaran}}">{{facturas.0.id_albaran}}</a></h2>
-		<h2> Factura Rectificativa Nº: &nbsp&nbsp <a href="http://localhost/proyecto/tienda/index.php/id_detalle_factura?factura={{facturas.0.fact_rectif}}">{{facturas.0.fact_rectif}}</a></h2>  
+		<h2 {{funcion_admon}} >Factura Nº: &nbsp&nbsp <a href="http://localhost/proyecto/tienda/index.php/detalle_factura?id_factura={{facturacion.0.id_factura}}">{{facturacion.0.id_factura}}</a></h2>  
+		<h2> Albaran Nº: &nbsp&nbsp <a href="http://localhost/proyecto/tienda/index.php/detalle_albaran?id_albaran={{facturacion.0.id_albaran}}">{{facturacion.0.id_albaran}}</a></h2>
+		<h2 {{funcion_admon}}> Factura Rectificativa Nº: &nbsp&nbsp <a href="http://localhost/proyecto/tienda/index.php/id_detalle_factura?factura={{facturacion.0.fact_rectif}}">{{facturacion.0.fact_rectif}}</a></h2>  
 
 				<form action="index.php/{{volver}}" method="POST">
 					<button  type="submit" name="volver"/>Volver a Pedidos</button>
