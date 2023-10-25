@@ -420,7 +420,7 @@ function controlador_confirmar_pedido(){
     $mensaje="";
     $id_pedido= isset($_POST['id_pedido'])? $_POST['id_pedido']: '';
     $forma_pago=isset($_POST['forma_pago'])? $_POST['forma_pago']: '';
-    $_SESSION['forma_pago'] = $forma_pago;
+
     
     
     
@@ -443,7 +443,15 @@ function controlador_confirmar_pedido(){
 
 
     }
-        if(isset($_POST["confirmar_pedido"]) && (isset($_POST['forma_pago']))){
+        if(isset($_POST["confirmar_pedido"])){
+            if(isset($_POST['forma_pago'])){
+                switch($_POST['forma_pago']){
+                    case "bizum":
+                        $forma_pago = 'bizum';
+        // cuidado con '' y "" - para SQL conviene usar ''
+                    case "transferencia_bancaria":
+                        $forma_pago = 'transferencia bancaria';                 
+                }
        // ($forma_pago !='')){
 
             $creado_fecha = date('Y-m-d H:i:s'); //hora y fecha actuales
@@ -456,14 +464,15 @@ function controlador_confirmar_pedido(){
             $notas = utf8_encode($_POST['notas']);
            
             //si ambas operaciones insert retornan TRUE
-            if(insert_pedido($id_pedido, $cliente->nif, $total_mercancia, $total_kg, $coste_envio, $total_pedido, $forma_pago, $creado_fecha, $notas) && (insert_productos_pedido($id_pedido, $cesta))){
+            if(insert_pedido($id_pedido, $cliente->nif, $total_mercancia, $total_kg, $coste_envio, $total_pedido, $_SESSION['forma_pago'], $creado_fecha, $notas) && (insert_productos_pedido($id_pedido, $cesta))){
              //  $email = pruebaMail($cliente->email, $cliente->nombre);
             exit(header("location:pedido_realizado?id_pedido=$id_pedido"));
           } else $mensaje= "Error al grabar el pedido - por favor, repita el proceso de nuevo";
               
 
         } else $mensaje = "Por favor, seleccione una forma de pago";
-        var_dump('forma_pago');
+    }
+
     global $twig;
     $template = $twig->load('confirmar_pedido.html');
     echo $template->render(array ('URI'=>$URI, 'usuario' =>$usuario, 'cliente'=>$cliente, 'cesta' => $cesta, 'logged'=>$logged, 'logged_legible'=>$logged_legible, 'mensaje' => $mensaje, 'id_pedido'=>$id_pedido, 'total_prods'=>$total_prods, 'total_kg'=> $total_kg, 'total_mercancia'=>$total_mercancia, 'coste_envio'=>$coste_envio, 'total_pedido'=>$total_pedido));
@@ -502,7 +511,6 @@ function controlador_pedido_realizado($id_pedido){
     if (isset($_POST["cerrar_sesion"])){
         exit(header('location:cerrar_sesion'));
     }
-
     global $twig;
     $template = $twig->load('pedido_realizado.html');
 	echo $template->render(array ('URI'=>$URI, 'usuario' =>$usuario, 'nif'=>$nif,'cliente'=>$cliente, 'cesta' => $cesta, 'id_pedido'=> $id_pedido, 'logged'=>$logged, 'logged_legible'=>$logged_legible, 'mensaje' => $mensaje, 'total_prods'=>$total_prods, 'total_mercancia'=>$total_mercancia, 'total_kg'=>$total_kg, 'coste_envio'=>$coste_envio, 'total_pedido'=>$total_pedido, 'forma_pago'=>$forma_pago));
@@ -1195,7 +1203,7 @@ function controlador_crear_cuenta()
         else{  //reviso los posibles errores de 1 en 1, para poder modificar su validacion individualmente (ya que pueden darse varios fallos simultaneos)
             
             if (!val_nif($datos->nif)){
-                $validaciones->val_nif = "NIF - Por favor revise que no ha introducido espacios entre caracteres, o que omitió el cero (0) al inicio";
+                $validaciones->val_nif = "NIF - Revise que no haya espacios entre caracteres, o que omitió el cero (0) al inicio";
             }
     
             if (!es_texto($datos->nombre)){

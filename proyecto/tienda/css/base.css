@@ -286,8 +286,10 @@ span{
 	font-weight:bold;
 	font-size: 1.1em;
 	display:flex;
-	margin-left:30%;
 	text-align: left;
+	margin: auto;
+	width: 35%;
+	
 }
 
 

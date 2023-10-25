@@ -286,9 +286,12 @@ span{
 	font-weight:bold;
 	font-size: 1.1em;
 	display:flex;
-	margin-left:30%;
 	text-align: left;
+	margin: auto;
+	width: 45%;
+	
 }
+
 
 .banner {
 	height: 160px;
@@ -315,11 +318,6 @@ span{
 	
 }
 
-#sugerencias{
-	color: #0080FF;
-	display: inline;
-}
-
 .titular {
 	color:#aa702e;
 	width:auto;
@@ -333,6 +331,14 @@ span{
 	padding-inline-start: 10px;
 
 	}*/
+
+
+
+#sugerencias{
+	color: #0080FF;
+	display: inline;
+}
+
 
 
 /*footer{ 
