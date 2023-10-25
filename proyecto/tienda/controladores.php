@@ -639,7 +639,7 @@ function controlador_mis_pedidos()
                     $contador +=$cuenta;                    
                     $rectif = 'RECTIF_'.$id_factura;
                     $factura_activa = factura_activa($id_pedido)->id_factura; //para obtener la ID del a fact_cuyo estado es activo, y asi solo cancelar dicha fact.
-                    $cuenta1 = factura_cancelada($factura_activa, $cancelado_fecha, $rectif); 
+                    $cuenta1 = facturacion_cancelada($factura_activa, $rectif); 
                     $contador1 += $cuenta1;
                     $mensaje .= $contador1. " Factura(s) Cancelada(s)";
                     //Recorremos cada pedido modificado, para actualizar el stock de cada producto que lo compone
@@ -860,9 +860,9 @@ function controlador_pedidos()
                     //solo podrá anularse la factura, si esta existe, osea está marcado como pagado y además se encuentre como procesando o como devuelto(la mercancia)
                     if($situacion_pedido->estado_pago == 'pagado'){
                         $fecha = '' ;
-                        $factura_activa = factura_activa($val)->id_factura; //para obtener la ID de la factura cuyo estado es activo, y asi solo cancelar dicha fact.
-                        $rectif = 'RECTIF_'.$factura_activa;
-                        $cuenta1 = factura_cancelada($factura_activa, $cancelado_fecha, $rectif); 
+                        $id_factura_activa = factura_activa($val)->id_factura; //para obtener la ID de la factura cuyo estado es activo, y asi solo cancelar dicha fact.
+                        $rectif = 'RECTIF_'.$id_factura_activa;
+                        $cuenta1 = facturacion_cancelada($factura_activa, $rectif); 
                         $contador1 += $cuenta1;
                         $mensaje .= $contador1. " Factura(s) Cancelada(s)";
                     }
@@ -902,7 +902,7 @@ function controlador_pedidos()
                     $contador +=$cuenta;                    
                     $factura_activa = factura_activa($val)->id_factura; //para obtener la ID del a fact_cuyo estado es activo, y asi solo cancelar dicha fact.
                     $rectif = 'RECTIF_'.$factura_activa;
-                    $cuenta1 = factura_cancelada($factura_activa, $cancelado_fecha, $rectif); 
+                    $cuenta1 = facturacion_cancelada($factura_activa, $rectif); 
                     $contador1 += $cuenta1;
                     $mensaje .= $contador1. " Factura(s) Cancelada(s)";
                     //Recorremos cada pedido modificado, para actualizar el stock de cada producto que lo compone

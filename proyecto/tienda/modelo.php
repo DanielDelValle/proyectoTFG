@@ -1133,7 +1133,7 @@ function factura_creada($id_factura, $id_pedido, $nif, $nombre, $direccion, $loc
 }
 
 
-function factura_cancelada($id_factura, $rectif){
+function facturacion_cancelada($id_factura_activa, $rectif){
 			
 	$resultado = false;
 	$pdo = conexion();
@@ -1142,7 +1142,7 @@ function factura_cancelada($id_factura, $rectif){
 
 			$sql = "UPDATE facturacion 
 					SET estado_fact = 'anulada', fact_rectif = '$rectif'
-					WHERE id_factura = '$id_factura'" ;
+					WHERE id_factura = '$id_factura_activa'" ;
 
 
 
