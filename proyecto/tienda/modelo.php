@@ -773,7 +773,7 @@ function pedido_pagado($id_pedido, $pagado_fecha){
 		if($pdo){
 			try{				
 		$pdo->beginTransaction();
-				//Actualizo el estado del pago y el del pedido, por si hubiese sido cancelado y reactivado. Establezco fecha de pago.
+				//Actualizo el estado del pago y el del pedido, y establezco fecha de cancelacion a NULL por si hubiese sido cancelado y reactivado. 
 		$sql = "UPDATE pedido 
 				SET estado_pago = 'pagado', estado_pedido = 'procesando', pagado_fecha = '$pagado_fecha', cancelado_fecha = NULL
 				WHERE id_pedido = '$id_pedido'" ;
@@ -1052,7 +1052,7 @@ return $id_factura;
 }	
 
 
-function facturacion_creada($id_factura, $id_albaran, $id_pedido, $nif_cliente){
+function facturacion_creada($id_pedido, $id_factura, $id_albaran, $nif_cliente){
 			
 	$resultado = false;
 	$pdo = conexion();

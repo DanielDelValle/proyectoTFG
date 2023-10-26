@@ -148,7 +148,7 @@ form{
 fieldset {
 		position: relative;
 		margin: auto;
-		display:flex;		
+		display:inline-flex;		
 		padding:1em;
 	}
 
@@ -295,14 +295,13 @@ span{
 
 
 .banner {
-	height: 160px;
+	height: 6em;
 	/*background-image: '../imagenes/banner.png' no-repeat #7cac2e;*/
 	background: url("../imagenes/banner.png") no-repeat;
 	background-position: center center;
 	background-color: #92b856;
 	margin-top:0; 
 }
-
 
 #migas_pan{
 	font-weight: bold;
