@@ -1131,6 +1131,87 @@ function factura_creada($id_factura, $id_pedido, $nif, $nombre, $direccion, $loc
 
 
 }
+function factura_cancelada($id_factura_activa, $rectif, $cancelado_fecha){
+			
+	$resultado = false;
+	$pdo = conexion();
+	if($pdo){
+		try{$pdo->beginTransaction();
+
+			$sql = "UPDATE factura 
+					SET estado_fact = 'anulada', fact_rectif = '$rectif', cancelado_fecha = '$cancelado_fecha'
+					WHERE id_factura = '$id_factura_activa'" ;
+
+
+
+			$cancelarFactura = $pdo->prepare($sql);
+
+			if(($cancelarFactura->execute())>0){ //si la consulta ha retornado algún resultado ---          
+				$pdo->commit();
+				$resultado = $cancelarFactura->rowCount(); // --- entonces retorno el número de facturas afectadas (borradas)
+				$pdo = null;
+			}
+
+			else {
+				$resultado=false;
+				echo "No pudo anularse la factura para el pedido $id_factura - por favor, intentelo de nuevo";
+				$pdo->rollback();		
+				}	
+			}	
+	catch(PDOException $e){
+		echo 'Excepción: ', $e->getMessage();
+		$resultado = false;				
+		}
+	$pdo = null;
+	return $resultado;
+
+	}else{  return null; die("error en la conexión a la BD");} //en caso de no haber conexión, directamente se para el proceso
+
+
+}
+
+function factura_rectif($id_factura_rectif, $id_pedido, $nif, $nombre, $direccion, $localidad, $cod_postal, $provincia,
+						$total_mercancia, $coste_envio, $base_imponible, $iva, $total_pedido, $forma_pago, $creado_fecha, $contenido){
+			
+	$resultado = false;
+	$pdo = conexion();
+	if($pdo){
+		try{$pdo->beginTransaction();
+
+			$sql = "INSERT INTO factura (id_factura, id_pedido, nif, nombre, direccion, localidad, cod_postal, provincia, total_mercancia, coste_envio, base_imponible,
+											iva, total_pedido, forma_pago, creado_fecha, contenido ) 
+					VALUES ('".$id_factura_rectif."', '".$id_pedido."', '".$nif."', '".$nombre."', '".$direccion."', '".$localidad."', '".$cod_postal."', '".$provincia."',
+							'".$total_mercancia."', '".$coste_envio."', '".$base_imponible."', '".$iva."', '".$total_pedido."', '".$forma_pago."', 
+							'".$creado_fecha."', '".$contenido."'			
+				
+				);";
+
+
+			$crearFactura = $pdo->prepare($sql);
+
+			if(($crearFactura->execute())>0){ //si la consulta ha retornado algún resultado ---          
+				$pdo->commit();
+				$resultado = $crearFactura->rowCount(); // --- entonces retorno el número de autores afectados (borrados)
+				$pdo = null;
+			}
+
+			else {
+				$resultado=false;
+				echo "No pudo crearse la factura para el pedido $id_factura - por favor, intentelo de nuevo";
+				$pdo->rollback();		
+				}	
+			}	
+	catch(PDOException $e){
+		echo 'Excepción: ', $e->getMessage();
+		$resultado = false;				
+		}
+	$pdo = null;
+	return $resultado;
+
+	}else{  return null; die("error en la conexión a la BD");} //en caso de no haber conexión, directamente se para el proceso
+
+
+}
 
 
 function facturacion_cancelada($id_factura_activa, $rectif){

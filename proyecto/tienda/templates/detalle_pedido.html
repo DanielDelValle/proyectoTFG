@@ -33,7 +33,7 @@
 		</table><!-- al estar fuera del bucle for, simplemente selecciono el primer y unico valor del array, osea el de indice "0"-->
 		<h2 {{funcion_admon}} >Factura Nº: &nbsp&nbsp <a href="http://localhost/proyecto/tienda/index.php/detalle_factura?id_factura={{facturacion.0.id_factura}}">{{facturacion.0.id_factura}}</a></h2>  
 		<h2> Albaran Nº: &nbsp&nbsp <a href="http://localhost/proyecto/tienda/index.php/detalle_albaran?id_albaran={{facturacion.0.id_albaran}}">{{facturacion.0.id_albaran}}</a></h2>
-		<h2 {{funcion_admon}}> Factura Rectificativa Nº: &nbsp&nbsp <a href="http://localhost/proyecto/tienda/index.php/id_detalle_factura?factura={{facturacion.0.fact_rectif}}">{{facturacion.0.fact_rectif}}</a></h2>  
+		<h2 {{funcion_admon}}> Factura Rectificativa Nº: &nbsp&nbsp <a href="http://localhost/proyecto/tienda/index.php/detalle_factura?id_factura={{facturacion.0.fact_rectif}}">{{facturacion.0.fact_rectif}}</a></h2>  
 
 				<form action="index.php/{{volver}}" method="POST">
 					<button  type="submit" name="volver"/>Volver a Pedidos</button>

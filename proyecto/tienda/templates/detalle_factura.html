@@ -8,10 +8,10 @@
 <!-- ESTA PLANTILLA LA COMPARTEN EMPLEADOS Y CLIENTES, GRACIAS A LA variable BASE y las que se derivan de ella. -->
 	<div class = "imprimible"><br>
 
-			<h1>Factura Nº: &nbsp&nbsp {{facturacion.id_factura}}</h1>
+			<h1>Factura Nº: &nbsp&nbsp {{factura.id_factura}}</h1>
 
-			<h3>Pedido Nº: &nbsp&nbsp {{facturacion.id_pedido}}</h3>
-			<h3>Factura Rectificativa Nº: &nbsp&nbsp {{facturacion.fact_rectif}}</h3>
+			<h3>Pedido Nº: &nbsp&nbsp {{factura.id_pedido}}</h3>
+			<h3>Factura Rectificativa Nº: &nbsp&nbsp {{factura.fact_rectif}}</h3>
 
 	
 				<img width="150" height="100" src="imagenes/banner.png"> 
@@ -47,7 +47,7 @@
 				{% endfor %}
 			</table>
 			<table class ='dcha'>
-				<tr><th>Total Precio mercancias: </th><td>{{factura.total_mercancia}} €</td></tr>    
+				<tr><th>Total Coste Productos: </th><td>{{factura.total_mercancia}} €</td></tr>    
 				<tr><th>Coste de Envío: </th><td>{{factura.coste_envio}} €</td></tr>    
 				<tr><th>Base Imponible: </th><td>{{factura.base_imponible}} €</td></tr>    
 				<tr><th>IVA: </th><td>{{factura.iva}} €</td></tr>    
@@ -55,7 +55,7 @@
 			</table>
 		<div><br></br>
 
-			<form action="index.php" method="POST">
-				<button type="submit" name="volver" value="Volver"/>Volver a Tienda</button>
+			<form action="index.php/detalle_pedido?id_pedido={{factura.id_pedido}}" method="POST">
+				<button type="submit" name="volver" value="Volver"/>Volver</button>
 			</form>
 {% endblock %}	

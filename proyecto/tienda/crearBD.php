@@ -34,7 +34,7 @@
 
             $sql1 ="CREATE TABLE IF NOT EXISTS empleado (
                 nif VARCHAR(12) PRIMARY KEY,
-                nombre VARCHAR(30),
+                nombre VARCHAR(35),
                 apellidos VARCHAR(50),
                 email VARCHAR(50),
                 telefono INTEGER(9),
@@ -59,14 +59,14 @@
 
             $sql2 ="CREATE TABLE IF NOT EXISTS cliente (
                 nif VARCHAR(12) PRIMARY KEY,
-                nombre VARCHAR(30),
+                nombre VARCHAR(35),
                 apellidos VARCHAR(50),
                 email VARCHAR(50),
                 telefono INTEGER(9),
                 direccion VARCHAR(50),
                 localidad VARCHAR(50),
                 cod_postal INTEGER(5),
-                provincia VARCHAR(30),
+                provincia VARCHAR(35),
                 contrasena VARCHAR(255),
                 creado_fecha DATETIME,
                 estado_cuenta ENUM ('activo', 'inactivo', 'pendiente', 'bloqueado') DEFAULT 'pendiente',
@@ -84,7 +84,7 @@
 
 
             $sql3="CREATE TABLE IF NOT EXISTS pedido (
-                id_pedido VARCHAR(30) PRIMARY KEY,        
+                id_pedido VARCHAR(35) PRIMARY KEY,        
                 nif_cliente VARCHAR(12),
                 total_mercancia DECIMAL (8,2),
                 total_kg DECIMAL (8,2),
@@ -109,11 +109,11 @@
 
 
             $sql4="CREATE TABLE IF NOT EXISTS PRODUCTOS_PEDIDO (
-                id_pedido VARCHAR(30),      
+                id_pedido VARCHAR(35) PRIMARY KEY,      
                 id_prod INTEGER NOT NULL,
                 nombre VARCHAR(25),
                 cantidad DECIMAL(5,2),
-                precio DECIMAL(5,2),
+                precio DECIMAL(5,2)
                 )";
                                     
             if($bd->query($sql4)){
@@ -187,13 +187,12 @@
             //ALTER TABLE productos_pedido ADD factura VARCHAR(35), albaran VARCHAR(35);  PARA AÑADIR LOS ATRIBUTOS ALBARAN Y FACTURA A LA TABLA QUE DETALLA EL PEDIDO
 
             $sql10="CREATE TABLE IF NOT EXISTS facturacion (
-                id_factura VARCHAR(35) PRIMARY KEY, 
+                id_pedido VARCHAR(35) PRIMARY KEY,
+                id_factura VARCHAR(35), 
                 estado_fact ENUM ('activa', 'anulada') DEFAULT 'activa', 
-                fact_rectif VARCHAR(30) DEFAULT NULL,
-                id_albaran VARCHAR(35),
-                id_pedido VARCHAR(35),
-                nif_cliente VARCHAR(9),
-   
+                fact_rectif VARCHAR(35) DEFAULT NULL,
+                id_albaran VARCHAR(35),    
+                nif_cliente VARCHAR(9)   
                 )";
             if($bd->query($sql10)){
                 echo "Tabla FACTURACION creada con éxito<br>";
@@ -203,6 +202,8 @@
 
             $sql11="CREATE TABLE IF NOT EXISTS factura (
                     id_factura VARCHAR(35) PRIMARY KEY,
+                    estado_fact ENUM ('activa', 'anulada') DEFAULT 'activa', 
+                    fact_rectif VARCHAR (35) DEFAULT NULL,
                     id_pedido  VARCHAR(35),
                     nif VARCHAR(12),
                     nombre VARCHAR (80),    
@@ -215,11 +216,10 @@
                     base_imponible DECIMAL (8,2),
                     iva DECIMAL (8,2),
                     total_pedido DECIMAL (8,2),
-                    forma_pago ENUM ('bizum', 'transferencia bancaria'),
+                    forma_pago ENUM ('bizum', 'transferencia bancaria'), 
                     creado_fecha DATETIME DEFAULT NULL,
-                    cancelado_fecha DATETIME DEFAULT NULL,
-                    fact_rectif VARCHAR (35) DEFAULT NULL,
-                    contenido VARCHAR (750))
+                    cancelado_fecha DATETIME DEFAULT NULL, 
+                    contenido VARCHAR (750)
    
                 )";
             if($bd->query($sql11)){
@@ -242,10 +242,10 @@
                 echo "FOREIGN KEY FK_productos_pedido añadido con éxito<br>";
                 }else echo "Error insertando FOREIGN KEY FK_productos_pedido<br>";
 
-            $sqlFK3 = "ALTER TABLE factura ADD CONSTRAINT FK_factura_facturacion FOREIGN KEY (id_factura) REFERENCES facturacion (id_factura) ON DELETE CASCADE ON UPDATE NO ACTION";
+          /*  $sqlFK3 = "ALTER TABLE facturacion ADD CONSTRAINT FK_factura_facturacion FOREIGN KEY (id_factura) REFERENCES factura (id_factura) ON DELETE CASCADE ON UPDATE NO ACTION";
             if($bd->query($sqlFK3)){
                 echo "FOREIGN KEY FK_factura_facturacion añadido con éxito<br>";
-                }else echo "Error insertando FOREIGN KEY FK_factura_facturacion<br>";       
+                }else echo "Error insertando FOREIGN KEY FK_factura_facturacion<br>";      */ 
      
          /*   $sqlFK4 = "ALTER TABLE facturacion ADD CONSTRAINT FK_factura_pedido FOREIGN KEY (id_pedido) REFERENCES pedido (id_pedido) ON DELETE CASCADE ON UPDATE NO ACTION";
             if($bd->query($sqlFK4)){

@@ -199,20 +199,16 @@ function controlador_detalle_factura($id_factura)////////////este se lllama deta
     $logged = isset($_SESSION['usuario']) ? "cerrar_sesion" : "iniciar_sesion";
     $logged_legible = isset($_SESSION['usuario']) ? "Cerrar Sesión" : "Iniciar Sesión";
 
-    $facturacion = datos_facturacion($id_factura);  
     $factura = datos_factura($id_factura);
-    $pedido = items_pedido($facturacion->id_pedido);
     $contenido= unserialize ($factura->contenido);  //DESHAGO EL "SERIALIZE" QUE PERMITIA GUARDAR EL ARRAY EN LA BBDD, PARA PODER INTERPRETARLO
     $mensaje = "";
 
- //   var_dump($facturacion);
   //  var_dump($factura);
-  //  var_dump($pedido);
- //   var_dump($cliente);
+
 
     global $twig;
     $template = $twig->load('detalle_factura.html');  ////////////este se lllama detallle_ffactura
-	echo $template->render(array ('URI'=>$URI, 'empleado'=>$empleado, 'usuario'=>$usuario,'base'=>$base, 'facturacion' => $facturacion, 'factura'=>$factura, 'pedido'=>$pedido, 'contenido'=>$contenido, 'mensaje'=> $mensaje, 'logged'=>$logged, 'logged_legible'=>$logged_legible));
+	echo $template->render(array ('URI'=>$URI, 'empleado'=>$empleado, 'usuario'=>$usuario,'base'=>$base, 'factura'=>$factura, 'contenido'=>$contenido, 'mensaje'=> $mensaje, 'logged'=>$logged, 'logged_legible'=>$logged_legible));
     
 }
 
@@ -268,7 +264,7 @@ function controlador_mis_datos()
 
     if (isset($_POST["eliminar_cuenta"])) {        
         $contador = eliminar_cuenta($usuario);
-        $mensaje = $contador. " cuenta(s) eliminada(s)";
+        $mensaje = $contador. " cuentas eliminadas";
         $delay=3;
         header("Refresh:$delay");}
    
@@ -589,7 +585,7 @@ function controlador_mis_pedidos()
         $pedidosArray = pedidos_busqueda($where, $id_pedido, $nif, $total_kg, $coste_envio, $total_pedido, $forma_pago, $estado_pago, $estado_pedido, 
                             $creado_fecha, $pagado_fecha, $enviado_fecha, $entregado_fecha, $cancelado_fecha, $notas); 
                             //Genero lista de pedidos con el where según criterios de búsqueda combinados
-         $mensaje = "Encontrado(s) ".count($pedidosArray). " pedido(s)";
+         $mensaje = "Encontrados ".count($pedidosArray). " pedidos";
         }
         
     
@@ -603,7 +599,7 @@ function controlador_mis_pedidos()
                     $entregado_fecha = date('Y-m-d H:i:s');
                     $cuenta = pedido_entregado($id_pedido, $entregado_fecha);
                     $contador +=$cuenta;
-                    $mensaje = $contador. " Pedido(s) marcado(s) como 'Recibido'";
+                    $mensaje = $contador. " Pedidos marcados como 'Recibido'";
                 }else $mensaje = "Alguno de los pedidos no puede marcarse como entregado, ya que se encuentra cancelado o pendiente de envío/pago";
             }
                 $delay=3;
@@ -617,6 +613,7 @@ function controlador_mis_pedidos()
         $contador = 0;
         $contador1 = 0;
         $contador2 = 0;
+        $contador3= 0;
         //If intval($checked) == 1 significa que el array "checked" tiene al menos un valor dentro, con lo que hay algún pedido seleccionado)
         if(intval($checked) == 1){            
             foreach($checked as $id_pedido){
@@ -629,35 +626,33 @@ function controlador_mis_pedidos()
                     $estado_pago_nuevo = 'pendiente';
                     $cuenta = pedido_cancelado($id_pedido, $cancelado_fecha, $estado_pago_nuevo);
                     $contador +=$cuenta;
-                    $mensaje = $contador. " Pedido(s) marcados como Cancelados(s)"; }
+                    $mensaje = $contador. " Pedidos Canceladoss"; }
                         
                 //solo podrá anularse la factura, si esta existe, osea está marcado como pagado y además se encuentre como procesando o como devuelto(la mercancia)
                 //Aunque es a priori extraño que un pedido se haya entregado sin pagarse, podrían ser pagos a 90 días por parte de empresas
-                    elseif($situacion_pedido->estado_pago == 'pagado'){
-                    $estado_pago_nuevo = 'devolución';
-                    $cuenta = pedido_cancelado($id_pedido, $cancelado_fecha, $estado_pago_nuevo);
-                    $contador +=$cuenta;                    
-                    $rectif = 'RECTIF_'.$id_factura;
-                    $factura_activa = factura_activa($id_pedido)->id_factura; //para obtener la ID del a fact_cuyo estado es activo, y asi solo cancelar dicha fact.
-                    $cuenta1 = facturacion_cancelada($factura_activa, $rectif); 
+                if($situacion_pedido->estado_pago == 'pagado'){
+                    $id_fact_activa = (factura_activa($val))->id_factura; //para obtener la ID de la factura cuyo estado es activo, y asi solo cancelar dicha fact.
+                    $rectif = 'RECTIF_'.$id_fact_activa;
+                    facturacion_cancelada($id_fact_activa, $rectif); 
+                    $cuenta1 = factura_cancelada($id_fact_activa, $rectif, $cancelado_fecha); 
                     $contador1 += $cuenta1;
-                    $mensaje .= $contador1. " Factura(s) Cancelada(s)";
-                    //Recorremos cada pedido modificado, para actualizar el stock de cada producto que lo compone
-                    $pedido = items_pedido($id_pedido);
-                    //Es en este momento cuando la mercancia se devuelve (suma) al stock.
-                    foreach($pedido as $prod){
-                    $cuenta2 = actualizar_stock($prod->id_prod, $prod->cantidad, 'sumar');
-                    $contador2 +=$cuenta2;  
-                        }
-                        $mensaje = $contador. " Pedido(s) marcados como Cancelados(s) - Por favor, espere unos días hasta que su reembolso sea realizado";                  
-                    }   
-                } else $mensaje = "Alguno de los pedidos seleccionados no puede cancelarse debido al estado en que se encuentra";
-            }
+                    $mensaje .= $contador1. " Facturas Canceladas";
+                    $fact_activa = datos_factura($id_fact_activa);
+                    //En esta factura, el argumento "creado_fecha" se le dará el valor de la fecha actual, que en este caso está guardado en "$cancelado_fecha"
+                    $cuenta3 = factura_rectif($rectif, $fact_activa->id_pedido, $fact_activa->nif, $fact_activa->nombre, $fact_activa->direccion, $fact_activa->localidad, 
+                                                $fact_activa->cod_postal, $fact_activa->provincia, (-$fact_activa->total_mercancia), (-$fact_activa->coste_envio), 
+                                                (-$fact_activa->base_imponible), (-$fact_activa->iva), (-$fact_activa->total_pedido), $fact_activa->forma_pago, 
+                                                $cancelado_fecha, $fact_activa->contenido); 
+                    $contador3 += $cuenta3;
+                    $mensaje .= $contador3. " Facturas Rectificativas Creadas";
+                }
+            } else $mensaje = "Alguno de los pedidos seleccionados no puede marcarse como devuelto debido al estado en que se encuentra";
+        }
 
-                $delay=3;
-                header("Refresh:$delay");
-                
-            }else $mensaje = "Por favor, seleccione al menos un producto para modificar";   
+            $delay=3;
+            header("Refresh:$delay");
+            
+        }else $mensaje = "Por favor, seleccione al menos un pedido para modificar";   
 
     }
 
@@ -666,7 +661,7 @@ function controlador_mis_pedidos()
         $contador = borrar_cancelados_cliente($nif);
         $delay=3;
         header("Refresh:$delay");
-        $mensaje = $contador. " pedido(s) cancelado(s) borrado(s)";
+        $mensaje = $contador. " pedidos borrados";
     }
 
    
@@ -738,7 +733,7 @@ function controlador_pedidos()
         $lista_pedidos = pedidos_busqueda($where, $id_pedido, $nif, $total_pedido, $total_kg, $coste_envio, $forma_pago, $estado_pago, $estado_pedido, 
                          $creado_fecha, $pagado_fecha, $enviado_fecha, $entregado_fecha, $cancelado_fecha, $notas); } 
                          //Genero lista de pedidos con el where según criterios de búsqueda combinados
-        $mensaje = "Encontrado(s) ".count($lista_pedidos). " pedido(s)";
+        $mensaje = "Encontrados ".count($lista_pedidos). " pedidos";
 
     if (isset($_POST["marcar_pagado"])) {
             $contador = 0;
@@ -759,7 +754,6 @@ function controlador_pedidos()
                     $id_albaran = 'ALB_'.$fecha.'/'.$contador; 
                     $cuenta = pedido_pagado($id_pedido, $pagado_fecha);
                     $contador +=$cuenta; 
-                    facturacion_creada($id_factura, $id_albaran, $id_pedido, $nif_cliente);
                     //obtengo datos del cliente para la factura, de la BBDD
                     $cliente = datos_cliente_nif($nif_cliente);
                     $nombre = $cliente->nombre ." ". $cliente->apellidos;
@@ -781,14 +775,16 @@ function controlador_pedidos()
                         $contenido = serialize($contenido); //CONVIERTO EL ARRAY EN TEXTO PARA PODER GUARDARLO EN BBDD
                         $cuenta1 = factura_creada($id_factura, $id_pedido, $nif_cliente, $nombre, $cliente->direccion, $cliente->localidad, $cliente->cod_postal, $cliente->provincia,
                         $total_mercancia, $coste_envio, $base_imponible, $iva, $total_pedido, $pedido->forma_pago, $pagado_fecha, $contenido);
+                        //Debe actualizarse facturacion tars factura para ir de acuerdo al FK_facturacion_factura
+                        facturacion_creada($id_factura, $id_albaran, $id_pedido, $nif_cliente);
                         $contador1 +=$cuenta1;    
-                        $mensaje = $contador. " Pedido(s) marcados como Pagado(s) - ".$contador2. " Stock Actualizado(s) -". $contador1." Factura(s) Generada(s)";  
+                        $mensaje = $contador. " Pedidos marcados como Pagados - ".$contador2. " Stock Actualizados -". $contador1." Facturas Generadas";  
                     }
                 }
                 $delay=3;
                 header("Refresh:$delay");
 
-            }else $mensaje = "Por favor, seleccione al menos un producto para modificar";   
+            }else $mensaje = "Por favor, seleccione al menos un pedido para modificar";   
 
 
         }        
@@ -804,14 +800,14 @@ function controlador_pedidos()
                     $enviado_fecha = date('Y-m-d H:i:s');
                     $cuenta = pedido_enviado($id_pedido, $enviado_fecha);
                     $contador +=$cuenta;
-                    $mensaje = $contador. " Pedido(s) marcado(s) como 'Enviado'";
+                    $mensaje = $contador. " Pedidos marcados como 'Enviado'";
                     }else $mensaje = "Alguno de los pedidos no puede marcarse como enviado debido al estado en que se encuentra";
                 }
                 $delay=3;
                 header("Refresh:$delay");
 
             }
-    else $mensaje = "Por favor, seleccione al menos un producto para modificar";
+    else $mensaje = "Por favor, seleccione al menos un pedido para modificar";
 
         }
 
@@ -825,20 +821,21 @@ function controlador_pedidos()
                 $entregado_fecha = date('Y-m-d H:i:s');
                 $cuenta = pedido_entregado($id_pedido, $entregado_fecha);
                 $contador +=$cuenta;
-                $mensaje = $contador. " Pedido(s) marcado(s) como 'Entregado'";
+                $mensaje = $contador. " Pedidos marcados como 'Entregado'";
             }else $mensaje = "Alguno de los pedidos no puede marcarse como entregado, ya que se encuentra cancelado o pendiente de envío/pago";
         }
             $delay=3;
             header("Refresh:$delay");
 
         }
-    else $mensaje = "Por favor, seleccione al menos un producto para modificar";
+    else $mensaje = "Por favor, seleccione al menos un pedido para modificar";
     }
 
     if (isset($_POST["mercancia_devuelta"])) {
         $contador = 0;
         $contador1 = 0;
         $contador2 = 0;
+        $contador3= 0;
         //If intval($checked == 1 significa que el array "checked" tiene al menos un valor dentro, con lo que hay algún pedido seleccionado)
         if(intval($checked) == 1){            
             foreach($checked as $val){
@@ -854,17 +851,25 @@ function controlador_pedidos()
                     foreach($pedido as $prod){
                     $cuenta2 = actualizar_stock($prod->id_prod, $prod->cantidad, 'sumar');
                     $contador2 +=$cuenta2;     
-                    $mensaje = $contador. " Pedido(s) marcados como Devueltos(s) - ".$contador2. " Stock Actualizado(s)- ";        
+                    $mensaje = $contador. " Pedidos marcados como Devueltoss - ".$contador2. " Stock Actualizados- ";        
                         }                
 
                     //solo podrá anularse la factura, si esta existe, osea está marcado como pagado y además se encuentre como procesando o como devuelto(la mercancia)
                     if($situacion_pedido->estado_pago == 'pagado'){
-                        $fecha = '' ;
-                        $id_factura_activa = factura_activa($val)->id_factura; //para obtener la ID de la factura cuyo estado es activo, y asi solo cancelar dicha fact.
-                        $rectif = 'RECTIF_'.$id_factura_activa;
-                        $cuenta1 = facturacion_cancelada($factura_activa, $rectif); 
+                        $id_fact_activa = factura_activa($val)->id_factura; //para obtener la ID de la factura cuyo estado es activo, y asi solo cancelar dicha fact.
+                        $rectif = 'RECTIF_'.$id_fact_activa;
+                        facturacion_cancelada($id_fact_activa, $rectif); 
+                        $cuenta1 = factura_cancelada($id_fact_activa, $rectif, $cancelado_fecha); 
                         $contador1 += $cuenta1;
-                        $mensaje .= $contador1. " Factura(s) Cancelada(s)";
+                        $mensaje .= $contador1. " Facturas Canceladas";
+                        $fact_activa = datos_factura($id_fact_activa);
+                        //En esta factura, el argumento "creado_fecha" se le dará el valor de la fecha actual, que en este caso está guardado en "$cancelado_fecha"
+                        $cuenta3 = factura_rectif($rectif, $fact_activa->id_pedido, $fact_activa->nif, $fact_activa->nombre, $fact_activa->direccion, $fact_activa->localidad, 
+                                                    $fact_activa->cod_postal, $fact_activa->provincia, (-$fact_activa->total_mercancia), (-$fact_activa->coste_envio), 
+                                                    (-$fact_activa->base_imponible), (-$fact_activa->iva), (-$fact_activa->total_pedido), $fact_activa->forma_pago, 
+                                                    $cancelado_fecha, $fact_activa->contenido); 
+                        $contador3 += $cuenta3;
+                        $mensaje .= $contador3. " Facturas Rectificativas Creadas";
                     }
                 } else $mensaje = "Alguno de los pedidos seleccionados no puede marcarse como devuelto debido al estado en que se encuentra";
             }
@@ -872,7 +877,7 @@ function controlador_pedidos()
                 $delay=3;
                 header("Refresh:$delay");
                 
-            }else $mensaje = "Por favor, seleccione al menos un producto para modificar";   
+            }else $mensaje = "Por favor, seleccione al menos un pedido para modificar";   
 
     }
     //Para uso en caso de pedidos pendientes de pago y/o envio.
@@ -880,6 +885,7 @@ function controlador_pedidos()
         $contador = 0;
         $contador1 = 0;
         $contador2 = 0;
+        $contador3= 0;
         //If intval($checked) == 1 significa que el array "checked" tiene al menos un valor dentro, con lo que hay algún pedido seleccionado)
         if(intval($checked) == 1){            
             foreach($checked as $val){
@@ -887,39 +893,37 @@ function controlador_pedidos()
                 //solo podrá anularse el pedido, si está procesandose o devuelto (una vez se haya recibido de vuelta la mercancia)
                 if($situacion_pedido->estado_pedido =='procesando'){
                     $cancelado_fecha = date('Y-m-d H:i:s');
-
                     if($situacion_pedido->estado_pago =='pendiente'){
                     $estado_pago_nuevo = 'pendiente';
                     $cuenta = pedido_cancelado($val, $cancelado_fecha, $estado_pago_nuevo);
                     $contador +=$cuenta;
-                    $mensaje = $contador. " Pedido(s) marcados como Cancelados(s)"; }
+                    $mensaje = $contador. " Pedidos marcados como Canceladoss"; }
                         
                 //solo podrá anularse la factura, si esta existe, osea está marcado como pagado y además se encuentre como procesando o como devuelto(la mercancia)
                 //Aunque es a priori extraño que un pedido se haya entregado sin pagarse, podrían ser pagos a 90 días por parte de empresas
-                    elseif($situacion_pedido->estado_pago == 'pagado'){
-                    $estado_pago_nuevo = 'devolución';
-                    $cuenta = pedido_cancelado($val, $cancelado_fecha, $estado_pago_nuevo);    
-                    $contador +=$cuenta;                    
-                    $factura_activa = factura_activa($val)->id_factura; //para obtener la ID del a fact_cuyo estado es activo, y asi solo cancelar dicha fact.
-                    $rectif = 'RECTIF_'.$factura_activa;
-                    $cuenta1 = facturacion_cancelada($factura_activa, $rectif); 
+                if($situacion_pedido->estado_pago == 'pagado'){
+                    $id_fact_activa = (factura_activa($val))->id_factura; //para obtener la ID de la factura cuyo estado es activo, y asi solo cancelar dicha fact.
+                    $rectif = 'RECTIF_'.$id_fact_activa;
+                    facturacion_cancelada($id_fact_activa, $rectif); 
+                    $cuenta1 = factura_cancelada($id_fact_activa, $rectif, $cancelado_fecha); 
                     $contador1 += $cuenta1;
-                    $mensaje .= $contador1. " Factura(s) Cancelada(s)";
-                    //Recorremos cada pedido modificado, para actualizar el stock de cada producto que lo compone
-                    $pedido = items_pedido($val);
-                    //Es en este momento cuando la mercancia se devuelve (suma) al stock.
-                    foreach($pedido as $prod){
-                    $cuenta2 = actualizar_stock($prod->id_prod, $prod->cantidad, 'sumar');
-                    $contador2 +=$cuenta2;  
-                        }                
-                    }$mensaje = $contador. " Pedido(s) marcados como Cancelados(s) - ".$contador2. " Stock Actualizado(s)- ".$contador1. " Factura(s) Cancelada(s)- ";     
-                } else $mensaje = "Alguno de los pedidos seleccionados no puede cancelarse debido al estado en que se encuentra";
-            }
+                    $mensaje .= $contador1. " Facturas Canceladas";
+                    $fact_activa = datos_factura($id_fact_activa);
+                    //En esta factura, el argumento "creado_fecha" se le dará el valor de la fecha actual, que en este caso está guardado en "$cancelado_fecha"
+                    $cuenta3 = factura_rectif($rectif, $fact_activa->id_pedido, $fact_activa->nif, $fact_activa->nombre, $fact_activa->direccion, $fact_activa->localidad, 
+                                                $fact_activa->cod_postal, $fact_activa->provincia, (-$fact_activa->total_mercancia), (-$fact_activa->coste_envio), 
+                                                (-$fact_activa->base_imponible), (-$fact_activa->iva), (-$fact_activa->total_pedido), $fact_activa->forma_pago, 
+                                                $cancelado_fecha, $fact_activa->contenido); 
+                    $contador3 += $cuenta3;
+                    $mensaje .= $contador3. " Facturas Rectificativas Creadas";
+                }
+            } else $mensaje = "Alguno de los pedidos seleccionados no puede marcarse como devuelto debido al estado en que se encuentra";
+        }
 
-                $delay=3;
-                header("Refresh:$delay");
-                
-            }else $mensaje = "Por favor, seleccione al menos un producto para modificar";   
+            $delay=3;
+            header("Refresh:$delay");
+            
+        }else $mensaje = "Por favor, seleccione al menos un pedido para modificar";   
 
     }
 
@@ -927,7 +931,7 @@ function controlador_pedidos()
         $contador = borrar_cancelados();
         $delay=3;
         header("Refresh:$delay");
-        $mensaje = $contador. " pedido(s) cancelado(s) borrado(s)";
+        $mensaje = $contador. " pedidos borrados";
     }
     
     global $twig;
@@ -967,7 +971,7 @@ function controlador_cuentas()
             }
             $delay=3;
             header("Refresh:$delay");
-            $mensaje = $contador. " cuentas(s) ACTIVADAS";
+            $mensaje = $contador. " cuentass ACTIVADAS";
         }
     else $mensaje = "Por favor, seleccione al menos una cuenta para activar";
 
@@ -983,7 +987,7 @@ function controlador_cuentas()
                }
                 $delay=3;
                 header("Refresh:$delay");
-                $mensaje = $contador. " cuentas(s) DESACTIVADAS";
+                $mensaje = $contador. " cuentass DESACTIVADAS";
             }
     else $mensaje = "Por favor, seleccione al menos una cuenta para desactivar";
 
@@ -999,7 +1003,7 @@ function controlador_cuentas()
                 }
                 $delay=3;
                 header("Refresh:$delay");
-                $mensaje = $contador. " cuentas(s) BLOQUEADAS";
+                $mensaje = $contador. " cuentass BLOQUEADAS";
             }
             else $mensaje = "Por favor, seleccione al menos una cuenta para bloquear";
 
@@ -1014,7 +1018,7 @@ function controlador_cuentas()
             }
             $delay=3;
             header("Refresh:$delay");
-            $mensaje = $contador. " cuenta(s) eliminada(s)";
+            $mensaje = $contador. " cuentas eliminadas";
         }
     else $mensaje = "Por favor, seleccione al menos una cuenta para eliminar";
 
