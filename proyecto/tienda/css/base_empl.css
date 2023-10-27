@@ -74,6 +74,12 @@ th{
 }
 
 
+.cuadro{
+	border-color: black;
+	border-width: 0.5em solid;
+	border-collapse: collapse;
+}
+
 
 
 .checkbox{
@@ -188,11 +194,11 @@ button {
 	border-radius: 0.7em;
 	border: 3px solid;
 	border-color: #aa702e;;
-	background-color: #d3d01b;
+	background-color: #d8d65ae1;
 	width: auto;
 	font-size: 1.1em;
 	margin-bottom:1em;
-
+	margin-right:0.2em;
 }
 
 button:hover {
@@ -343,10 +349,11 @@ span{
 	
 }
 		
-/*.izq{
-
+.izq{
+	justify-content: left;
+	text-justify: left;
 }
-
+/*
 .izq td{
 
 

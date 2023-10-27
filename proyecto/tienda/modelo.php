@@ -260,10 +260,11 @@ function facturacion_pedido($id_pedido){
 		try{		
 		$sql = "SELECT * FROM facturacion 
 				WHERE id_pedido = '$id_pedido'
+				ORDER BY id_factura DESC
 				";
 
 		$resultado = $pdo->query($sql);
-		$facturas_pedido = $resultado->fetchAll(PDO::FETCH_OBJ);		
+		$facturas_pedido = $resultado->fetchObject();		
 		$mensaje = "Se han encontrado <b>" . $resultado->rowCount() . "</b> facturas(s) <br><br>"; 
 		if ($resultado->rowCount()==0) $mensaje = "No se han encontrado facturas";
 		$pdo = null;  //cierro conexion para no mantener BD en espera
@@ -948,6 +949,43 @@ $resultado = false;
 }
 $pdo = null;
 return $resultado;
+
+}else{  return null; die("error en la conexión a la BD");} //en caso de no haber conexión, directamente se para el proceso
+
+
+}	
+
+function reactivar_pedido($id_pedido){
+		
+	$pdo = conexion();
+	if($pdo){
+		try{				
+	$pdo->beginTransaction();
+
+	$sql = "UPDATE pedido 
+			SET estado_pedido = 'cancelado', estado_pago = 'pendiente', estado_pedido='procesando'
+			WHERE id_pedido = '$id_pedido'" ;
+
+
+	$pedido_reactivado = $pdo->prepare($sql);
+
+	if(($pedido_reactivado->execute())>0){ //si la consulta ha retornado algún resultado ---          
+		$pdo->commit();
+		$resultado = $pedido_reactivado->rowCount(); // --- entonces retorno el número de autores afectados (borrados)
+	}
+
+	else {
+		$resultado=false;
+		echo "Ningún pedido modificado - intentelo de nuevo";
+		$pdo->rollback();		
+		}	
+	}	
+	catch(PDOException $e){
+	echo 'Excepción: ', $e->getMessage();
+	$resultado = false;				
+	}
+	$pdo = null;
+	return $resultado;
 
 }else{  return null; die("error en la conexión a la BD");} //en caso de no haber conexión, directamente se para el proceso
 

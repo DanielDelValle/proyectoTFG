@@ -7,12 +7,12 @@
 {% block content %}	
 <!-- ESTA PLANTILLA LA COMPARTEN EMPLEADOS Y CLIENTES, GRACIAS A LA variable BASE y las que se derivan de ella. -->
 	<div class = "imprimible"><br>
-
-			<h1>Factura Nº: &nbsp&nbsp {{factura.id_factura}}</h1>
-
-			<h3>Pedido Nº: &nbsp&nbsp {{factura.id_pedido}}</h3>
-			<h3>Factura Rectificativa Nº: &nbsp&nbsp {{factura.fact_rectif}}</h3>
-
+		<table class ='izq'></table>
+		<th><h1>Factura Nº: &nbsp&nbsp {{factura.id_factura}}</h1></th>	
+		<td><h3>Fecha factura: &nbsp&nbsp {{factura.creado_fecha}}</h3></td>	
+		<td><h3>Pedido Nº: &nbsp&nbsp {{factura.id_pedido}}</h3></td>	
+		<td><h3>Factura Rectificativa Nº: &nbsp&nbsp {{factura.fact_rectif}}</h3></td>	
+		</table>
 	
 				<img width="150" height="100" src="imagenes/banner.png"> 
 			<table class ='dcha'>
@@ -29,7 +29,7 @@
 				<tr><td>{{factura.localidad}}</td></tr>
 				<tr class='upper'><td>{{factura.cod_postal}}&nbsp{{factura.provincia}}</td></tr>
 			</table>
-			<table>
+			<table class = 'cuadro'>
 				<tr><th>CONCEPTO</th></tr>
 				<th>Id Producto</th>
 				<th>Nombre</th>

@@ -59,7 +59,9 @@
         <input type="radio" name="filtro" class="radio" value='por_devolver'><br>
         <label for="filtro">Pendientes de Devolución</label>
     </fieldset>
-    <br><button type="submit" name="buscar" method="POST">Buscar</button>
+    <fieldset>
+        <button type="submit" name="buscar" method="POST">Buscar</button>
+    </fieldset>
     <fieldset>
         <legend>Pedidos</legend>
         <table>
@@ -99,13 +101,13 @@
             {% endfor %}
         </table>
     </fieldset>
-
+    <fieldset>
     <button type="submit" name="marcar_recibido" method="POST">Marcar Recibido</button>
 
     <button class="critical" type="submit" name="cancelar_pedido" method="POST">Cancelar Pedido</button>
 
     <button type="submit" name="borrar_cancelados" method="POST">Borrar Cancelados</button>
-
+    </fieldset>
 
 
 </form>

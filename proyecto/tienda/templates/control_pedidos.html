@@ -47,6 +47,7 @@
         <label for="cancelado_fecha">Fecha Cancelación</label>
         <input type="text" name="cancelado_fecha" id="cancelado_fecha" value="{{cancelado_fecha}}"><br>
         <label for="notas">Notas</label>
+        <input type="text" name="notas" id="notas" value="{{notas}}"><br>
 
     </fieldset>
     <fieldset class="opcion_radio">
@@ -63,8 +64,10 @@
         <input type="radio" name="filtro" class="radio" value='por_devolver'><br>
         <label for="filtro">Pendientes de Devolución</label>
     </fieldset>
-    <br>
-    <button type="submit" name="buscar" method="POST">Buscar</button>
+    <fieldset>
+        <button type="submit" name="buscar" method="POST">Buscar</button>
+    </fieldset>
+
     <fieldset>
         <legend>Pedidos</legend>
         <table>
@@ -105,8 +108,9 @@
             </tr>
             {% endfor %}
         </table>
-    </fieldset>
 
+    </fieldset>
+<fieldset>
     <button class='critical_green' type="submit" {{funcion_admon}} name="marcar_pagado" method="POST">Marcar Pagado</button>
 
     <button type="submit" name="marcar_enviado" method="POST">Marcar Enviado</button>
@@ -118,6 +122,9 @@
     <button class='critical' type="submit" {{funcion_admon}} name="cancelar_pedido" method="POST">Cancelar Pedido</button>
 
     <button type="submit" name="borrar_cancelados" {{funcion_admon}} method="POST">Borrar Cancelados</button>
+
+    <button class='critical_green' type="submit" name="reactivar_pedido" {{funcion_admon}} method="POST">Reactivar Pedido</button>
+</fieldset>
 </form>
 
 

@@ -67,13 +67,18 @@ th{
 	float:left;
 	margin-right:4em;
 }
+
 .tabla2 td{
 	float:right;
 	margin-left:4em;
 
 }
 
-
+.cuadro{
+	border-color: black;
+	border-width: 0.5em solid;
+	border-collapse: collapse;
+}
 
 
 .checkbox{
@@ -343,10 +348,11 @@ span{
 	
 }
 		
-/*.izq{
-
+.izq{
+	justify-content: left;
+	text-justify: left;
 }
-
+/*
 .izq td{
 
 

@@ -173,4 +173,4 @@ else
           existe</h1></body></html>';
 }
 ?>
-<script>setInterval(function(){location.reload(true);}, 5000000);</script>
+<!--<script>setInterval(function(){location.reload(true);}, 50000);</script>-->

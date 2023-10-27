@@ -599,7 +599,7 @@ function controlador_mis_pedidos()
                     $cuenta = pedido_entregado($id_pedido, $entregado_fecha);
                     $contador +=$cuenta;
                     $mensaje = $contador. " Pedidos marcados como 'Recibido'";
-                }else $mensaje = "Alguno de los pedidos no puede marcarse como entregado, ya que se encuentra cancelado o pendiente de envío/pago";
+                }else $mensaje = "Alguno de los pedidos no puede marcarse como recibido, ya que se encuentra cancelado o pendiente de envío/pago";
             }
                 $delay=3;
                 header("Refresh:$delay");    
@@ -652,7 +652,7 @@ function controlador_mis_pedidos()
                         foreach($pedido as $prod){
                         $cuenta2 = actualizar_stock($prod->id_prod, $prod->cantidad, 'sumar');
                         $contador2 +=$cuenta2;     
-                        $mensaje .= $contador2. " Stock Actualizados- ";        
+                        $mensaje .= $contador2. " Stock Actualizados ";        
                             }                
                 }
             } else $mensaje = "Alguno de los pedidos seleccionados no puede marcarse como devuelto debido al estado en que se encuentra";
@@ -943,6 +943,25 @@ function controlador_pedidos()
         }else $mensaje = "Por favor, seleccione al menos un pedido para modificar";   
 
     }
+    if (isset($_POST["reactivar_pedido"])) {
+        $contador = 0;
+        //If intval($checked == 1 significa que el array "checked" tiene al menos un valor dentro, con lo que hay algún pedido seleccionado)
+        if(intval($checked) == 1){            
+            foreach($checked as $id_pedido){
+                $situacion_pedido = situacion_pedido($id_pedido); 
+                if($situacion_pedido->estado_pedido =='cancelado'){
+                $cuenta = reactivar_pedido($id_pedido);
+                $contador +=$cuenta;
+                $mensaje = $contador. " Pedidos Reactivados";
+            }else $mensaje = "Alguno de los pedidos no puede reactivarse debido al estado en que se encuentra";
+        }
+            $delay=3;
+            header("Refresh:$delay");
+
+        }
+    else $mensaje = "Por favor, seleccione al menos un pedido para modificar";
+    }
+
 
     if (isset($_POST["borrar_cancelados"])) {
         $contador = borrar_cancelados();
