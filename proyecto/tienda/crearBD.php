@@ -177,7 +177,7 @@
             }else echo "Error insertando datos en tabla PRODUCTOS_PEDIDO<br>";
 
             $sql9= "INSERT INTO empleado (nif, nombre, apellidos, email, telefono, direccion, localidad, cod_postal, provincia, contrasena, creado_fecha, tipo_cuenta)
-                        VALUES('53665340S', 'Daniel', 'Del Valle Gonzalez', 'daniel@frutasdelvalle.com', 657056073, 'Avenida Colmenar Viejo', 'San Sebastián de los Reyes', 28701, 'Madrid', 'Clave123!', '2023-08-21 02:55:00', 'admon' 
+                        VALUES('53665340S', 'Daniel', 'Del Valle Gonzalez', 'daniel@frutasdelvalle.com', 657056073, 'Avenida Desarrollo Web', 'San Sebastián de los Reyes', 28701, 'Madrid', 'Clave123!', '2023-08-21 02:55:00', 'admon' 
                         )";
 
             if($bd->query($sql9)){

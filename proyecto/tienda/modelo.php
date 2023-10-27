@@ -14,7 +14,7 @@ function conexion()
 try {    
 //Conexión PDO
     $cadenaConexion="mysql:host=localhost;dbname=tienda;charset=utf8";
-    $pdo = new PDO($cadenaConexion, 'daniel', 'Daniel88!',    
+    $pdo = new PDO($cadenaConexion, 'daniel', 'Daniel88',    
 	array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8", PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, PDO::MYSQL_ATTR_FOUND_ROWS => true)); 
 	//PDO::ATTR_EMULATE_PREPARES, false   desactivar emulacion
 	//PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_OBJ) para devolver objetos, pero fetchObject ya lo hace
@@ -40,7 +40,7 @@ function conexion_mysqli(){
 
 $servername = "localhost";
 $username = 'daniel';
-$password = 'Daniel88!';
+$password = 'Daniel88';
 $DB = 'tienda';
 
 // Create connection
@@ -57,8 +57,29 @@ else echo "Conectado con éxito a BD";
 return $mysqli;
 }
 
+function backup_bbdd(){
 
+	$pdo = conexion();
+	if($pdo){$resultado = 'Conectado a BBDD' ;
+		try{
 
+			//exec("cd /usr/bin/");
+		
+			$backupFile = 'tienda'.date("d-m-Y_-H-i-s").".rar";
+			$command = "C:/xampp/mysql/bin/mysqldump.exe --host=localhost --user=daniel --password='Daniel88' tienda > $backupFile 2>&1"; //por cuestion de permisos, no funciona
+			exec($command);
+		}		
+		catch(PDOException $e){
+			echo 'Excepción: ', $e->getMessage();
+			$resultado = false;				
+	}
+		$pdo = null;
+		return $resultado;
+
+	}else{  return null; die("error en la conexión a la BD");
+
+	}
+} 
 
 function get_sugerencias_ajax($busqueda){
 	$pdo = conexion();

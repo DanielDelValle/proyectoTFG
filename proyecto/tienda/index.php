@@ -118,6 +118,11 @@ elseif ($URI == 'control_pedidos')
 		controlador_pedidos(); 
 }
 
+elseif ($URI == 'control_facturas')
+{      
+		controlador_facturas(); 
+}
+
 elseif ($URI == 'control_cuentas')
 {      
 		controlador_cuentas(); 
@@ -164,6 +169,12 @@ elseif ($URI == 'alta_correcta')
 
     controlador_alta_correcta(); 
 }
+elseif ($URI == 'contacto') 
+{
+
+    controlador_contacto(); 
+}
+
 
 
 else 

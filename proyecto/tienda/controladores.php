@@ -3,6 +3,7 @@
 require_once '../vendor/autoload.php';
 require_once 'email.php';
 
+
 $loader = new \Twig\Loader\FilesystemLoader('templates');
 $twig = new \Twig\Environment($loader);
 
@@ -23,8 +24,6 @@ function get_URI(){
 
     return $URI;
 }
-
-
 
 
 /*$tel_ok = false;
@@ -1170,9 +1169,14 @@ function controlador_home_admon()
     if ($empleado->tipo_cuenta != 'admon'){exit(header('location:iniciar_sesion'));}
     $mensaje = "";
 
+
+    if (isset($_POST['backup'])){
+        $mensaje  = backup_bbdd();
+    }
+
     global $twig;
     $template = $twig->load('home_admon.html');
-	echo $template->render(array ('URI'=>$URI, 'usuario' =>$usuario, 'empleado'=>$empleado));
+	echo $template->render(array ('URI'=>$URI, 'usuario' =>$usuario, 'empleado'=>$empleado, 'mensaje'=>$mensaje));
 
 }
 
@@ -1445,7 +1449,7 @@ function controlador_contacto()
     // del modelo
 
     $template = $twig->load('contacto.html');
-	echo $template->render(array ( 'productos' => $productos));
+	echo $template->render(array ());
 }
 
 
