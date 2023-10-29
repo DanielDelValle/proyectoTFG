@@ -1,7 +1,7 @@
 {% extends "base_empl.html" %}
 
 {% block stylesheets %}
-<link rel="stylesheet" type="text/css" href="css/tarea4.css">
+<link rel="stylesheet" type="text/css" href="css/base_empl.css">
 {% endblock %}
 
 {% block content %}
@@ -74,7 +74,7 @@
             <th></th>
             <th>Id Pedido</th>
             <th {{funcion_admon}}>Nif Cliente</th>
-            <th>Total Peso</th>
+            <th>Total Peso (Kg)</th>
             <th>Total Pedido</th>
             <th>Forma Pago</th>
             <th>Estado Pago</th>
@@ -94,7 +94,7 @@
                 <!--Con el input hidden recojo el valor del DNI para poder añadirlo a las facturas generadas al marcarlo como pagado-->
                 <td {{funcion_admon}} ><a href="http://localhost/proyecto/tienda/index.php/detalle_cliente?nif={{pedido.nif_cliente}}">{{pedido.nif_cliente}}</a>
                 </td>
-                <td>{{pedido.total_kg}} Kilo(s)</td>
+                <td>{{pedido.total_kg}}</td>
                 <td>{{pedido.total_pedido}} €</td>
                 <td>{{pedido.forma_pago}} </td>
                 <td>{{pedido.estado_pago}} </td>

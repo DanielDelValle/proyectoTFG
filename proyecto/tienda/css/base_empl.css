@@ -67,19 +67,18 @@ th{
 	float:left;
 	margin-right:4em;
 }
+
 .tabla2 td{
 	float:right;
 	margin-left:4em;
 
 }
 
-
 .cuadro{
 	border-color: black;
 	border-width: 0.5em solid;
 	border-collapse: collapse;
 }
-
 
 
 .checkbox{
@@ -194,11 +193,11 @@ button {
 	border-radius: 0.7em;
 	border: 3px solid;
 	border-color: #aa702e;;
-	background-color: #d8d65ae1;
+	background-color: #d3d01b;
 	width: auto;
 	font-size: 1.1em;
 	margin-bottom:1em;
-	margin-right:0.2em;
+
 }
 
 button:hover {

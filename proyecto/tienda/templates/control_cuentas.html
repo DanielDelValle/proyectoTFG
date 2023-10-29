@@ -1,7 +1,7 @@
 {% extends "base_empl.html" %}
 
 {% block stylesheets %}
-<link rel="stylesheet" type="text/css" href="css/tarea7.css">
+<link rel="stylesheet" type="text/css" href="css/base_empl.css">
 {% endblock %}
 
 
@@ -10,76 +10,67 @@
 
 
 <form method="POST" action="" autocomplete>
-        <fieldset>
+    <fieldset>
         <legend>Busqueda</legend>
 
         <label for="cliente">Email</label>
-        <input type="text" name="email" id="email" value="{{email}}" >
+        <input type="text" name="email" id="email" value="{{email}}">
 
         <button type="submit" name="buscar" method="POST">Buscar</button>
 
-        </fieldset>
+    </fieldset>
+
+    <fieldset>
+        <h2 class='titulo'>CUENTAS</h2>
+
+        <table id="datos_cliente">
+            <th></th>
+            <th>Nif</th>
+            <th>Email</th>
+            <th>Nombre</th>
+            <th>Apellidos</th>
+            <th>Estado Cuenta</th>
+            <th>Tipo Cuenta</th>
+            <th>Fecha Creado</th>
+
+
+            {% for key, cuenta in lista_cuentas %}
+            <!-- Dependiendo del tipo de cuenta, me llevará a plantilla "detalle_cliente" o "detalle_empleado"-->
+            {% if cuenta.tipo_cuenta == 'cliente' %}
+            {% set tipo_usuario = 'cliente' %}
+            {% else %} {% set tipo_usuario = 'empleado' %}
+            {% endif %}
+            <tr>
+                <td><input type="checkbox" name="cuenta_select[]" class="checkbox" value={{cuenta.email}}></td>
+                <td><a
+                        href="http://localhost/proyecto/tienda/index.php/detalle_{{tipo_usuario}}?nif={{cuenta.nif}}">{{cuenta.nif}}</a>
+                </td>
+                <td>{{cuenta.email}}</td>
+                <td>{{cuenta.nombre}}</td>
+                <td>{{cuenta.apellidos}} </td>
+                <td>{{cuenta.estado_cuenta}} </td>
+                <td>{{cuenta.tipo_cuenta}} </td>
+                <td>{{cuenta.creado_fecha}} </td>
+
+            </tr>
+            {% endfor %}
+        </table>
+
+    </fieldset>
     <fieldset>
 
+    <button type="submit" name="activar_cuenta" method="POST">Activar Cuenta</button>
 
-    <div>
-    <h2 class='titulo'>CUENTAS</h2>
+    <button type="submit" name="desactivar_cuenta" method="POST">Desactivar Cuenta</button>
 
-    <table id="datos_cliente">
-        <th></th>
-        <th>Nif</th>
-        <th>Email</th>
-        <th>Nombre</th>
-        <th>Apellidos</th>
-        <th>Estado Cuenta</th>
-        <th>Tipo Cuenta</th>
-        <th>Fecha Creado</th>
+    <button type="submit" name="bloquear_cuenta" method="POST">Bloquear Cuenta</button>
 
+    <button class='critical' type="submit" name="eliminar_cuenta" method="POST">Eliminar Cuenta</button>
 
-    {% for key, cuenta in lista_cuentas %}
-    <!-- Dependiendo del tipo de cuenta, me llevará a plantilla "detalle_cliente" o "detalle_empleado"-->
-        {% if cuenta.tipo_cuenta == 'cliente' %}    
-            {% set tipo_usuario = 'cliente' %}   
-            {% else %} {% set tipo_usuario = 'empleado' %} 
-        {% endif %}
-    <tr>
-        <td><input type="checkbox" name="cuenta_select[]" class="checkbox"  value= {{cuenta.email}}></td>
-        <td><a href="http://localhost/proyecto/tienda/index.php/detalle_{{tipo_usuario}}?nif={{cuenta.nif}}">{{cuenta.nif}}</a></td>
-        <td>{{cuenta.email}}</td>
-        <td>{{cuenta.nombre}}</td>
-        <td>{{cuenta.apellidos}} </td>
-        <td>{{cuenta.estado_cuenta}} </td>
-        <td >{{cuenta.tipo_cuenta}} </td>
-        <td>{{cuenta.creado_fecha}} </td>
-
-    </tr>
-    {% endfor %}
-    </table>
-    <div>
-    </fieldset>
-    <div>
-
-
-
-        <button type="submit" name="activar_cuenta" method="POST">Activar Cuenta</button>
-
-        <button type="submit" name="desactivar_cuenta" method="POST">Desactivar Cuenta</button>
-
-        <button type="submit" name="bloquear_cuenta" method="POST">Bloquear Cuenta</button>
-        
-        <button class = 'critical' type="submit" name="eliminar_cuenta" method="POST">Eliminar Cuenta</button>
-
-        <button type="submit" name="alta_empleados" method="POST">Alta Empleado</button>
-
-
-        
-
-
-
+    <button type="submit" name="alta_empleados" method="POST">Alta Empleado</button>
 
     </fieldset>
 
-    </div>
 </form>
 
 

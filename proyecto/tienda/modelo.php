@@ -57,15 +57,25 @@ else echo "Conectado con éxito a BD";
 return $mysqli;
 }
 
-function backup_bbdd(){
+function backup_bbdd($tabla){
 
 	$pdo = conexion();
 	if($pdo){$resultado = 'Conectado a BBDD' ;
 		try{
+//opcion 1 
 
-			//exec("cd /usr/bin/");
-		
-			$backupFile = 'tienda'.date("d-m-Y_-H-i-s").".rar";
+/*$tablas = ['cliente, empleado, producto, productos_pedido, facturacion, factura'];
+
+		foreach ($tablas as $tabla){
+				$backupFile = 'tienda.'.$tabla.date("d-m-Y_-H-i-s").'.sql';
+				$query      = "SELECT * INTO OUTFILE '$backupFile' FROM $tabla";
+				$resultado = $pdo->query($query);*/
+
+
+//opcion 2		(devuelve archivo vacio)
+		exec("cd /usr/bin/");
+
+		$backupFile = 'tienda'.date("d-m-Y_-H-i-s").".rar";
 			$command = "C:/xampp/mysql/bin/mysqldump.exe --host=localhost --user=daniel --password='Daniel88' tienda > $backupFile 2>&1"; //por cuestion de permisos, no funciona
 			exec($command);
 		}		
@@ -188,13 +198,14 @@ function get_sugerencias_ajax($busqueda){
 			
 	}
 	//DEVUELVE LISTA DE TODOS PEDIDOS ORDENADOS DE MÁS RECIENTE FECHA CREACIÓN A MÁS ANTIGUAS
-	function lista_pedidos(){
+	//function lista_pedidos($intervalo){ WHERE create_date BETWEEN NOW() - INTERVAL '$intervalo' DAY AND NOW()  - AÑADIR INTERVALO SI QUEREMOS ACOTAR
 
+	function lista_pedidos(){
 		$pdo = conexion();
 		if($pdo){
 			try{
 			$sql = "SELECT *
-					FROM pedido
+					FROM pedido 
 					ORDER BY creado_fecha DESC";
 	
 	
@@ -756,8 +767,7 @@ function pedidos_usuario($nif){
 	return $pedidosArray;
 	}
 
-	function pedidos_busqueda($where, $id_pedido, $nif, $total_kg, $coste_envio,$total_pedido, $forma_pago, $estado_pago, $estado_pedido, 
-								$creado_fecha, $pagado_fecha, $enviado_fecha, $entregado_fecha, $cancelado_fecha, $notas){ 
+	function pedidos_busqueda($where){ 
 
 		$pdo = conexion();
 		if($pdo){
@@ -984,7 +994,7 @@ function reactivar_pedido($id_pedido){
 	$pdo->beginTransaction();
 
 	$sql = "UPDATE pedido 
-			SET estado_pedido = 'cancelado', estado_pago = 'pendiente', estado_pedido='procesando'
+			SET estado_pago = 'pendiente', estado_pedido='procesando'
 			WHERE id_pedido = '$id_pedido'" ;
 
 
@@ -1010,9 +1020,44 @@ function reactivar_pedido($id_pedido){
 
 }else{  return null; die("error en la conexión a la BD");} //en caso de no haber conexión, directamente se para el proceso
 
+}	
+function devolver_pedido($id_pedido, $cancelado_fecha){
+		
+	$pdo = conexion();
+	if($pdo){
+		try{				
+	$pdo->beginTransaction();
+
+	$sql = "UPDATE pedido 
+			SET estado_pedido = 'solicitud_devolucion', cancelado_fecha = '$cancelado_fecha'
+			WHERE id_pedido = '$id_pedido'" ;
+
+
+	$pedido_devolver = $pdo->prepare($sql);
+
+	if(($pedido_devolver->execute())>0){ //si la consulta ha retornado algún resultado ---          
+		$pdo->commit();
+		$resultado = $pedido_devolver->rowCount(); // --- entonces retorno el número de autores afectados (borrados)
+	}
+
+	else {
+		$resultado=false;
+		echo "Ningún pedido modificado - intentelo de nuevo";
+		$pdo->rollback();		
+		}	
+	}	
+	catch(PDOException $e){
+	echo 'Excepción: ', $e->getMessage();
+	$resultado = false;				
+	}
+	$pdo = null;
+	return $resultado;
+
+}else{  return null; die("error en la conexión a la BD");} //en caso de no haber conexión, directamente se para el proceso
+
 
 }	
-
+//Elimina todos los pedidos cancelados de la BBDD
 function borrar_cancelados(){
 		
 	$pdo = conexion();
@@ -1048,7 +1093,7 @@ return $resultado;
 
 
 }	
-
+//Elimina los pedidos cancelados del cliente logeado
 function borrar_cancelados_cliente($nif){
 		
 	$pdo = conexion();

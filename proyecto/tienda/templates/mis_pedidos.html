@@ -67,7 +67,7 @@
         <table>
             <th></th>
             <th>ID Pedido</th>
-            <th>Peso</th>
+            <th>Peso (Kg)</th>
             <th>Total Pedido</th>
             <th>Forma Pago</th>
             <th>Estado Pago</th>
@@ -85,7 +85,7 @@
                 <td><a
                         href="http://localhost/proyecto/tienda/index.php/detalle_pedido?id_pedido={{pedido.id_pedido}}">&nbsp;{{pedido.id_pedido}}</a>
                 </td>
-                <td>{{pedido.total_kg}} Kg</td>
+                <td>{{pedido.total_kg}}</td>
                 <td>{{pedido.total_pedido}} €</td>
                 <td>{{pedido.forma_pago}} </td>
                 <td>{{pedido.estado_pago}} </td>
@@ -106,7 +106,7 @@
 
     <button class="critical" type="submit" name="cancelar_pedido" method="POST">Cancelar Pedido</button>
 
-    <button type="submit" name="borrar_cancelados" method="POST">Borrar Cancelados</button>
+    <button type="submit" name="devolver_pedido" method="POST">Devolver Pedido</button>
     </fieldset>
 
 

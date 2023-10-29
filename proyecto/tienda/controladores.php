@@ -580,8 +580,7 @@ function controlador_mis_pedidos()
         if($cancelado_fecha != '')$where .= "AND cancelado_fecha LIKE '%$cancelado_fecha%'";
         if($notas != '')$where .= "AND notas LIKE '%$notas%'";
 
-        $pedidosArray = pedidos_busqueda($where, $id_pedido, $nif, $total_kg, $coste_envio, $total_pedido, $forma_pago, $estado_pago, $estado_pedido, 
-                            $creado_fecha, $pagado_fecha, $enviado_fecha, $entregado_fecha, $cancelado_fecha, $notas); 
+        $pedidosArray = pedidos_busqueda($where); 
                             //Genero lista de pedidos con el where según criterios de búsqueda combinados
          $mensaje = "Encontrados ".count($pedidosArray). " pedidos";
         }
@@ -663,12 +662,24 @@ function controlador_mis_pedidos()
     }
 
     
-    if (isset($_POST["borrar_cancelados"])) {
-        $contador = borrar_cancelados_cliente($nif);
-        $delay=3;
-        header("Refresh:$delay");
-        $mensaje = $contador. " pedidos borrados";
+    if (isset($_POST["devolver_pedido"])) {
+        $checked = isset($_POST['pedido_select']) ? $_POST['pedido_select'] : []; 
+        if(intval($checked) == 1){            
+            foreach($checked as $id_pedido){
+                $situacion_pedido = situacion_pedido($id_pedido); 
+                if($situacion_pedido->estado_pedido =='entregado'){
+                    $cancelado_fecha = date('Y-m-d H:i:s');
+                    $cuenta = devolver_pedido($id_pedido, $cancelado_fecha);
+                    $contador +=$cuenta;
+                    $mensaje = "Se solicitó la devolución de " . $contador. " pedido - Gestionaremos su reembolso en cuanto recibamos los productos";
+            }else $mensaje = "Debe recibir su pedido para solicitar la devolución - Si ya lo tiene, por favor márquelo como 'recibido' y podrá solicitar el reembolso.";
+        }
+            $delay=3;
+            header("Refresh:$delay");    
+        }
+    else $mensaje = "Por favor, seleccione al menos un producto para modificar";
     }
+
 
    
     if (isset($_POST["cerrar_sesion"])){
@@ -736,8 +747,7 @@ function controlador_pedidos()
         if($cancelado_fecha != '')$where .= "AND cancelado_fecha LIKE '%$cancelado_fecha%'";
         if($notas != '')$where .= "AND notas LIKE '%$notas%'";
 
-        $lista_pedidos = pedidos_busqueda($where, $id_pedido, $nif, $total_pedido, $total_kg, $coste_envio, $forma_pago, $estado_pago, $estado_pedido, 
-                         $creado_fecha, $pagado_fecha, $enviado_fecha, $entregado_fecha, $cancelado_fecha, $notas); } 
+        $lista_pedidos = pedidos_busqueda($where); } 
                          //Genero lista de pedidos con el where según criterios de búsqueda combinados
         $mensaje = "Encontrados ".count($lista_pedidos). " pedidos";
 
@@ -848,7 +858,7 @@ function controlador_pedidos()
             foreach($checked as $val){
                 $situacion_pedido = situacion_pedido($val); 
                 //solo podrá anularse el pedido, si está procesandose o devuelto (una vez se haya recibido de vuelta la mercancia)
-                if($situacion_pedido->estado_pedido =='entregado'){
+                if($situacion_pedido->estado_pedido =='solicitud_devolucion'){
                     $cancelado_fecha = date('Y-m-d H:i:s');
                     $cuenta = mercancia_devuelta($val);
                     $contador +=$cuenta;
@@ -984,7 +994,12 @@ function controlador_cuentas()
     if ($empleado->tipo_cuenta != 'admon'){exit(header('location:iniciar_sesion'));} //solo ADMON puede manipular cuentas de usuario
     $lista_cuentas = lista_cuentas();
     $checked = isset($_POST['cuenta_select']) ? $_POST['cuenta_select'] : [];
+
     $email= isset($_POST['email']) ? $_POST['email'] : '';
+    $nif= isset($_POST['nif']) ? $_POST['nif'] : '';
+    $nombre= isset($_POST['nombre']) ? $_POST['nombre'] : '';
+    $apellidos= isset($_POST['apellidos']) ? $_POST['apellidos'] : '';
+    
     $creado_fecha = isset($_POST['creado_fecha']) ? $_POST['creado_fecha'] : '';
     $orden = isset($_POST['orden']) ? $_POST['orden'] : '';
     $nuevo_estado='';
@@ -1095,7 +1110,7 @@ function controlador_iniciar_sesion(){
                         $tipo_cuenta = $user->tipo_cuenta;
 
                     if ($estado === 'activo' ){
-                     if(password_verify($contrasena, $pass)){ 
+                    if(password_verify($contrasena, $pass)){ 
                         //Login correcto
                         //Establecer sesion autentificada
                         $_SESSION["usuario"] = $usuario;    
@@ -1108,7 +1123,7 @@ function controlador_iniciar_sesion(){
                             case 'admon': exit(header("location:home_admon"));
                             case 'almacen': exit(header("location:home_almacen"));
                             }
-                   } else $mensaje = "Usuario y/o contraseña incorrectos";   
+                  } else $mensaje = "Usuario y/o contraseña incorrectos";   
                     
                 } elseif ($estado === 'pendiente') {
                                 $mensaje = "Por favor, confirme su cuenta de usuario a través del email que recibió";
@@ -1171,9 +1186,13 @@ function controlador_home_admon()
 
 
     if (isset($_POST['backup'])){
-        $mensaje  = backup_bbdd();
-    }
 
+        $tablas = ['cliente, empleado, producto, productos_pedido, facturacion, factura'];
+
+        foreach ($tablas as $tabla){
+            backup_bbdd($tabla);
+        }
+    }
     global $twig;
     $template = $twig->load('home_admon.html');
 	echo $template->render(array ('URI'=>$URI, 'usuario' =>$usuario, 'empleado'=>$empleado, 'mensaje'=>$mensaje));

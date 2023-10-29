@@ -2,22 +2,22 @@
     try{
     $cadenaConexion ="mysql:host=localhost";  //no indico ninguna base de datos, porque se trata de crearla ("mysql:dbname=BD_daniel; host=localhost" por ejemplo)
     $usuario="daniel";
-    $clave="Daniel88";
+    $clave="Daniel88!";
     $bd = new PDO($cadenaConexion,$usuario,$clave,
         array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8")
     );
     echo "Conexión establecida con éxito a MySql por usuario <b>". $usuario."</b><br>";
 
         //Crea DB si no existe (para no sobreescribir y perder info)
-        $sql ="CREATE DATABASE IF NOT EXISTS `tienda` 
+        $sql ="CREATE DATABASE IF NOT EXISTS `tienda2` 
         DEFAULT CHARACTER SET utf8 COLLATE utf8_spanish_ci;";  //CON utf8_general_ci si diese problema el spanish_ci
         //cotejamiento para mayor compatibilidad español
 
         if($bd->query($sql)){
-            echo "Base de Datos TIENDA creada con éxito<br>";
+            echo "Base de Datos TIENDA2 creada con éxito<br>";
 
             //Usar la base datos creada
-            $bd->query("USE tienda");
+            $bd->query("USE tienda2");
 
             //Crear tablas producto, cliente, pedido, albaran
             
@@ -92,7 +92,7 @@
                 total_pedido DECIMAL (8,2),
                 forma_pago ENUM ('bizum', 'transferencia bancaria'),
                 estado_pago ENUM ('pendiente', 'pagado', 'devolución') DEFAULT 'pendiente',
-                estado_pedido ENUM ('procesando', 'enviado', 'entregado', 'devuelto', 'cancelado', 'solicitud_devolucion') DEFAULT 'procesando',
+                estado_pedido ENUM ('procesando', 'enviado', 'entregado', 'devuelto', 'cancelado') DEFAULT 'procesando',
                 creado_fecha DATETIME,
                 pagado_fecha DATETIME DEFAULT NULL,
                 enviado_fecha DATETIME DEFAULT NULL,
@@ -146,40 +146,39 @@
                                     
             
             //Insertar datos iniciales tabla CLIENTE
-         /*   $sql6 = "INSERT INTO cliente (nif, nombre, apellidos, email, telefono, direccion, localidad, cod_postal, provincia, contrasena, creado_fecha)
-                        VALUES('53665340S', 'Daniel', 'Del Valle Gonzalez', 'usuario_inicial@mail.com', 657056073, 'Avenida Desarrollo Web, 17', 'San Sebastián de los Reyes', 28701, 'Madrid', '\$argon2id\$v=19\$m=65536,t=4,p=1\$WHhtS2RjZ1I2TTMySkVNcg\$eIR5vNKKmgiHiQP4F+0RoC3Y0FkAomn/YbTsoDzuuvM', '2023-08-21 02:55:00' )";
+            $sql6 = "INSERT INTO cliente (nif, nombre, apellidos, email, telefono, direccion, localidad, cod_postal, provincia, contrasena, creado_fecha)
+                        VALUES('53665340S', 'Daniel', 'Del Valle Gonzalez', 'danimolar@hotmail.com', 657056073, 'Avenida Colmenar Viejo', 'San Sebastián de los Reyes', 28701, 'Madrid', 'Clave123!', '2023-08-21 02:55:00' )";
 
             if($bd->query($sql6)){
             echo "Datos insertados con éxito en tabla CLIENTE<br>";
-            }else echo "Error insertando datos en tabla CLIENTE<br>";*/
+            }else echo "Error insertando datos en tabla CLIENTE<br>";
 
 
 
             //Insertar datos iniciales tabla PEDIDO (los 2 valores NULL corresponden a los datetime que quiero esten vacios por defecto)
-          /*  $sql7= "INSERT INTO pedido (id_pedido, nif_cliente, total_mercancia, total_kg, coste_envio, total_pedido, forma_pago, creado_fecha, pagado_fecha, enviado_fecha, entregado_fecha, notas)
+            $sql7= "INSERT INTO pedido (id_pedido, nif_cliente, total_mercancia, total_kg, coste_envio, total_pedido, forma_pago, creado_fecha, pagado_fecha, enviado_fecha, entregado_fecha, notas)
                     VALUES('ajkp', '53665340S', 40.00, 3.0, 15.0, 55.00, 'bizum', '2023-08-21 02:55:00' ,NULL, NULL, NULL, 'Entregar antes del lunes 30/07'                        
             
             )";
 
             if($bd->query($sql7)){
             echo "Datos insertados con éxito en tabla PEDIDO<br>";
-            }else echo "Error insertando datos en tabla PEDIDO<br>";*/
+            }else echo "Error insertando datos en tabla PEDIDO<br>";
                     
 
             //Insertar datos iniciales tabla PRODUCTOS_PEDIDO
-          /*  $sql8= "INSERT INTO productos_pedido (id_pedido, id_prod, nombre, cantidad)
+            $sql8= "INSERT INTO productos_pedido (id_pedido, id_prod, nombre, cantidad)
                     VALUES('ajkp', 5, 'Aguacate Nacional', 3.0
 
             )";
 
             if($bd->query($sql8)){
             echo "Datos insertados con éxito en tabla PRODUCTOS_PEDIDO<br>";
-            }else echo "Error insertando datos en tabla PRODUCTOS_PEDIDO<br>";*/
+            }else echo "Error insertando datos en tabla PRODUCTOS_PEDIDO<br>";
 
             $sql9= "INSERT INTO empleado (nif, nombre, apellidos, email, telefono, direccion, localidad, cod_postal, provincia, contrasena, creado_fecha, tipo_cuenta)
-            VALUES('53665340S', 'Daniel', 'Del Valle Gonzalez', 'usuario_inicial@frutasdelvalle.com', 657056073, 'Avenida Desarrollo Web, 17', 'San Sebastián de los Reyes', 28701, 
-                    'Madrid', 'Clave1234!', '2023-08-21 02:55:00', 'admon' )";
-
+                        VALUES('53665340S', 'Daniel', 'Del Valle Gonzalez', 'daniel@frutasdelvalle.com', 657056073, 'Avenida Desarrollo Web', 'San Sebastián de los Reyes', 28701, 'Madrid', 'Clave123!', '2023-08-21 02:55:00', 'admon' 
+                        )";
 
             if($bd->query($sql9)){
             echo "Datos insertados con éxito en tabla EMPLEADO<br>";
