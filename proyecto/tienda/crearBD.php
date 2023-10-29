@@ -75,8 +75,6 @@
                 )";
                 // Con ENUM ('cliente') DEFAULT 'cliente' me aseguro de que nadie pueda crear una cuenta de tipo empleado a traves del formulario
                 
-              //  total_pedidos INTEGER(3) DEFAULT 0,     PARA LLEVAR CONTEO GASTO CLIENTE (POSIBLES GRADOS MEMBRESIA, RECOMPENSAS, DESCUENTOS)
-           //     total_gasto FLOAT(10) DEFAULT 0.0
 
                 if($bd->query($sql2)){
                     echo "Tabla CLIENTE creada con éxito<br>";
@@ -143,38 +141,6 @@
                 echo "Datos insertados con éxito en tabla PRODUCTO<br>";
                 }else echo "Error insertando datos en tabla PRODUCTO<br>";
                                 
-                                    
-            
-            //Insertar datos iniciales tabla CLIENTE
-         /*   $sql6 = "INSERT INTO cliente (nif, nombre, apellidos, email, telefono, direccion, localidad, cod_postal, provincia, contrasena, creado_fecha)
-                        VALUES('53665340S', 'Daniel', 'Del Valle Gonzalez', 'usuario_inicial@mail.com', 657056073, 'Avenida Desarrollo Web, 17', 'San Sebastián de los Reyes', 28701, 'Madrid', '\$argon2id\$v=19\$m=65536,t=4,p=1\$WHhtS2RjZ1I2TTMySkVNcg\$eIR5vNKKmgiHiQP4F+0RoC3Y0FkAomn/YbTsoDzuuvM', '2023-08-21 02:55:00' )";
-
-            if($bd->query($sql6)){
-            echo "Datos insertados con éxito en tabla CLIENTE<br>";
-            }else echo "Error insertando datos en tabla CLIENTE<br>";*/
-
-
-
-            //Insertar datos iniciales tabla PEDIDO (los 2 valores NULL corresponden a los datetime que quiero esten vacios por defecto)
-          /*  $sql7= "INSERT INTO pedido (id_pedido, nif_cliente, total_mercancia, total_kg, coste_envio, total_pedido, forma_pago, creado_fecha, pagado_fecha, enviado_fecha, entregado_fecha, notas)
-                    VALUES('ajkp', '53665340S', 40.00, 3.0, 15.0, 55.00, 'bizum', '2023-08-21 02:55:00' ,NULL, NULL, NULL, 'Entregar antes del lunes 30/07'                        
-            
-            )";
-
-            if($bd->query($sql7)){
-            echo "Datos insertados con éxito en tabla PEDIDO<br>";
-            }else echo "Error insertando datos en tabla PEDIDO<br>";*/
-                    
-
-            //Insertar datos iniciales tabla PRODUCTOS_PEDIDO
-          /*  $sql8= "INSERT INTO productos_pedido (id_pedido, id_prod, nombre, cantidad)
-                    VALUES('ajkp', 5, 'Aguacate Nacional', 3.0
-
-            )";
-
-            if($bd->query($sql8)){
-            echo "Datos insertados con éxito en tabla PRODUCTOS_PEDIDO<br>";
-            }else echo "Error insertando datos en tabla PRODUCTOS_PEDIDO<br>";*/
 
             $sql9= "INSERT INTO empleado (nif, nombre, apellidos, email, telefono, direccion, localidad, cod_postal, provincia, contrasena, creado_fecha, tipo_cuenta)
             VALUES('53665340S', 'Daniel', 'Del Valle Gonzalez', 'usuario_inicial@frutasdelvalle.com', 657056073, 'Avenida Desarrollo Web, 17', 'San Sebastián de los Reyes', 28701, 
@@ -228,8 +194,6 @@
             }else echo "Error creando tabla FACTURACION";
  
 
-
-
         // CLAVES EXTERNAS PARA PODER UNIR TABLAS SEGÚN NECESIDAD
 
 
@@ -247,19 +211,6 @@
             if($bd->query($sqlFK3)){
                 echo "FOREIGN KEY FK_factura_facturacion añadido con éxito<br>";
                 }else echo "Error insertando FOREIGN KEY FK_factura_facturacion<br>";      
-     
-         /*   $sqlFK4 = "ALTER TABLE facturacion ADD CONSTRAINT FK_factura_pedido FOREIGN KEY (id_pedido) REFERENCES pedido (id_pedido) ON DELETE CASCADE ON UPDATE NO ACTION";
-            if($bd->query($sqlFK4)){
-                echo "FOREIGN KEY FK_factura_pedido con éxito<br>";
-                }else echo "Error insertando FOREIGN KEY FK_factura_pedido<br>";
-
-
-            $sqlFK5 = "ALTER TABLE facturacion ADD CONSTRAINT FK_factura_cliente FOREIGN KEY (nif_cliente) REFERENCES cliente (nif) ON DELETE CASCADE ON UPDATE NO ACTION";
-            if($bd->query($sqlFK5)){
-                echo "FOREIGN KEY FK_factura_cliente con éxito<br>";
-                }else echo "Error insertando FOREIGN KEY FK_factura_cliente<br>";*/
-
-    //Las 2 ultimas FK no convienen ya que las facturas desaparecerian al eliminarse un pedido o una cuenta, Y DEBEN FIGURAR
 
 
             }else echo "Error creando BD";   

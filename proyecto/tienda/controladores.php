@@ -103,13 +103,17 @@ function controlador_stock()
   //  if ($empleado->tipo_cuenta != 'admon'){exit(header('location:iniciar_sesion'));} //solo ADMON puede manipular cuentas de usuario
     $logged = isset($_SESSION['usuario']) ? "cerrar_sesion" : "iniciar_sesion";
     $logged_legible = isset($_SESSION['usuario']) ? "Cerrar Sesión" : "Iniciar Sesión";
-    $productos = lista_productos();
-    $mensaje = '';
+    $lista_productos = lista_productos();
 
+   if (isset($_POST["editar"])) {
+       
+   }
+  
+    $mensaje = '';
 
     global $twig;
     $template = $twig->load('control_stock.html');  
-	echo $template->render(array ('URI'=>$URI, 'empleado'=>$empleado, 'productos' => $productos, 'mensaje'=> $mensaje, 'logged'=>$logged, 'logged_legible'=>$logged_legible));
+	echo $template->render(array ('URI'=>$URI, 'empleado'=>$empleado, 'lista_productos' => $lista_productos,  'mensaje'=> $mensaje, 'logged'=>$logged, 'logged_legible'=>$logged_legible));
     
 
 }
@@ -290,7 +294,7 @@ function total_mercancia(){
     $total= 0;
     $total_mercancia = 0;
     $cesta = checkCesta();
-    foreach((($cesta)) as $i){
+    foreach($cesta as $i){
         $total = (($i['precio']) * ($i['cantidad']));
             $total_mercancia += $total;
             
@@ -636,7 +640,7 @@ function controlador_mis_pedidos()
                     $cuenta1 = factura_cancelada($id_fact_activa, $rectif, $cancelado_fecha); 
                     $contador1 += $cuenta1;
                     facturacion_cancelada($id_fact_activa, $rectif); 
-                    $mensaje .= $contador1. " Facturas Canceladas ";
+                    //$mensaje .= $contador1. " Facturas Canceladas ";
                     $fact_activa = datos_factura($id_fact_activa);
                     //En esta factura, el argumento "creado_fecha" se le dará el valor de la fecha actual, que en este caso está guardado en "$cancelado_fecha"
                     $cuenta3 = factura_rectif($rectif, $fact_activa->id_pedido, $fact_activa->nif, $fact_activa->nombre, $fact_activa->direccion, $fact_activa->localidad, 
@@ -650,7 +654,7 @@ function controlador_mis_pedidos()
                         foreach($pedido as $prod){
                         $cuenta2 = actualizar_stock($prod->id_prod, $prod->cantidad, 'sumar');
                         $contador2 +=$cuenta2;     
-                        $mensaje .= $contador2. " Stock Actualizados ";        
+                        //$mensaje .= $contador2. " Stock Actualizados ";        
                             }                
                 }
             } else $mensaje = "Alguno de los pedidos seleccionados no puede marcarse como devuelto debido al estado en que se encuentra";
@@ -664,7 +668,8 @@ function controlador_mis_pedidos()
     
     if (isset($_POST["devolver_pedido"])) {
         $checked = isset($_POST['pedido_select']) ? $_POST['pedido_select'] : []; 
-        if(intval($checked) == 1){            
+        if(intval($checked) == 1){      
+            $contador = 0;      
             foreach($checked as $id_pedido){
                 $situacion_pedido = situacion_pedido($id_pedido); 
                 if($situacion_pedido->estado_pedido =='entregado'){

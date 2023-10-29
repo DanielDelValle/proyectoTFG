@@ -54,23 +54,26 @@ $(document).ready(function(){
 {% block content %}
 
         <table>
+            <th></th>
+            <th>Imagen</th>
             <th>Id Producto</th>
             <th>Nombre</th>
             <th>Stock (Kg)</th>
             <th>Precio (€/Kg)</th>
-            <th>Total Ventas (Kg)</th>
-            <th>Total Ventas (€)</th>
             <!-- Mostramos una lista de los artículos-->
-			{% for producto in productos %}
-                <tr>	
+			{% for producto in lista_productos %}
+                <tr>
+                <td><input type="checkbox" name="producto_select[]" class="checkbox" value={{producto.id_prod}}></td>   
+                <td><img width="80" height="80" src="imagenes/{{producto.nombre}}.jpg"/> </td>
                 <td>{{producto.id_prod}}</td>	
-                <td><a href="http://localhost/proyecto/tienda/index.php/detalle_{{detalle}}?id={{producto.id_prod}}">{{producto.nombre}}</a></td>	
+                <td><a href="http://localhost/proyecto/tienda/index.php/detalle_mercancia?id={{producto.id_prod}}">{{producto.nombre}}</a></td>	
                 <td>{{producto.stock}}</td>	
-                <td>{{producto.precio}} </td>	
-                <td>{{ventas_kg}}</td>	
-                <td>{{ventas_euros}} </td>	
-                </tr>
+                <td>{{producto.precio}} </td>
+            </tr>        
+
             {% endfor %}
         </table>
+        <button type="submit" name="editar"method="POST">Editar</button>
+        <button type="submit" name="guardar_cambios"method="POST">Guardar Cambios</button>
 </form>
 {% endblock %}	

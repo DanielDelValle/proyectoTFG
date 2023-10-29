@@ -435,58 +435,6 @@ function alta_empleado($nif, $nombre, $apellidos, $email, $telefono, $direccion,
 
 }
 
-
-		/*	try {
-			$email = strtolower($email);
-			$telefono = intval($telefono);
-			$cod_postal = intval($cod_postal);
-			$hash_passwd = password_hash($contrasena, PASSWORD_ARGON2ID);
-			$tipo_cuenta = strtolower($tipo_cuenta);
-
-			$sql="INSERT INTO empleado (nif, nombre, apellidos, email, telefono, direccion, localidad, cod_postal, provincia, contrasena, creado_fecha, tipo_cuenta) 
-			VALUES (:nif, :nombre, :apellidos, :email, :telefono, :direccion, :localidad, :cod_postal, :provincia, :contrasena, :creado_fecha, :tipo_cuenta)";
-
-
-		----	$dato = '';	
-			$datos = [$nif, $nombre, $apellidos, $email, $telefono, $direccion, $localidad, $cod_postal, $provincia, $hash_passwd, $creado_fecha, $tipo_cuenta];								
-			$stmt->bindParam(':?', $dato); 
-			foreach($datos as $key=>$dato){  				(OTRA OPCION)
-				$stmt->execute();
-			}	-----
-
-			$sentencia = $pdo->prepare($sql);     
-			$sentencia ->bindParam(":nif", $nif);
-			$sentencia ->bindParam(":nombre",$nombre);
-			$sentencia ->bindParam(":apellidos",$apellidos);
-			$sentencia ->bindParam(":email",$email);
-			$sentencia ->bindParam(":telefono",$telefono);
-			$sentencia ->bindParam(":direccion",$direccion);
-			$sentencia ->bindParam(":localidad",$localidad);
-			$sentencia ->bindParam(":cod_postal",$cod_postal);
-			$sentencia ->bindParam(":provincia",$provincia);
-			$sentencia ->bindParam(":contrasena",$hash_passwd);
-			$sentencia ->bindParam(":creado_fecha",$creado_fecha);
-			$sentencia ->bindParam(":tipo_cuenta",$tipo_cuenta);
-			
-			$Exec = $sentencia -> execute();
-
-			if ($Exec) {
-				echo "Empleado creado con éxito";
-				return true;
-
-			}else{				
-				echo "Ocurrio un error en el alta del empleado";
-
-			}
-		}
-			catch(PDOException $e){
-				echo 'Excepción: ', $e->getMessage();				
-				}
-		
-			} 
-		$pdo = null;*/
-
-
 		
 function datos_cliente_nif($nif)   //BUSCA CLIENTE POR NIF
 {	
@@ -705,6 +653,61 @@ function insert_pedido($id_pedido, $nif, $total_mercancia, $total_kg, $coste_env
 	$pdo=null;
 }
 
+function ventas_producto_kg($id_producto){
+	$pdo = conexion();
+	if($pdo){
+		try{
+		$sql = "SELECT SUM(cantidad)
+				FROM productos_pedido
+				WHERE id_prod = $id_producto
+				";
+
+
+		$resultado = $pdo->query($sql);
+		$ventas_producto_kg = $resultado->fetchAll(PDO::FETCH_OBJ);
+		
+		$mensaje = "Se han encontrado <b>" . $resultado->rowCount() . "</b> pedido(s) <br><br>"; 
+		if ($resultado->rowCount()==0) $mensaje = "No se han encontrado pedidos";
+		$pdo = null;  //cierro conexion para no mantener BD en espera
+		//c.total_pedidos, c.total_gasto SI SE LLEGAN A INCORPORAR DICHAS COLUMNAS
+	}	
+	
+	catch(PDOException $e){
+		echo 'Excepción: ', $e->getMessage();
+		return null;
+	  }
+	}  
+	
+return $ventas_producto_kg;
+}
+
+function ventas_producto_eur($id_producto){
+	$pdo = conexion();
+	if($pdo){
+		try{
+		$sql = "SELECT SUM(cantidad)
+				FROM productos_pedido
+				WHERE id_prod = $id_producto
+				";
+
+
+		$resultado = $pdo->query($sql);
+		$ventas_producto_eur = $resultado->fetchAll(PDO::FETCH_OBJ);
+		
+		$mensaje = "Se han encontrado <b>" . $resultado->rowCount() . "</b> pedido(s) <br><br>"; 
+		if ($resultado->rowCount()==0) $mensaje = "No se han encontrado pedidos";
+		$pdo = null;  //cierro conexion para no mantener BD en espera
+		//c.total_pedidos, c.total_gasto SI SE LLEGAN A INCORPORAR DICHAS COLUMNAS
+	}	
+	
+	catch(PDOException $e){
+		echo 'Excepción: ', $e->getMessage();
+		return null;
+	  }
+	}  
+	
+return $ventas_producto_eur;
+}
 function situacion_pedido($id_pedido){ 
 
 		$pdo = conexion();
