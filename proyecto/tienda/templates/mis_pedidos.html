@@ -80,11 +80,8 @@
             <th>Notas</th>
             {% for key, pedido in pedidosArray %}
             <tr>
-                <td><input {{activo}} type="checkbox" name="pedido_select[]" class="checkbox"
-                        value={{pedido.id_pedido}}></td>
-                <td><a
-                        href="http://localhost/proyecto/tienda/index.php/detalle_pedido?id_pedido={{pedido.id_pedido}}">&nbsp;{{pedido.id_pedido}}</a>
-                </td>
+                <td><input {{activo}} type="checkbox" name="pedido_select[]" class="checkbox"value={{pedido.id_pedido}}></td>
+                <td><a href="http://localhost/proyecto/tienda/index.php/detalle_pedido?id_pedido={{pedido.id_pedido}}">{{pedido.id_pedido}}</a></td>      
                 <td>{{pedido.total_kg}}</td>
                 <td>{{pedido.total_pedido}} €</td>
                 <td>{{pedido.forma_pago}} </td>

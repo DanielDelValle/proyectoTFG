@@ -13,117 +13,76 @@
 
         <legend>Busqueda</legend>
 
+        <label for="id_factura">ID Factura</label>
+        <input type="text" name="id_factura" id="id_factura" value="{{id_factura}}"><br>
+        <label for="estado_fact">Estado Factura</label>
+        <input type="text" name="estado_fact" id="estado_fact" value="{{estado_fact}}">
         <label for="id_pedido">ID Pedido</label>
         <input type="text" name="id_pedido" id="id_pedido" value="{{id_pedido}}"><br>
         <label for="nif">NIF</label>
         <input type="text" name="nif" id="nif" value="{{nif}}">
-        <label for="total_kg">Peso</label>
-        <input type="text" name="total_kg" id="total_kg" value="{{total_kg}}"><br>
+    </fieldset><br>
+    <fieldset>
+
         <label for="total_pedido">Total Pedido</label>
         <input type="text" name="total_pedido" id="total_pedido" value="{{total_pedido}}"><br>
         <label for="forma_pago">Forma Pago</label>
         <input type="text" name="forma_pago" id="forma_pago" value="{{forma_pago}}"><br>
-        <label for="estado_pago">Estado Pago</label>
-        <select name='estado_pago' id='estado_pago'>
-            <option value=''></option>
-            <option value='pendiente'> Pendiente</option>
-            <option value='pagado'> Pagado</option>
-            <option value='devolucion'> Devolucion</option>
-        </select> <br>
-        <label for="estado_pedido">Estado Pedido</label>
-        <input type="text" name="estado_pedido" id="estado_pedido" value="{{estado_pedido}}"><br>
-
-    </fieldset>
-    <fieldset>
-
         <label for="creado_fecha">Fecha Creación</label>
         <input type="text" name="creado_fecha" id="creado_fecha" value="{{creado_fecha}}"><br>
-        <label for="pagado_fecha">Fecha Pago</label>
-        <input type="text" name="pagado_fecha" id="pagado_fecha" value="{{pagado_fecha}}"><br>
-        <label for="enviado_fecha">Fecha Envío</label>
-        <input type="text" name="enviado_fecha" id="enviado_fecha" value="{{enviado_fecha}}"><br>
-        <label for="entregado_fecha">Fecha Entrega</label>
-        <input type="text" name="entregado_fecha" id="entregado_fecha" value="{{entregado_fecha}}"><br>
         <label for="cancelado_fecha">Fecha Cancelación</label>
         <input type="text" name="cancelado_fecha" id="cancelado_fecha" value="{{cancelado_fecha}}"><br>
-        <label for="notas">Notas</label>
-        <input type="text" name="notas" id="notas" value="{{notas}}"><br>
 
-    </fieldset>
+    </fieldset><br>
+
     <fieldset class="opcion_radio">
-        <input type="radio" name="filtro" class="radio" value='todos' />
-        <label for="filtro">Todos</label>
-        <input type="radio" name="filtro" class="radio" value='activos'>
-        <label for="filtro">Activos</label>
-        <input type="radio" name="filtro" class="radio" value='cancelados'>
-        <label for="filtro">Cancelados</label>
-        <input type="radio" name="filtro" class="radio" value='por_pagar'>
-        <label for="filtro">Pendientes de Pago</label>
-        <input type="radio" name="filtro" class="radio" value='por_enviar'>
-        <label for="filtro">Pendientes de Envío</label>
-        <input type="radio" name="filtro" class="radio" value='por_devolver'><br>
-        <label for="filtro">Pendientes de Devolución</label>
+        <input type="radio" name="filtro" class="radio" value='todas' />
+        <label for="filtro">Todas</label>
+        <input type="radio" name="filtro" class="radio" value='activas'>
+        <label for="filtro">Activas</label>
+        <input type="radio" name="filtro" class="radio" value='anuladas'>
+        <label for="filtro">Anuladas</label>
+
     </fieldset>
     <fieldset>
         <button type="submit" name="buscar" method="POST">Buscar</button>
-    </fieldset>
+    </fieldset><br>
 
     <fieldset>
-        <legend>Pedidos</legend>
+        <legend>Facturas</legend>
         <table>
             <th></th>
+            <th>Id Factura</th>
+            <th>Estado Factura</th>
             <th>Id Pedido</th>
-            <th {{funcion_admon}}>Nif Cliente</th>
-            <th>Total Peso</th>
-            <th>Total Pedido</th>
+            <th>Nif</th>
+            <th>Total Factura</th>
             <th>Forma Pago</th>
-            <th>Estado Pago</th>
-            <th>Estado Pedido</th>
             <th>Fecha Creado</th>
-            <th>Fecha Pago</th>
-            <th>Fecha Envío</th>
-            <th>Fecha Entrega</th>
             <th>Fecha Cancelación</th>
-            <th>Notas</th>
 
-            {% for pedido in lista_pedidos %}
+            {% for factura in lista_facturas %}
             <tr>
-                <td><input type="checkbox" name="pedido_select[]" class="checkbox" value={{pedido.id_pedido}}></td>
-                <td><a href="http://localhost/proyecto/tienda/index.php/detalle_pedido?id_pedido={{pedido.id_pedido}}">{{pedido.id_pedido}}
-                </td>
-                <!--Con el input hidden recojo el valor del DNI para poder añadirlo a las facturas generadas al marcarlo como pagado-->
-                <td {{funcion_admon}} ><a href="http://localhost/proyecto/tienda/index.php/detalle_cliente?nif={{pedido.nif_cliente}}">{{pedido.nif_cliente}}</a>
-                </td>
-                <td>{{pedido.total_kg}} Kilo(s)</td>
-                <td>{{pedido.total_pedido}} €</td>
-                <td>{{pedido.forma_pago}} </td>
-                <td>{{pedido.estado_pago}} </td>
-                <td>{{pedido.estado_pedido}} </td>
-                <td>{{pedido.creado_fecha}} </td>
-                <td>{{pedido.pagado_fecha}} </td>
-                <td>{{pedido.enviado_fecha}} </td>
-                <td>{{pedido.entregado_fecha}} </td>
-                <td>{{pedido.cancelado_fecha}} </td>
-                <td>{{pedido.notas}} </td>
+                <td><input type="checkbox" name="factura_select[]" class="checkbox" value={{factura.id_factura}}></td>
+                <td><a href="http://localhost/proyecto/tienda/index.php/detalle_factura?id_factura={{factura.id_factura}}">{{factura.id_factura}}</a></td>
+                <td>{{factura.estado_fact}} </td>
+                <td><a href="http://localhost/proyecto/tienda/index.php/detalle_pedido?id_pedido={{factura.id_pedido}}">{{factura.id_pedido}}</a> </td>
+                <td><a href="http://localhost/proyecto/tienda/index.php/detalle_cliente?nif={{factura.nif}}">{{factura.nif}}</a> </td>
+                <td>{{factura.total_pedido}} </td>
+                <td>{{factura.forma_pago}} </td>
+                <td>{{factura.creado_fecha}} </td>
+                <td>{{factura.cancelado_fecha}} </td>               
+
+       
+
             </tr>
             {% endfor %}
         </table>
 
-    </fieldset>
+    </fieldset><br>
 <fieldset>
-    <button class='critical_green' type="submit" {{funcion_admon}} name="marcar_pagado" method="POST">Marcar Pagado</button>
+    <button class='critical' type="submit" name="anular_factura" method="POST">Anular Factura</button>
 
-    <button type="submit" name="marcar_enviado" method="POST">Marcar Enviado</button>
-
-    <button type="submit" name="marcar_entregado" {{funcion_admon}} method="POST">Marcar Entregado</button>
-
-    <button class='critical' type="submit" name="mercancia_devuelta" method="POST">Mercancia Devuelta</button>
-
-    <button class='critical' type="submit" {{funcion_admon}} name="cancelar_pedido" method="POST">Cancelar Pedido</button>
-
-    <button type="submit" name="borrar_cancelados" {{funcion_admon}} method="POST">Borrar Cancelados</button>
-
-    <button class='critical_green' type="submit" name="reactivar_pedido" {{funcion_admon}} method="POST">Reactivar Pedido</button>
 </fieldset>
 </form>
 

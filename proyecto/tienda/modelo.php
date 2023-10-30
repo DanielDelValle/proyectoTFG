@@ -311,7 +311,73 @@ function facturacion_pedido($id_pedido){
 return $facturas_pedido;
 }
 
+function lista_facturas()   
+	{	
+			$pdo = conexion();
+			if($pdo){
+				try{
+				$pdo->beginTransaction();
+				//con esta query recupero todos los mails de ambas tablas, osea todos los usuarios existentes
+				$sql = ("SELECT * FROM factura
+						ORDER BY creado_fecha DESC");	
 	
+				$lectura = $pdo->prepare($sql);
+	
+				if(($lectura->execute())>0){ //si la consulta ha retornado algún resultado ---          
+					$pdo->commit();
+					$resultado = $lectura->rowCount(); // --- entonces retorno el número de clientes encontrados)
+					$lista_facturas= $lectura->fetchAll(PDO::FETCH_OBJ);
+				}
+	
+				else {
+					$resultado=false;
+					echo "No se encontraron usuarios";
+					$pdo->rollback();		
+					}	
+				}	
+		catch(PDOException $e){
+			echo 'Excepción: ', $e->getMessage();
+			$resultado = false;				
+			}
+			$pdo = null;
+	return $lista_facturas;
+	
+	 }else{  return null; die("error en la conexión a la BD");} //en caso de no haber conexión, directamente se para el proceso
+				
+			
+	}	
+
+	function facturas_busqueda($where){ 
+
+		$pdo = conexion();
+		if($pdo){
+			try{
+
+				$sql = "SELECT *
+					FROM factura $where 
+					ORDER BY creado_fecha DESC";
+
+				
+			$resultado = $pdo->query($sql);
+			$pedidosArray = $resultado->fetchAll(PDO::FETCH_OBJ);
+
+		/*	foreach($pedidosArray as $i => $pedido) {   
+			}*/
+			
+			if($resultado->rowCount()>0) $mensaje = "Se han encontrado <b>" . $resultado->rowCount() . "</b> pedido(s) <br><br>"; 
+			else $mensaje = "No se han encontrado pedidos";
+	}	
+		
+		catch(PDOException $e){
+			echo 'Excepción: ', $e->getMessage();
+			return null;
+		  }
+		}  	
+		$pdo=null;
+
+	return $pedidosArray;
+	}	
+
 function lista_productos()
 {	
 		$pdo = conexion();
@@ -594,6 +660,45 @@ return $resultado;
 
 }
 
+function producto_actualizado($id_prod, $nombre, $stock, $precio, $descripcion){
+			
+	$pdo = conexion();
+	if($pdo){
+		try{				
+	$pdo->beginTransaction();
+			//Actualizo el estado del pago y el del pedido, y establezco fecha de cancelacion a NULL por si hubiese sido cancelado y reactivado. 
+	$sql = "UPDATE producto 
+			SET nombre = '$nombre', stock = '$stock', precio = '$precio', 'descripcion = '$descripcion'
+			WHERE id_prod= '$id_prod'" ;
+
+
+	$producto_actualizado = $pdo->prepare($sql);
+
+	if(($producto_actualizado->execute())>0){ //si la consulta ha retornado algún resultado ---          
+		$pdo->commit();
+		$resultado = $producto_actualizado->rowCount(); // --- entonces retorno el número de autores afectados (borrados)
+	}
+
+	else {
+		$resultado=false;
+		echo "Ningún pedido modificado - intentelo de nuevo";
+		$pdo->rollback();		
+		}	
+	}
+		
+catch(PDOException $e){
+echo 'Excepción: ', $e->getMessage();
+$resultado = false;				
+}
+$pdo = null;
+return $resultado;
+
+}else{  return null; die("error en la conexión a la BD");} //en caso de no haber conexión, directamente se para el proceso
+
+
+}
+
+
 
 
 function insert_productos_pedido($id_pedido, $cesta){
@@ -734,6 +839,34 @@ function situacion_pedido($id_pedido){
 		$pdo=null;
 
 	return $situacion_pedido;
+	}
+
+function situacion_factura($id_factura){ 
+
+		$pdo = conexion();
+		if($pdo){
+			try{
+
+				$sql = "SELECT estado_fact
+					FROM factura WHERE id_factura = '$id_factura'";
+
+				
+			$resultado = $pdo->query($sql);
+			$situacion_factura = $resultado->fetchObject();
+
+			
+			if($resultado->rowCount()>0) $mensaje = "Se han encontrado <b>" . $resultado->rowCount() . "</b> factura(s) <br><br>"; 
+			else $mensaje = "No se han encontrado facturas";
+	}	
+		
+		catch(PDOException $e){
+			echo 'Excepción: ', $e->getMessage();
+			return null;
+		  }
+		}  	
+		$pdo=null;
+
+	return $situacion_factura;
 	}
 
 function pedidos_usuario($nif){ 
@@ -1429,6 +1562,7 @@ function datos_factura($id_factura)
 	return $datosFactura;
 						
 }
+
 
 
 

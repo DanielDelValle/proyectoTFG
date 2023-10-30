@@ -11,8 +11,8 @@ require_once 'funciones_sesion.php';
 require_once "modelo.php";
 require_once 'validadores.php';
 
-$base = 'base.html';
-global $base;
+/*$base = 'base.html';
+global $base;*/
 
 function get_URI(){
     $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
@@ -55,6 +55,8 @@ descomentar y poner a continuacion de la linea "$twig=....($loader," para habili
 	echo $template->render(array ( 'productos' => $productos, 'sugerencias' => $sugerencias));
     echo gettype($sugerencias);
 }*/
+
+
 //CONTROLA LA PAGINA PRINCIPAL, DONDE SE MUESTRAN LOS PRODUCTOS DE LA TIENDA
 function controlador_index()
 { $URI = get_URI();
@@ -99,21 +101,70 @@ function controlador_stock()
 { $URI = get_URI();
     $usuario = checkSession();
     $base = checkDomain($usuario);   
+    if ($base !== 'base_empl') exit(header('location:iniciar_sesion'));
     $empleado = datos_empleado($usuario);
+    $funcion_admon = '';
+    if ($empleado->tipo_cuenta =='almacen')$funcion_admon = "hidden";
   //  if ($empleado->tipo_cuenta != 'admon'){exit(header('location:iniciar_sesion'));} //solo ADMON puede manipular cuentas de usuario
     $logged = isset($_SESSION['usuario']) ? "cerrar_sesion" : "iniciar_sesion";
     $logged_legible = isset($_SESSION['usuario']) ? "Cerrar Sesión" : "Iniciar Sesión";
     $lista_productos = lista_productos();
-
-   if (isset($_POST["editar"])) {
-       
-   }
-  
+    $checked = isset($_POST['producto_select']) ? $_POST['producto_select'] : [];
+    $validaciones = array('val_nombre'=> '', 'val_stock'=>'', 'val_precio'=>'', 'val_descrip'=>'');  
     $mensaje = '';
+    $datos = [];
 
+
+
+
+   if (isset($_POST["guardar_cambios"])) {
+        $contador = 0;
+        //If intval($checked == 1 significa que el array "checked" tiene al menos un valor dentro, con lo que hay algún pedido seleccionado)
+        if(intval($checked) == 1){            
+            foreach($checked as $id_prod){
+              if(isset($_POST['nombre']) && isset($_POST['stock']) && isset($_POST['precio']) && isset($_POST['descripcion'])){         
+
+                $nombre=htmlspecialchars($_POST['nombre'], ENT_COMPAT, 'UTF-8');
+                $stock=htmlspecialchars($_POST['stock'], ENT_COMPAT, 'UTF-8');
+                $precio=htmlspecialchars($_POST['precio'], ENT_COMPAT, 'UTF-8');
+                $descripcion=htmlspecialchars($_POST['descripcion'], ENT_COMPAT, 'UTF-8');
+
+                if(es_texto($_POST['nombre']) && es_cifra($nombre) && es_cifra( $precio) && valid_descripcion($descripcion)){
+                    $cuenta = producto_actualizado($id_prod,$nombre, $_POST['stock'], $precio, $descripcion);
+                    $contador +=$cuenta;
+                    $mensaje = $contador. " Productos Actualizados'";
+
+                } else{  //reviso los posibles errores de 1 en 1, para poder modificar su validacion individualmente (ya que pueden darse varios fallos simultaneos)
+            
+                    if (!val_nombre($nombre)){
+                        $validaciones->val_nombre = "NOMBRE - Sólo puede incluir caracteres del alfabeto";
+                    }
+            
+                    if (!es_cifra($stock)){
+                        $validaciones->val_ape="STOCK - debe tener un valor numérico con 2 decimales";
+                    }
+                    if (!es_cifra($precio)){ 
+                        $validaciones->val_tel ="TELEFONO - debe tener un valor numérico con 2 decimales";
+                    }
+            
+                    if (!valid_descripcion($descripcion)){
+                        $validaciones->val_dir="DESCRIPCIÓN - Sólo puede incluir caracteres del alfabeto y numeros";
+                    }
+
+            }
+              }else $mensaje = "Alguno de los productos no puede actualizarse - compruebe que ha rellenado todos los campos";
+    }
+            $delay=3;
+            header("Refresh:$delay");
+
+        }
+    else $mensaje = "Por favor, seleccione al menos un pedido para modificar";
+    
+   }
+   var_dump($datos);
     global $twig;
     $template = $twig->load('control_stock.html');  
-	echo $template->render(array ('URI'=>$URI, 'empleado'=>$empleado, 'lista_productos' => $lista_productos,  'mensaje'=> $mensaje, 'logged'=>$logged, 'logged_legible'=>$logged_legible));
+	echo $template->render(array ('URI'=>$URI, 'empleado'=>$empleado, 'lista_productos' => $lista_productos,  'validaciones'=>$validaciones, 'funcion_admon'=>$funcion_admon, 'mensaje'=> $mensaje, 'logged'=>$logged, 'logged_legible'=>$logged_legible));
     
 
 }
@@ -192,7 +243,7 @@ function controlador_detalle_mercancia($id)
     
 }
 
-function controlador_detalle_factura($id_factura)////////////este se lllama detallle_ffactura
+function controlador_detalle_factura($id_factura)
 {   $URI = get_URI();    
     //Con las siguientes 2 lineas restrinjo el acceso a partes solo destinadas a empleados
     $usuario = checkSession();
@@ -210,8 +261,28 @@ function controlador_detalle_factura($id_factura)////////////este se lllama deta
 
 
     global $twig;
-    $template = $twig->load('detalle_factura.html');  ////////////este se lllama detallle_ffactura
+    $template = $twig->load('detalle_factura.html');  
 	echo $template->render(array ('URI'=>$URI, 'empleado'=>$empleado, 'usuario'=>$usuario,'base'=>$base, 'factura'=>$factura, 'contenido'=>$contenido, 'mensaje'=> $mensaje, 'logged'=>$logged, 'logged_legible'=>$logged_legible));
+    
+}
+
+function controlador_detalle_albaran($id_albaran)
+{   $URI = get_URI();    
+    $usuario = checkSession();
+    $base = checkDomain($usuario);   
+    $empleado = datos_empleado($usuario);
+    $cliente = datos_cliente($usuario);
+    $logged = isset($_SESSION['usuario']) ? "cerrar_sesion" : "iniciar_sesion";
+    $logged_legible = isset($_SESSION['usuario']) ? "Cerrar Sesión" : "Iniciar Sesión";
+    $id_factura = str_replace('ALB', 'FAC', $id_albaran);
+    $factura = datos_factura($id_factura);
+    $contenido= unserialize ($factura->contenido);  //DESHAGO EL "SERIALIZE" QUE PERMITIA GUARDAR EL ARRAY EN LA BBDD, PARA PODER INTERPRETARLO
+    $mensaje = "";
+
+ 
+    global $twig;
+    $template = $twig->load('detalle_albaran.html');  ////////////este se lllama detallle_ffactura
+	echo $template->render(array ('URI'=>$URI, 'empleado'=>$empleado, 'usuario'=>$usuario,'base'=>$base, 'factura'=>$factura, 'id_albaran'=>$id_albaran, 'contenido'=>$contenido, 'mensaje'=> $mensaje, 'logged'=>$logged, 'logged_legible'=>$logged_legible));
     
 }
 
@@ -992,6 +1063,83 @@ function controlador_pedidos()
 
 }
 
+function controlador_facturas()   
+{   $URI = get_URI();
+    $usuario = checkSession();
+    //Con las siguientes 2 lineas restrinjo el acceso a partes solo destinadas a empleados
+    $base = checkDomain($usuario);   
+    if ($base != 'base_empl') exit(header('location:iniciar_sesion'));
+    $empleado = datos_empleado($usuario);
+    $lista_facturas = lista_facturas();
+    $checked = isset($_POST['factura_select']) ? $_POST['factura_select'] : [];   
+    $id_factura = isset($_POST['id_factura']) ? htmlentities($_POST['id_factura'],  ENT_QUOTES, "UTF-8") : '';
+    $estado_fact = isset($_POST['estado_fact']) ? htmlentities($_POST['estado_fact'],  ENT_QUOTES, "UTF-8") : '';
+    $id_pedido = isset($_POST['id_pedido']) ? htmlentities($_POST['id_pedido'],  ENT_QUOTES, "UTF-8") : '';
+    $nif = isset($_POST['nif']) ? htmlentities($_POST['nif'],  ENT_QUOTES, "UTF-8") : '';  
+    $total_pedido = isset($_POST['total_pedido']) ? htmlentities($_POST['total_pedido'],  ENT_QUOTES, "UTF-8") : '';
+    $forma_pago = isset($_POST['forma_pago']) ? $_POST['forma_pago'] : '';
+    $creado_fecha = isset($_POST['creado_fecha']) ? htmlentities($_POST['creado_fecha'],  ENT_QUOTES, "UTF-8") : '';
+    $cancelado_fecha = isset($_POST['cancelado_fecha']) ? htmlentities($_POST['cancelado_fecha'],  ENT_QUOTES, "UTF-8") : '';
+    $mensaje='';
+    $where = "WHERE id_factura LIKE '%$id_factura%' ";
+
+    if (isset($_POST["buscar"])){ 
+        if($estado_fact != ''){$where .= "AND estado_fact LIKE '%$estado_fact%'";}
+        if($id_pedido != ''){$where .= "AND id_pedido LIKE '%$id_pedido%'";}
+        if($nif != '') $where .= "AND nif LIKE '%$nif%'";
+        if($total_pedido != '')$where .= "AND total_pedido LIKE '%$total_pedido%'";
+        if($forma_pago != ''){$where .= "AND forma_pago LIKE '%$forma_pago%'";}
+        if($creado_fecha != '')$where .= "AND creado_fecha LIKE '%$creado_fecha%'";
+        if($cancelado_fecha != '')$where .= "AND cancelado_fecha LIKE '%$cancelado_fecha%'";
+ 
+        $lista_facturas = facturas_busqueda($where); 
+    } 
+                         //Genero lista de pedidos con el where según criterios de búsqueda combinados
+        $mensaje = "Encontradas ".count($lista_facturas). " facturas";
+
+    if (isset($_POST["anular_factura"])) {
+        $contador1 = 0;
+        $contador2 = 0;
+        $contador3= 0;
+            //If intval($checked == 1 significa que el array "checked" tiene al menos un valor dentro, con lo que hay algún pedido seleccionado)
+            if(intval($checked) == 1){            
+                foreach($checked as $id_factura){
+                    $situacion_factura = situacion_factura($id_factura); 
+                    if(!str_contains($id_factura, 'RECTIF') && $situacion_factura->estado_fact =='activa' ){
+                    $cancelado_fecha = date('Y-m-d H:i:s');
+                    $rectif = 'RECTIF_'.$id_factura;
+                    $cuenta1 = factura_cancelada($id_factura, $rectif, $cancelado_fecha);
+                    $contador1 +=$cuenta1;
+                    $mensaje = $contador1. " Facturas Canceladas";
+                    facturacion_cancelada($id_factura, $rectif); 
+                    $fact_activa = datos_factura($id_factura);
+
+                    $cuenta3 = factura_rectif($rectif, $fact_activa->id_pedido, $fact_activa->nif, $fact_activa->nombre, $fact_activa->direccion, $fact_activa->localidad, 
+                    $fact_activa->cod_postal, $fact_activa->provincia, (-$fact_activa->total_mercancia), (-$fact_activa->coste_envio), 
+                    (-$fact_activa->base_imponible), (-$fact_activa->iva), (-$fact_activa->total_pedido), $fact_activa->forma_pago, 
+                    $cancelado_fecha, $fact_activa->contenido); 
+
+                    $contador3 += $cuenta3;
+                    $mensaje .= $contador3. " Facturas Rectificativas Creadas";
+
+
+
+                }else $mensaje = "Alguna de las facturas no puede cancelarse debido al estado en que se encuentra";
+            }
+                $delay=3;
+                header("Refresh:$delay");
+    
+            }
+        else $mensaje = "Por favor, seleccione al menos una factura para anular";
+        }
+    
+
+    global $twig;
+    $template = $twig->load('control_facturas.html');
+	echo $template->render(array ('URI'=>$URI, 'usuario' =>$usuario, 'empleado'=>$empleado, 'lista_facturas'=>$lista_facturas, 'mensaje'=>$mensaje, 'id_factura'=>$id_factura, 'estado_fact'=>$estado_fact, 'nif'=>$nif, 'total_pedido'=>$total_pedido,'forma_pago'=>$forma_pago,'creado_fecha'=>$creado_fecha, 'cancelado_fecha'=>$cancelado_fecha));
+
+}
+
 function controlador_cuentas()  
 {   $URI = get_URI();
     $usuario = checkSession();
@@ -1026,7 +1174,7 @@ function controlador_cuentas()
             }
             $delay=3;
             header("Refresh:$delay");
-            $mensaje = $contador. " cuentass ACTIVADAS";
+            $mensaje = $contador. " cuentas ACTIVADAS";
         }
     else $mensaje = "Por favor, seleccione al menos una cuenta para activar";
 
@@ -1254,7 +1402,7 @@ function controlador_crear_cuenta()
         }
 }
 
-
+    var_dump($lista_emails );
     $validaciones= (object) $validaciones; //CONVIERTO A OBJETOS PARA MAYOR FACILIDAD DE USO EN LA PLANTILLA TWIG
     $datos = (object)$datos;
 
@@ -1264,7 +1412,7 @@ function controlador_crear_cuenta()
 
         if((val_nif($datos->nif))&&(es_texto($_POST['nombre'])) && (es_texto($_POST['apellidos'])) && 
         (valid_direccion($_POST['direccion'])) && (es_texto($_POST['localidad'])) && (valid_postal($_POST['cod_postal'])) && (es_texto($_POST['provincia'])) 
-        && (valid_tel($_POST['telefono'])) && email_existe($_POST['email'], $lista_emails) && (valid_email(strtolower($_POST['email'])))
+        && (valid_tel($_POST['telefono'])) && !email_existe($_POST['email'], $lista_emails) && (valid_email(strtolower($_POST['email'])))
         && ($dominio != $dominio_empleado) && (valid_contrasena($_POST['contrasena'])) && ($_POST['contrasena'] === $_POST['rep_contrasena'])) 
             {
                     //Con esto consigo que todos los input se filtren para evitar inyeccion de codigo malicioso.
@@ -1309,7 +1457,7 @@ function controlador_crear_cuenta()
                 $validaciones->val_prov="PROVINCIA - Debe intdroducir una provincia española";
             }
 
-            if (!email_existe($datos->email, $lista_emails)){
+            if (email_existe($datos->email, $lista_emails)){
                 $validaciones->val_email_existe= "EMAIL - El email introducido ya tiene una cuenta registrada";
             }
 
@@ -1353,7 +1501,6 @@ function controlador_alta_empleado()
     $mensaje = "";
     $resultado = "";
 
-
     $validaciones = array('val_nif'=> '', 'val_nom'=> '', 'val_ape'=>'', 'val_email_existe'=>'', 'val_email_empleado'=>'', 'val_tel'=>'', 'val_dir'=>'',
                         'val_loc'=>'','val_postal'=>'', 'val_prov'=>'','val_contrasena'=>'', 'val_tipo'=>'');  
     $datos = [];    
@@ -1372,7 +1519,7 @@ function controlador_alta_empleado()
             //valid_nif($_POST['nif']) && 
         if((val_nif($datos->nif))&&(es_texto($_POST['nombre'])) && (es_texto($_POST['apellidos'])) && 
         (valid_direccion($_POST['direccion'])) && (es_texto($_POST['localidad'])) &&(valid_postal($_POST['cod_postal'])) &&
-        (es_texto($_POST['provincia'])) && (valid_tel($_POST['telefono'])) && email_existe($_POST['email'], $lista_emails) && (valid_email_empleado(strtolower($_POST['email']))) && 
+        (es_texto($_POST['provincia'])) && (valid_tel($_POST['telefono'])) && !email_existe($_POST['email'], $lista_emails) && (valid_email_empleado(strtolower($_POST['email']))) && 
         (valid_contrasena($_POST['contrasena'])) && ($_POST['contrasena'] === $_POST['rep_contrasena']) && (!empty($_POST['tipo_cuenta']))){
               
         $creado_fecha = date('Y-m-d H:i:s');
@@ -1418,7 +1565,7 @@ function controlador_alta_empleado()
         if (!es_texto($datos->provincia)){
             $validaciones->val_prov= "PROVINCIA - Debe seleccionar una provincia española";
         }
-        if (!email_existe($datos->email, $lista_emails)){
+        if (email_existe($datos->email, $lista_emails)){
             $validaciones->val_email_existe= "EMAIL - El email introducido ya tiene una cuenta registrada";
         }
 
@@ -1467,13 +1614,18 @@ function controlador_alta_correcta(){
 }
 function controlador_contacto()
 {
+    {   $URI = get_URI();
+        $usuario = checkSession();
+        $logged = isset($_SESSION['usuario']) ? "cerrar_sesion" : "iniciar_sesion";
+        $logged_legible = isset($_SESSION['usuario']) ? "Cerrar Sesión" : "Iniciar Sesión";
     // Carga la plantilla que se mostrará al usuario con los datos recuperados del modelo
 	global $twig;
     // Carga la plantilla que se mostrará al usuario con los datos recuperados 
     // del modelo
 
     $template = $twig->load('contacto.html');
-	echo $template->render(array ());
+	echo $template->render(array ('logged'=>$logged,  'logged_legible'=> $logged_legible));
+}
 }
 
 

@@ -47,33 +47,41 @@ $(document).ready(function(){
 <!-- En el span con id="sugerencias" mostraremos las coincidencias -->
 <p><strong>Sugerencias:</strong> <span id="sugerencias"></span></p>	
   
-
+</form>
 {% endblock %}
 
 
 {% block content %}
-
+<form accept-charset="UTF-8"> 
         <table>
             <th></th>
-            <th>Imagen</th>
+            <th></th>
+            <th></th>
             <th>Id Producto</th>
             <th>Nombre</th>
             <th>Stock (Kg)</th>
-            <th>Precio (€/Kg)</th>
+            <th><p  {{funcion_admon}}>Precio (€/Kg)</p></th>
+            <th><p {{funcion_admon}}>Descripcion</p></th>
             <!-- Mostramos una lista de los artículos-->
 			{% for producto in lista_productos %}
-                <tr>
+                <tr>              
                 <td><input type="checkbox" name="producto_select[]" class="checkbox" value={{producto.id_prod}}></td>   
-                <td><img width="80" height="80" src="imagenes/{{producto.nombre}}.jpg"/> </td>
-                <td>{{producto.id_prod}}</td>	
-                <td><a href="http://localhost/proyecto/tienda/index.php/detalle_mercancia?id={{producto.id_prod}}">{{producto.nombre}}</a></td>	
-                <td>{{producto.stock}}</td>	
-                <td>{{producto.precio}} </td>
+                <td></td>
+  
+                <td><img class='img_stock' width="80" height="80" src="imagenes/{{producto.nombre}}.jpg"/> </td>
+                <td><input type="hidden" value ="{{producto.id_prod}}"></input>{{producto.id_prod}}</td>	
+                <td><input type="text" name='nombre' value="{{producto.nombre}}"></input></td>	
+                <td><input class='input_stock' type="text" name='stock' value="{{producto.stock}}"></input></td>	
+                <td><input {{funcion_admon}} class='input_stock' type="text" name='precio' value="{{producto.precio}}"></input></td>
+                <td><input {{funcion_admon}} class='input_descrip' type="text" name='descripcion' value="{{producto.descripcion}}"></input></td>
             </tr>        
 
             {% endfor %}
         </table>
-        <button type="submit" name="editar"method="POST">Editar</button>
+        <p class='importante'>
+            {{validaciones.val_nombre}}<br>{{validaciones.val_stock}}<br>{{validaciones.precio}}<br>{{validaciones.descrip}}
+        </p><br>
+
         <button type="submit" name="guardar_cambios"method="POST">Guardar Cambios</button>
 </form>
 {% endblock %}	

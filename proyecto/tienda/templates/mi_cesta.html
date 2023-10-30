@@ -26,14 +26,19 @@
     
         {% endfor %}  
     </table>
-    <table id='tabla2'>
+   
+    <table class='tabla2'>
 
           <tr><th>Total Peso :</th> <td>{{total_kg}} Kg</td></tr>
           <tr><th>Total Precio mercancias: </th><td>{{total_mercancia}} €</td></tr>    
           <tr><th>Coste de Envío: </th><td>{{coste_envio}} €</td></tr>    
           <tr><th><u>TOTAL A PAGAR:</u></th><td>{{total_pedido}}€</td></tr>  
+
+
+          
     </table >
-  
+    <p>NOTA: Para pedidos de 10 KG o menos, el coste de envío es de 7,50€. Para pesos mayores, es de 15,00€<p>  
+        
                     <button type="submit" name="borrar_producto" method="POST">Borrar Producto</button>
 
                     <button type="submit" name="vaciar_cesta" method="POST">Vaciar Cesta</button>

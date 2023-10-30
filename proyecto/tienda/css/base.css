@@ -74,11 +74,6 @@ th{
 
 }
 
-.cuadro{
-	border-color: black;
-	border-width: 0.5em solid;
-	border-collapse: collapse;
-}
 
 
 .checkbox{
@@ -157,15 +152,9 @@ fieldset {
 		padding:1em;
 	}
 
-.campo{
-		position: relative;
-		margin: auto;
-		display:block;		
-		padding:1em;	
-}
-	
+
 legend {
-	/*float:left;*/
+	float:left;
 	/*position: relative;*/
 	margin-left: auto;
 	top: -1.5em;
@@ -352,20 +341,21 @@ span{
 	justify-content: left;
 	text-justify: left;
 }
-/*
-.izq td{
 
+
+.cuadro{
+	border: 0.2em solid black;
+	border-collapse: collapse;	
+	margin-bottom:0.5em;
+
+	
+}
+.cuadro td{
+	padding: 0.2em;
 
 }
 
 		
-.dcha{
-
-}
-
-.dcha td{
-
-}*/
 
 /*.membrete{
 }*/
@@ -390,3 +380,4 @@ span{
 	50% {bottom: 25px;}
 }*/
 
+	

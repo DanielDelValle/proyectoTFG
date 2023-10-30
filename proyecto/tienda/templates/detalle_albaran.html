@@ -8,13 +8,10 @@
 <!-- ESTA PLANTILLA LA COMPARTEN EMPLEADOS Y CLIENTES, GRACIAS A LA variable BASE y las que se derivan de ella. -->
 	<div class = "imprimible"><br>
 		<table class ='izq'></table>
-		<th><h1>Factura: &nbsp&nbsp {{factura.id_factura}}</h1></th>	
-		<td><h3>Fecha factura: &nbsp&nbsp {{factura.creado_fecha}}</h3></td>	
+		<th><h1>Albarán: &nbsp&nbsp {{id_albaran}}</h1></th>	
+		<td><h3>Fecha creación: &nbsp&nbsp {{factura.creado_fecha}}</h3></td>	
 		<td><h3>Pedido Nº: &nbsp&nbsp {{factura.id_pedido}}</h3></td>	
-		<td><h3>Factura Rectificativa: &nbsp&nbsp {{factura.fact_rectif}}</h3></td>	
-		</table>
-	
-				<img width="150" height="100" src="imagenes/banner.png"> 
+		</table>	
 			<table class ='dcha'>
 				<tr><td>FRUTAS DEL VALLE S.L.U</td></tr>
 				<tr><td>123456789A</td></tr>
@@ -23,6 +20,7 @@
 			</table>
 			
 			<table class ='izq'>
+				<tr><td><b>ENTREGAR A:</b></td></tr>
 				<tr><td>{{factura.nombre}}</td></tr>
 				<tr><td>{{factura.direccion}}</td></tr>	
 				<tr><td>{{factura.localidad}}</td></tr>
@@ -46,14 +44,15 @@
 				</tr>
 				{% endfor %}
 			</table>
-			<table class ='dcha'>
+			<table class ='cuadro'>
 				<tr><th>Total Coste Productos: </th><td>{{factura.total_mercancia}} €</td></tr>    
 				<tr><th>Coste de Envío: </th><td>{{factura.coste_envio}} €</td></tr>    
 				<tr><th>Base Imponible: </th><td>{{factura.base_imponible}} €</td></tr>    
 				<tr><th>IVA: </th><td>{{factura.iva}} €</td></tr>    
-				<tr><th>TOTAL FACTURA:</th><td><b>{{factura.total_pedido}}€</b></td></tr>  
+				<tr><th>TOTAL PEDIDO:</th><td><b>{{factura.total_pedido}}€</b></td></tr>  
 			</table>
-		<div><br></br>
+	<div>
+		<br></br>
 
 			<form action="index.php/detalle_pedido?id_pedido={{factura.id_pedido}}" method="POST">
 				<button type="submit" name="volver" value="Volver"/>Volver</button>
