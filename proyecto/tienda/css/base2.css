@@ -1,5 +1,5 @@
 html, body {
-	background-color: #dee6b0;
+	background-color: white;
 	font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
 	margin-top: 0px;
 	text-align: center;
@@ -58,11 +58,10 @@ table {
 
 th{
 	color: #8b4513;
-	padding-left:0.5em;
-	padding-right:0.7em;
+	padding-left:0.4em;
+	padding-right:0.4em;
 	border:none;
 }
-
 td{
 	padding-left:0.5em;
 	padding-right:0.7em;
@@ -80,19 +79,7 @@ td{
 
 }
 
-.cuadro{
-	border: 0.2em solid black;
-	border-collapse: collapse;	
-	margin-bottom:0.5em;
 
-	
-}
-.cuadro td{
-	padding: 0.2em;
-
-}
-
-/*
 
 .checkbox{
 	width: 1.3em; 
@@ -114,16 +101,10 @@ display:inline-flex;
 
 }
 
-
-	
 img {
 	border-radius: 0.7em;
 	border: solid 3px #b68b2e;
 }
-
-/*.img_stock:hover{
- transform: scale(4);
-}*/
 
 ul {
 	list-style: none;
@@ -161,7 +142,7 @@ table a{
 
 
 form{
-	background-color: #dee6b0;
+	background-color: white;
 	margin-left: auto;
 	margin-right: auto;
 	position:relative;
@@ -176,13 +157,7 @@ fieldset {
 		padding:1em;
 	}
 
-.campo{
-		position: relative;
-		margin: auto;
-		display:block;		
-		padding:1em;	
-}
-	
+
 legend {
 	/*float:left;*/
 	/*position: relative;*/
@@ -232,37 +207,19 @@ input {
 	width:12em;
 	background-color: #dee6b054;
 	margin-right: 1.1em;
-
+	/*margin-bottom:1.4em;*/
 	/*font-weight: bold;*/
 	
 }
 
 .input_stock{
-	border-radius: 0.7em;
-	border: 2px solid;
-	border-color: #00806bc9;
-	height:2em;
-	width:4em;
-	background-color: #dee6b054;
-	margin-right: 1em;
-
-
-	/*font-weight: bold;*/
+width:4em;
 	
 }
 
 .input_descrip{
-	border-radius: 0.7em;
-	border: 2px solid;
-	border-color: #00806bc9;
-	height:2em;
-	width:50em;
-	background-color: #dee6b054;
-	margin-right: 1em;
+width:30em;
 
-
-	/*font-weight: bold;*/
-	
 }
 #boton_reset{
 	padding: 0.5em;
@@ -345,7 +302,6 @@ span{
 	
 }
 
-
 .banner {
 	height: 6em;
 	/*background-image: '../imagenes/banner.png' no-repeat #7cac2e;*/
@@ -401,20 +357,19 @@ span{
 }
 
 
-/*
-.izq td{
+.cuadro{
+	border: 0.2em solid black;
+	border-collapse: collapse;	
+	margin-bottom:0.5em;
 
+	
+}
+.cuadro td{
+	padding: 0.2em;
 
 }
 
-		
-.dcha{
-
-}
-
-.dcha td{
-
-}*/
+	
 
 /*.membrete{
 }*/
@@ -439,3 +394,4 @@ span{
 	50% {bottom: 25px;}
 }*/
 
+	

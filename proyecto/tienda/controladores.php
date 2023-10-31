@@ -161,7 +161,6 @@ function controlador_stock()
     else $mensaje = "Por favor, seleccione al menos un pedido para modificar";
     
    }
-   var_dump($datos);
     global $twig;
     $template = $twig->load('control_stock.html');  
 	echo $template->render(array ('URI'=>$URI, 'empleado'=>$empleado, 'lista_productos' => $lista_productos,  'validaciones'=>$validaciones, 'funcion_admon'=>$funcion_admon, 'mensaje'=> $mensaje, 'logged'=>$logged, 'logged_legible'=>$logged_legible));
@@ -1402,7 +1401,6 @@ function controlador_crear_cuenta()
         }
 }
 
-    var_dump($lista_emails );
     $validaciones= (object) $validaciones; //CONVIERTO A OBJETOS PARA MAYOR FACILIDAD DE USO EN LA PLANTILLA TWIG
     $datos = (object)$datos;
 
@@ -1615,16 +1613,13 @@ function controlador_alta_correcta(){
 function controlador_contacto()
 {
     {   $URI = get_URI();
-        $usuario = checkSession();
-        $logged = isset($_SESSION['usuario']) ? "cerrar_sesion" : "iniciar_sesion";
-        $logged_legible = isset($_SESSION['usuario']) ? "Cerrar Sesión" : "Iniciar Sesión";
     // Carga la plantilla que se mostrará al usuario con los datos recuperados del modelo
 	global $twig;
     // Carga la plantilla que se mostrará al usuario con los datos recuperados 
     // del modelo
 
     $template = $twig->load('contacto.html');
-	echo $template->render(array ('logged'=>$logged,  'logged_legible'=> $logged_legible));
+	echo $template->render(array ('URI'=>$URI));
 }
 }
 

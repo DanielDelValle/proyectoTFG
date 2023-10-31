@@ -13,11 +13,13 @@
 	{% set boton_anadir = 'disabled' %}   
 	{% set texto_stock = 'Producto Temporalmente No Disponible' %} 	
 {% endif %}
-				<h3><p class = 'upper'>{{producto.nombre}}</p> <br> ID Producto: {{producto.id_prod}}</h3> 
-				<img width="350" height="350" src="imagenes/{{producto.nombre}}.jpg"/> 
-				<h3>PRECIO: {{producto.precio}}€ / Kilo</h3>
-				<h3>{{texto_stock}} </h3>
-				<h3>DESCRIPCION: {{producto.descripcion}}</h3>
+				<h3><b><p class = 'upper'>{{producto.nombre}}</p></b> <br> ID Producto: {{producto.id_prod}}</h3> 
+				<img src="imagenes/{{producto.nombre}}.jpg"/> 
+				<h3><u>Precio</u>:   {{producto.precio}}€/Kg</h3>
+				<h3><u>Stock Disponible</u>:   {{producto.stock}} Kg </h3>
+				<h3><u>Descripción</u>:  {{producto.descripcion}}</h3>
+	
+
 
 
 				<form action="" method="POST">
