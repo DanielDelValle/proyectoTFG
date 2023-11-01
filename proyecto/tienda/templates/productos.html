@@ -53,7 +53,7 @@ $(document).ready(function(){
 			{% for producto in productos %}
 			<li id='imagen'>
                 <a id='titulo_imagen' href="http://localhost/proyecto/tienda/index.php/detalle_producto?id={{producto.id_prod}}">{{producto.nombre}}</a>
-                    <img src="imagenes/{{producto.nombre}}.jpg"/>                   
+                <a href="http://localhost/proyecto/tienda/index.php/detalle_producto?id={{producto.id_prod}}"><img src="imagenes/{{producto.nombre}}.jpg"/>   </a>                  
 
             </li>
 			{% endfor %}

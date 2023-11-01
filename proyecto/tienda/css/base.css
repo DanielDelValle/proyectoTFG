@@ -144,7 +144,7 @@ li {
 	text-align: center;
 	padding:0.8em;
 	display: inline-block;
-	background-color: #d4dd52af;
+	background-color: #ddc45285;
 	margin:0.2em;
 }
 
@@ -157,7 +157,7 @@ li a{
 
 
 a:hover {
-	font-size: 110%;
+
 	background-color:#89ad506e;
 
 }
@@ -213,7 +213,7 @@ button {
 	border-radius: 0.7em;
 	border: 3px solid;
 	border-color: #aa702e;
-	background-color: #d4dd52af;
+	background-color: #ddc45285;
 	width: auto;
 	font-size: 1.1em;
 	margin:0.2em;
@@ -262,7 +262,7 @@ width:30em;
 }
 
 input:hover {
-	background-color: #00806b73;
+	background-color: #ddc45285;
 
 }
 
