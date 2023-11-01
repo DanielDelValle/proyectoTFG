@@ -1393,10 +1393,19 @@ function controlador_mi_cuenta()
     $logged = isset($_SESSION['usuario']) ? "cerrar_sesion" : "iniciar_sesion";
     $logged_legible = isset($_SESSION['usuario']) ? "Cerrar Sesión" : "Iniciar Sesión";
     $total_prods = isset($_SESSION['cesta']) ? count($_SESSION['cesta']) : 0;
-
+    $fecha_contrasena = new DateTime($cliente->contrasena_fecha);
+    $fecha_actual = new DateTime('now');
+    $antiguedad_contrasena = $fecha_contrasena->diff($fecha_actual);
+    $mensaje_contrasena = '';
+   // $antiguedad_contrasena = date_diff($fecha_contrasena, $fecha_actual); // otra manera de hacerlo
+   // Si los días de antiguedad de la contraseña son mayores a 7 y menor que 60, se muestra mensaje de cambio
+    if((intval($antiguedad_contrasena->d) >= 7) && (intval($antiguedad_contrasena->d) < 60)) $mensaje_contrasena = 'Su contraseña caducará dentro de ' .(60-(intval($antiguedad_contrasena->d))) . ' días';
+    //Si es más antigua de 30 dias, le redirecciona al cambio de contraseña.
+    elseif(intval($antiguedad_contrasena->d) >= 60) exit(header('location:cambiar_contrasena'));
+    //echo($antiguedad_contrasena->format('%R%a días'));
     global $twig;
     $template = $twig->load('mi_cuenta.html');
-	echo $template->render(array ('URI'=>$URI, 'usuario' =>$usuario, 'cliente'=>$cliente, 'logged'=>$logged, 'logged_legible'=>$logged_legible, 'total_prods'=>$total_prods));
+	echo $template->render(array ('URI'=>$URI, 'usuario' =>$usuario, 'cliente'=>$cliente, 'logged'=>$logged, 'logged_legible'=>$logged_legible, 'total_prods'=>$total_prods, 'mensaje_contrasena'=>$mensaje_contrasena));
 
 }
 
@@ -1406,8 +1415,17 @@ function controlador_home_admon()
     $usuario = checkSession();
     $empleado = datos_empleado($usuario);
     if ($empleado->tipo_cuenta != 'admon'){exit(header('location:iniciar_sesion'));}
+    $fecha_contrasena = new DateTime($cliente->contrasena_fecha);
+    $fecha_actual = new DateTime('now');
+    $antiguedad_contrasena = $fecha_contrasena->diff($fecha_actual);
+    $mensaje_contrasena = '';
     $mensaje = "";
-
+   // $antiguedad_contrasena = date_diff($fecha_contrasena, $fecha_actual); // otra manera de hacerlo
+   // Si los días de antiguedad de la contraseña son mayores a 7 y menor que 60, se muestra mensaje de cambio
+    if((intval($antiguedad_contrasena->d) >= 7) && (intval($antiguedad_contrasena->d) < 60)) $mensaje_contrasena = 'Su contraseña caducará dentro de ' .(60-(intval($antiguedad_contrasena->d))) . ' días';
+    //Si es más antigua de 30 dias, le redirecciona al cambio de contraseña.
+    elseif(intval($antiguedad_contrasena->d) >= 60) exit(header('location:cambiar_contrasena'));
+    //echo($antiguedad_contrasena->format('%R%a días'));
 
     if (isset($_POST['backup'])){
 
@@ -1419,7 +1437,7 @@ function controlador_home_admon()
     }
     global $twig;
     $template = $twig->load('home_admon.html');
-	echo $template->render(array ('URI'=>$URI, 'usuario' =>$usuario, 'empleado'=>$empleado, 'mensaje'=>$mensaje));
+	echo $template->render(array ('URI'=>$URI, 'usuario' =>$usuario, 'empleado'=>$empleado, 'mensaje'=>$mensaje, 'mensaje_contrasena'=>$mensaje_contrasena));
 
 }
 
@@ -1429,11 +1447,22 @@ function controlador_home_almacen()
     $usuario = checkSession();
     $empleado = datos_empleado($usuario);
     if ($empleado->tipo_cuenta != 'almacen'){exit(header('location:iniciar_sesion'));}
+      $fecha_contrasena = new DateTime($cliente->contrasena_fecha);
+    $fecha_actual = new DateTime('now');
+    $antiguedad_contrasena = $fecha_contrasena->diff($fecha_actual);
+    $mensaje_contrasena = '';  
     $mensaje = "";
+
+   // $antiguedad_contrasena = date_diff($fecha_contrasena, $fecha_actual); // otra manera de hacerlo
+   // Si los días de antiguedad de la contraseña son mayores a 7 y menor que 60, se muestra mensaje de cambio
+    if((intval($antiguedad_contrasena->d) >= 7) && (intval($antiguedad_contrasena->d) < 60)) $mensaje_contrasena = 'Su contraseña caducará dentro de ' .(60-(intval($antiguedad_contrasena->d))) . ' días';
+    //Si es más antigua de 30 dias, le redirecciona al cambio de contraseña.
+    elseif(intval($antiguedad_contrasena->d) >= 60) exit(header('location:cambiar_contrasena'));
+    //echo($antiguedad_contrasena->format('%R%a días'));
 
     global $twig;
     $template = $twig->load('home_almacen.html');
-	echo $template->render(array ('URI'=>$URI, 'usuario' =>$usuario, 'empleado'=>$empleado));
+	echo $template->render(array ('URI'=>$URI, 'usuario' =>$usuario, 'empleado'=>$empleado, 'mensaje'=>$mensaje, 'mensaje_contrasena'=>$mensaje_contrasena));
 
 }
 

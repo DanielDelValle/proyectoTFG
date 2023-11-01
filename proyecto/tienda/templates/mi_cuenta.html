@@ -6,7 +6,9 @@
 
 
 {% block content %}	
-        <h2>Bienvenido {{cliente.nombre}}</h2>
+<div class = 'bienvenida'>
+        <h1>Bienvenido {{cliente.nombre}}</h1>
+        <h3><i>{{mensaje_contrasena}}</i></h3>
 
             <form method="POST"  action="" autocomplete>
                     <fieldset>
@@ -17,6 +19,6 @@
                         </ul>        
                 </fieldset>
             </form>
-
+</div>
 
 {% endblock %}	

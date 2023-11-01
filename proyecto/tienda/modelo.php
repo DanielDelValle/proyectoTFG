@@ -617,6 +617,30 @@ function cambiar_contrasena($email, $nueva_contrasena, $contrasena_fecha){  ///P
 
 }
 
+function renovar_contrasena($email)   //BUSCA CLIENTE POR NIF
+{	
+		$pdo = conexion();
+		if($pdo){
+			try{
+			//La búsqueda se realiza en mysql con el comando LIKE
+			$sql = "SELECT contrasena_fecha, creado_fecha, estado_cuenta, tipo_cuenta
+					FROM cliente WHERE nif ='$nif'";		
+			$lectura = $pdo->query($sql);
+			$cliente= $lectura->fetchObject();
+
+			return $cliente;
+			//total_pedidos, c.total_gasto SI SE LLEGAN A INCORPORAR DICHAS COLUMNAS
+		}	
+		
+		catch(PDOException $e){
+			echo 'Excepción: ', $e->getMessage();
+			return null;
+		  }
+		}  	
+		$pdo = null;
+	
+}
+
 function modificar_cuenta($email, $nuevo_estado){  ///PENDIENTE QUERY QUE FUNCIONE (PROBABLEMENTE SUBQUERY Y SINO  1 POR CADA TABLA )
 	$resultado = 0;
 	$tipo='cliente';
