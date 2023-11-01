@@ -8,7 +8,7 @@
 
 {% block content %}	
 <!-- ESTA PLANTILLA LA COMPARTEN EMPLEADOS Y CLIENTES, GRACIAS A LA variable BASE y las que se derivan de ella. -->
-{% if base =='base' %}
+{% if base =='base' %}<!--  Si la base fuese base_empl, entraría el else-->
 {% set detalle = 'producto' %}
 {% set volver = 'mis_pedidos' %}
 {% else %}

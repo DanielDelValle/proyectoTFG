@@ -87,7 +87,6 @@ function controlador_mercancia()
 
     // Petición al modelo para que retorne la lista de productos de la BD
     $productos = lista_productos();
-    $total_prods = (isset($_SESSION['usuario']) && isset($_SESSION['cesta'])) ? count($_SESSION['cesta']) : 0;
     
     // Carga la plantilla que se mostrará al usuario con los datos recuperados del modelo
 	global $twig;
@@ -317,6 +316,10 @@ function controlador_detalle_empleado()
     if ($base !== 'base_empl') exit(header('location:iniciar_sesion'));
     $empleado = datos_empleado($usuario);
     $mensaje = "";
+    if (isset($_POST["cambiar_contrasena"])) {        
+
+        header("location:cambiar_contrasena");}
+
     global $twig;
     $template = $twig->load('detalle_empleado.html');  
 	echo $template->render(array ('URI'=>$URI, 'empleado'=>$empleado, 'mensaje'=> $mensaje));
@@ -331,13 +334,19 @@ function controlador_mis_datos()
     $logged_legible = isset($_SESSION['usuario']) ? "Cerrar Sesión" : "Iniciar Sesión";
     $total_prods = isset($_SESSION['cesta']) ? count($_SESSION['cesta']) : 0;
     $cesta = checkCesta();
-    $total_prods = $_SESSION['total_prods'];
+
     if (isset($_POST["volver_cuenta"])) exit(header("location:mi_cuenta"));
     if (isset($_POST["mis_pedidos"])) exit(header("location:mis_pedidos"));
 
+    if (isset($_POST["cambiar_contrasena"])) {        
+
+        header("location:cambiar_contrasena");}
+
     if (isset($_POST["eliminar_cuenta"])) {        
         $contador = eliminar_cuenta($usuario);
-        $mensaje = $contador. " cuentas eliminadas";
+        if($contador==1) $mensaje = "Su cuenta ha sido eliminada";
+        elseif($contador==1)  $mensaje = "Su cuenta no ha podido ser eliminada - por favor, intentelo de nuevo o contacte con nosotros";
+   
         $delay=3;
         header("Refresh:$delay");}
    
@@ -1189,7 +1198,7 @@ function controlador_cuentas()
                }
                 $delay=3;
                 header("Refresh:$delay");
-                $mensaje = $contador. " cuentass DESACTIVADAS";
+                $mensaje = $contador. " cuentas DESACTIVADAS";
             }
     else $mensaje = "Por favor, seleccione al menos una cuenta para desactivar";
 
@@ -1205,7 +1214,7 @@ function controlador_cuentas()
                 }
                 $delay=3;
                 header("Refresh:$delay");
-                $mensaje = $contador. " cuentass BLOQUEADAS";
+                $mensaje = $contador. " cuentas BLOQUEADAS";
             }
             else $mensaje = "Por favor, seleccione al menos una cuenta para bloquear";
 
@@ -1220,7 +1229,7 @@ function controlador_cuentas()
             }
             $delay=3;
             header("Refresh:$delay");
-            $mensaje = $contador. " cuentas eliminadas";
+            $mensaje = $contador. " cuentas ELIMINADAS";
         }
     else $mensaje = "Por favor, seleccione al menos una cuenta para eliminar";
 
@@ -1304,11 +1313,79 @@ function controlador_iniciar_sesion(){
 
     }    
 
+
 	global $twig;
     $template = $twig->load('iniciar_sesion.html');
     echo $template->render(array ('URI'=>$URI, 'usuario' => $usuario, 'mensaje' =>$mensaje));
 }
 
+
+function controlador_cambiar_contrasena()
+{   $URI = get_URI();
+    $usuario = checkSession();
+    $logged = isset($_SESSION['usuario']) ? "cerrar_sesion" : "iniciar_sesion";
+    $logged_legible = isset($_SESSION['usuario']) ? "Cerrar Sesión" : "Iniciar Sesión";
+    $base = checkDomain($usuario);   
+    $volver= '';
+
+    if($base =='base'){        
+        $tipo_cuenta = 'cliente';
+        $user= datos_cliente($usuario);
+        $volver = 'mis_datos';
+    }else {
+    $tipo_cuenta = 'empleado';
+    $user= datos_empleado($usuario);
+    $volver = 'detalle_empleado';
+    }
+
+    $total_prods = isset($_SESSION['cesta']) ? count($_SESSION['cesta']) : 0;
+    $mensaje='';
+    $validaciones = array('clave_nueva'=> '', 'clave_repetir'=> '', 'clave_renovar'=>'', 'clave_actual'=>'', 'exito'=>'');
+    $resultado = false;
+    $datos = [];
+    foreach($_POST as $key => $value){
+        if(!isset($datos[$key])){
+            $datos[$key] = htmlspecialchars($value, ENT_COMPAT, 'UTF-8');
+        }
+}
+
+    $validaciones= (object) $validaciones; //CONVIERTO A OBJETOS PARA MAYOR FACILIDAD DE USO AQUI Y EN LA PLANTILLA TWIG
+    $datos = (object)$datos;
+
+    
+    if(isset($_POST['guardar_cambios'])){
+      //  if($datos->contrasena_actual !='' &&  $datos->contrasena_nueva != '' &&  $datos->contrasena_repetir =!''){
+
+            if (valid_contrasena($datos->contrasena_nueva) && ($datos->contrasena_repetir == $datos->contrasena_nueva) && ($datos->contrasena_nueva != $datos->contrasena_actual) 
+            && password_verify($datos->contrasena_actual, $user->contrasena)){
+                $contrasena_fecha = date('Y-m-d H:i:s');
+                $resultado = cambiar_contrasena($usuario, $datos->contrasena_nueva, $contrasena_fecha, $tipo_cuenta);
+                if($resultado == true) $mensaje = "Su contraseña ha sido cambiada con éxito";  
+                    
+                elseif($resultado == false) $mensaje = "Su contraseña no pudo cambiarse - por favor, intentelo de nuevo o contáctenos";
+            }
+            else{
+                if (!valid_contrasena($datos->contrasena_nueva)){
+                    $validaciones->clave_nueva ="NUEVA CONTRASEÑA - Debe tener al menos 8 caracteres, incluyendo mayúsculas, minúsculas, cifras y signos especiales";
+                }
+                if($datos->contrasena_nueva != $datos->contrasena_repetir){
+                    $validaciones->clave_repetir ="Las CONTRASEÑAS no coinciden - por favor, revíselo";
+                }
+                if($datos->contrasena_nueva == $datos->contrasena_actual){
+                    $validaciones->clave_renovar ="La NUEVA CONTRASEÑA debe ser diferente a la actual";
+                }
+                if(!password_verify($datos->contrasena_actual, $cliente->contrasena)){
+                    $validaciones->clave_actual ="La CONTRASEÑA ACTUAL introducida es errónea";
+                }
+
+            }
+     //   }
+    }
+    global $twig;
+    $template = $twig->load('cambiar_contrasena.html');
+	echo $template->render(array ('URI'=>$URI, 'usuario' =>$usuario, 'mensaje'=>$mensaje, 'base'=>$base, 'volver'=>$volver, 'validaciones'=>$validaciones, 'logged'=>$logged, 'logged_legible'=>$logged_legible, 'total_prods'=>$total_prods));
+
+}
 function controlador_mi_cuenta()
 {   $URI = get_URI();
     $usuario = checkSession();
@@ -1317,11 +1394,6 @@ function controlador_mi_cuenta()
     $logged_legible = isset($_SESSION['usuario']) ? "Cerrar Sesión" : "Iniciar Sesión";
     $total_prods = isset($_SESSION['cesta']) ? count($_SESSION['cesta']) : 0;
 
-
-
-    if (isset($_POST["cerrar_sesion"])){
-        exit(header('location:cerrar_sesion'));
-    }
     global $twig;
     $template = $twig->load('mi_cuenta.html');
 	echo $template->render(array ('URI'=>$URI, 'usuario' =>$usuario, 'cliente'=>$cliente, 'logged'=>$logged, 'logged_legible'=>$logged_legible, 'total_prods'=>$total_prods));
@@ -1359,11 +1431,6 @@ function controlador_home_almacen()
     if ($empleado->tipo_cuenta != 'almacen'){exit(header('location:iniciar_sesion'));}
     $mensaje = "";
 
-
-    if (isset($_POST["cerrar_sesion"])){
-        exit(header('location:cerrar_sesion'));
-    }
-
     global $twig;
     $template = $twig->load('home_almacen.html');
 	echo $template->render(array ('URI'=>$URI, 'usuario' =>$usuario, 'empleado'=>$empleado));
@@ -1391,9 +1458,10 @@ function controlador_crear_cuenta()
     $lista_users = lista_users();
     $lista_emails = array_column(lista_users(), 'email'); //extraigo solo el dato "email" de array multidimensional (todos los emails registrados)
     $dominio_empleado = 'frutasdelvalle.com';
-    $total_prods ='';
     $validaciones = array('val_nif'=> '', 'val_nom'=> '', 'val_ape'=>'', 'val_tel'=>'', 'val_email_existe'=>'', 'val_email'=>'', 'val_email_hack'=>'', 
                         'val_dir'=>'','val_loc'=>'','val_postal'=>'', 'val_prov'=>'','val_contrasena'=>'');  
+
+    //Con esto consigo que todos los input se filtren para evitar inyeccion de codigo malicioso.
     $datos = [];
     foreach($_POST as $key => $value){
         if(!isset($datos[$key])){
@@ -1401,7 +1469,7 @@ function controlador_crear_cuenta()
         }
 }
 
-    $validaciones= (object) $validaciones; //CONVIERTO A OBJETOS PARA MAYOR FACILIDAD DE USO EN LA PLANTILLA TWIG
+    $validaciones= (object) $validaciones; //CONVIERTO A OBJETOS PARA MAYOR FACILIDAD DE USO AQUI Y EN LA PLANTILLA TWIG
     $datos = (object)$datos;
 
    
@@ -1413,12 +1481,12 @@ function controlador_crear_cuenta()
         && (valid_tel($_POST['telefono'])) && !email_existe($_POST['email'], $lista_emails) && (valid_email(strtolower($_POST['email'])))
         && ($dominio != $dominio_empleado) && (valid_contrasena($_POST['contrasena'])) && ($_POST['contrasena'] === $_POST['rep_contrasena'])) 
             {
-                    //Con esto consigo que todos los input se filtren para evitar inyeccion de codigo malicioso.
 
-            $creado_fecha = date('Y-m-d H:i:s');
-            $resultado = insert_cliente($_POST['nif'], $_POST['nombre'], $_POST['apellidos'], 
-            $_POST['email'], $_POST['telefono'], $_POST['direccion'], $_POST['localidad'], $_POST['cod_postal'], $_POST['provincia'],
-            $_POST['contrasena'], $creado_fecha); 
+
+            $creado_fecha = date('Y-m-d H:i:s'); // usare el mismo valor para el argumento "contrasena_fecha" (para calcular caducidad de la misma)
+            $resultado = insert_cliente($datos->nif, $datos->nombre, $datos->apellidos, 
+            $datos->email, $datos->telefono, $datos->direccion, $datos->localidad, $datos->cod_postal, $datos->provincia,
+            $datos->contrasena, $creado_fecha, $creado_fecha); 
             if ($resultado != false) { $mensaje = 'Se ha creado ' . $resultado .' cuenta con éxito'; exit(header('location:registro_correcto')); }     
                 
             else $mensaje= "Error al grabar el pedido - por favor, repita el proceso de nuevo";
@@ -1501,6 +1569,7 @@ function controlador_alta_empleado()
 
     $validaciones = array('val_nif'=> '', 'val_nom'=> '', 'val_ape'=>'', 'val_email_existe'=>'', 'val_email_empleado'=>'', 'val_tel'=>'', 'val_dir'=>'',
                         'val_loc'=>'','val_postal'=>'', 'val_prov'=>'','val_contrasena'=>'', 'val_tipo'=>'');  
+    //Con esto consigo que todos los input se filtren para evitar inyeccion de codigo malicioso.
     $datos = [];    
     foreach($_POST as $key => $value){
         if(!isset($datos[$key])){
@@ -1520,11 +1589,11 @@ function controlador_alta_empleado()
         (es_texto($_POST['provincia'])) && (valid_tel($_POST['telefono'])) && !email_existe($_POST['email'], $lista_emails) && (valid_email_empleado(strtolower($_POST['email']))) && 
         (valid_contrasena($_POST['contrasena'])) && ($_POST['contrasena'] === $_POST['rep_contrasena']) && (!empty($_POST['tipo_cuenta']))){
               
-        $creado_fecha = date('Y-m-d H:i:s');
+        $creado_fecha = date('Y-m-d H:i:s'); // usare el mismo valor para el argumento "contrasena_fecha" (para calcular caducidad de la misma)
 
-        $resultado = alta_empleado($_POST['nif'], $_POST['nombre'], $_POST['apellidos'], 
-        $_POST['email'], $_POST['telefono'], $_POST['direccion'], $_POST['localidad'], $_POST['cod_postal'], $_POST['provincia'],
-        $_POST['contrasena'], $creado_fecha, $_POST['tipo_cuenta']);
+        $resultado = alta_empleado($datos->nif, $datos->nombre, $datos->apellidos, 
+        $datos->email, $datos->telefono, $datos->direccion, $datos->localidad, $datos->cod_postal, $datos->provincia,
+        $datos->contrasena, $creado_fecha, $creado_fecha, $_POST['tipo_cuenta']);
 
         if ($resultado != null) { $mensaje = 'Se ha registrado ' . $resultado .' empleado con éxito'; exit(header('location:alta_correcta')); }     
                 

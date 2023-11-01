@@ -160,75 +160,75 @@ function get_sugerencias_ajax($busqueda){
 	echo $sugerencias;
 
 
-	//Unifico ambas listas de usuarios(empleado + cliente) para un unico controlador de autenticacion
-	function lista_users()   
-	{	
-			$pdo = conexion();
-			if($pdo){
-				try{
-				$pdo->beginTransaction();
-				//con esta query recupero todos los mails de ambas tablas, osea todos los usuarios existentes
-				$sql = ("SELECT email FROM cliente UNION ALL
-						SELECT email FROM empleado
-				 ");	
-	
-				$lectura = $pdo->prepare($sql);
-	
-				if(($lectura->execute())>0){ //si la consulta ha retornado algún resultado ---          
-					$pdo->commit();
-					$resultado = $lectura->rowCount(); // --- entonces retorno el número de clientes encontrados)
-					$lista_users= $lectura->fetchAll(PDO::FETCH_OBJ);
-				}
-	
-				else {
-					$resultado=false;
-					echo "No se encontraron usuarios";
-					$pdo->rollback();		
-					}	
-				}	
-		catch(PDOException $e){
-			echo 'Excepción: ', $e->getMessage();
-			$resultado = false;				
-			}
-			$pdo = null;
-			return $lista_users;
-	
-	 }else{  return null; die("error en la conexión a la BD");} //en caso de no haber conexión, directamente se para el proceso
-				
-			
-	}
-	//DEVUELVE LISTA DE TODOS PEDIDOS ORDENADOS DE MÁS RECIENTE FECHA CREACIÓN A MÁS ANTIGUAS
-	//function lista_pedidos($intervalo){ WHERE create_date BETWEEN NOW() - INTERVAL '$intervalo' DAY AND NOW()  - AÑADIR INTERVALO SI QUEREMOS ACOTAR
-
-	function lista_pedidos(){
+//Unifico ambas listas de usuarios(empleado + cliente) para un unico controlador de autenticacion
+function lista_users()   
+{	
 		$pdo = conexion();
 		if($pdo){
 			try{
-			$sql = "SELECT *
-					FROM pedido 
-					ORDER BY creado_fecha DESC";
-	
-	
-			$resultado = $pdo->query($sql);
-			$pedidosArray = $resultado->fetchAll(PDO::FETCH_OBJ);
-	
-		/*	foreach($pedidosArray as $i => $pedido) {   
-			}*/
+			$pdo->beginTransaction();
+			//con esta query recupero todos los mails de ambas tablas, osea todos los usuarios existentes
+			$sql = ("SELECT email FROM cliente UNION ALL
+					SELECT email FROM empleado
+				");	
+
+			$lectura = $pdo->prepare($sql);
+
+			if(($lectura->execute())>0){ //si la consulta ha retornado algún resultado ---          
+				$pdo->commit();
+				$resultado = $lectura->rowCount(); // --- entonces retorno el número de clientes encontrados)
+				$lista_users= $lectura->fetchAll(PDO::FETCH_OBJ);
+			}
+
+			else {
+				$resultado=false;
+				echo "No se encontraron usuarios";
+				$pdo->rollback();		
+				}	
+			}	
+	catch(PDOException $e){
+		echo 'Excepción: ', $e->getMessage();
+		$resultado = false;				
+		}
+		$pdo = null;
+		return $lista_users;
+
+	}else{  return null; die("error en la conexión a la BD");} //en caso de no haber conexión, directamente se para el proceso
 			
-			$mensaje = "Se han encontrado <b>" . $resultado->rowCount() . "</b> pedido(s) <br><br>"; 
-			if ($resultado->rowCount()==0) $mensaje = "No se han encontrado pedidos";
-			$pdo = null;  //cierro conexion para no mantener BD en espera
-			//c.total_pedidos, c.total_gasto SI SE LLEGAN A INCORPORAR DICHAS COLUMNAS
-		}	
 		
-		catch(PDOException $e){
-			echo 'Excepción: ', $e->getMessage();
-			return null;
-		  }
-		}  
+}
+	//DEVUELVE LISTA DE TODOS PEDIDOS ORDENADOS DE MÁS RECIENTE FECHA CREACIÓN A MÁS ANTIGUAS
+	//function lista_pedidos($intervalo){ WHERE create_date BETWEEN NOW() - INTERVAL '$intervalo' DAY AND NOW()  - AÑADIR INTERVALO SI QUEREMOS ACOTAR
+
+function lista_pedidos(){
+	$pdo = conexion();
+	if($pdo){
+		try{
+		$sql = "SELECT *
+				FROM pedido 
+				ORDER BY creado_fecha DESC";
+
+
+		$resultado = $pdo->query($sql);
+		$pedidosArray = $resultado->fetchAll(PDO::FETCH_OBJ);
+
+	/*	foreach($pedidosArray as $i => $pedido) {   
+		}*/
 		
-	return $pedidosArray;
-	}
+		$mensaje = "Se han encontrado <b>" . $resultado->rowCount() . "</b> pedido(s) <br><br>"; 
+		if ($resultado->rowCount()==0) $mensaje = "No se han encontrado pedidos";
+		$pdo = null;  //cierro conexion para no mantener BD en espera
+		//c.total_pedidos, c.total_gasto SI SE LLEGAN A INCORPORAR DICHAS COLUMNAS
+	}	
+	
+	catch(PDOException $e){
+		echo 'Excepción: ', $e->getMessage();
+		return null;
+		}
+	}  
+	
+return $pedidosArray;
+}
 
 	
 //DEVUELVE LISTA DE TODAS LAS CUENTAS (USUARIO Y EMPLEADO) ORDENADAS DE MÁS RECIENTE FECHA CREACIÓN A MÁS ANTIGUAS
@@ -416,7 +416,7 @@ function lista_productos()
 }
 
 
-function insert_cliente($nif, $nombre, $apellidos, $email, $telefono, $direccion, $localidad, $cod_postal, $provincia, $contrasena, $creado_fecha){
+function insert_cliente($nif, $nombre, $apellidos, $email, $telefono, $direccion, $localidad, $cod_postal, $provincia, $contrasena, $contrasena_fecha, $creado_fecha){
 	$resultado = false;
 	$pdo = conexion();
 	if($pdo){
@@ -430,8 +430,8 @@ function insert_cliente($nif, $nombre, $apellidos, $email, $telefono, $direccion
 
 			$pdo->beginTransaction();
 
-			$sql = "INSERT INTO cliente(nif, nombre, apellidos, email, telefono, direccion, localidad, cod_postal, provincia, contrasena, creado_fecha) 
-					VALUES ('".$nif."', '".$nombre."', '".$apellidos."', '".$email."', '".$telefono."', '".$direccion."', '".$localidad."', '".$cod_postal."', '".$provincia."', '".$hash_passwd."', '".$creado_fecha."');";
+			$sql = "INSERT INTO cliente(nif, nombre, apellidos, email, telefono, direccion, localidad, cod_postal, provincia, contrasena, contrasena_fecha, creado_fecha) 
+					VALUES ('".$nif."', '".$nombre."', '".$apellidos."', '".$email."', '".$telefono."', '".$direccion."', '".$localidad."', '".$cod_postal."', '".$provincia."','".$hash_passwd."', '".$contrasena_fecha."', '".$creado_fecha."');";
 
 
 			$insertarCliente = $pdo->prepare($sql);
@@ -460,7 +460,7 @@ function insert_cliente($nif, $nombre, $apellidos, $email, $telefono, $direccion
 }
 
 
-function alta_empleado($nif, $nombre, $apellidos, $email, $telefono, $direccion, $localidad, $cod_postal, $provincia, $contrasena, $creado_fecha, $tipo_cuenta){
+function alta_empleado($nif, $nombre, $apellidos, $email, $telefono, $direccion, $localidad, $cod_postal, $provincia, $contrasena, $contrasena_fecha, $creado_fecha, $tipo_cuenta){
 	// select* from empleado para comparar por si duplicamos un DNI
 	$pdo = conexion();
 	if($pdo){
@@ -474,8 +474,8 @@ function alta_empleado($nif, $nombre, $apellidos, $email, $telefono, $direccion,
 
 			$pdo->beginTransaction();
 
-			$sql = "INSERT INTO empleado(nif, nombre, apellidos, email, telefono, direccion, localidad, cod_postal, provincia, contrasena, creado_fecha, tipo_cuenta) 
-					VALUES ('".$nif."', '".$nombre."', '".$apellidos."', '".$email."', '".$telefono."', '".$direccion."', '".$localidad."', '".$cod_postal."', '".$provincia."', '".$hash_passwd."', '".$creado_fecha."', '".$tipo_cuenta."');";
+			$sql = "INSERT INTO empleado(nif, nombre, apellidos, email, telefono, direccion, localidad, cod_postal, provincia, contrasena, contrasena_fecha, creado_fecha, tipo_cuenta) 
+					VALUES ('".$nif."', '".$nombre."', '".$apellidos."', '".$email."', '".$telefono."', '".$direccion."', '".$localidad."', '".$cod_postal."', '".$provincia."', '".$hash_passwd."', '".$contrasena_fecha."','".$creado_fecha."', '".$tipo_cuenta."');";
 			$insertarEmpleado = $pdo->prepare($sql);
 
 			if(($insertarEmpleado->execute())>0){ //si la consulta ha retornado algún resultado ---          
@@ -508,7 +508,7 @@ function datos_cliente_nif($nif)   //BUSCA CLIENTE POR NIF
 		if($pdo){
 			try{
 			//La búsqueda se realiza en mysql con el comando LIKE
-			$sql = "SELECT nif, nombre, apellidos, email, telefono, direccion, localidad, cod_postal, provincia, contrasena, creado_fecha, estado_cuenta, tipo_cuenta
+			$sql = "SELECT nif, nombre, apellidos, email, telefono, direccion, localidad, cod_postal, provincia, contrasena, contrasena_fecha, creado_fecha, estado_cuenta, tipo_cuenta
 					FROM cliente WHERE nif ='$nif'";		
 			$lectura = $pdo->query($sql);
 			$cliente= $lectura->fetchObject();
@@ -532,7 +532,7 @@ function datos_cliente($email)  // BUSCA CLIENTE POR MAIL
 		if($pdo){
 			try{
 			//La búsqueda se realiza en mysql con el comando LIKE
-			$sql = "SELECT nif, nombre, apellidos, email, telefono, direccion, localidad, cod_postal, provincia, contrasena, creado_fecha, estado_cuenta, tipo_cuenta
+			$sql = "SELECT nif, nombre, apellidos, email, telefono, direccion, localidad, cod_postal, provincia, contrasena, contrasena_fecha, creado_fecha, estado_cuenta, tipo_cuenta
 					FROM cliente WHERE email ='$email'";		
 			$lectura = $pdo->query($sql);
 			$cliente= $lectura->fetchObject();
@@ -556,7 +556,7 @@ function datos_empleado($email)
 		if($pdo){
 			try{
 			//La búsqueda se realiza en mysql con el comando LIKE
-			$sql = "SELECT nif, nombre, apellidos, email, telefono, direccion, localidad, cod_postal, provincia, contrasena, creado_fecha, estado_cuenta, tipo_cuenta
+			$sql = "SELECT nif, nombre, apellidos, email, telefono, direccion, localidad, cod_postal, provincia, contrasena, contrasena_fecha, creado_fecha, estado_cuenta, tipo_cuenta
 					FROM empleado WHERE email ='$email'";		
 			$lectura = $pdo->query($sql);
 			$empleado= $lectura->fetchObject();
@@ -572,6 +572,49 @@ function datos_empleado($email)
 		}  	
 		$pdo = null;
 	
+}
+
+function cambiar_contrasena($email, $nueva_contrasena, $contrasena_fecha){  ///PENDIENTE QUERY QUE FUNCIONE (PROBABLEMENTE SUBQUERY Y SINO  1 POR CADA TABLA )
+	$resultado = 0;
+	$tipo='cliente';
+	$pdo = conexion();
+	if($pdo){
+		//Para discernir si tengo que modificar la tabla empleado o la tabla cliente
+		$dominio = ltrim(strstr($email, '@'), '@');
+		if ($dominio === 'frutasdelvalle.com')
+		$tipo = 'empleado';
+		$hash_passwd = password_hash($nueva_contrasena, PASSWORD_ARGON2ID);
+
+		try{				
+			$pdo->beginTransaction();			
+
+			$sql = "UPDATE $tipo
+					SET contrasena = '$hash_passwd'
+					WHERE email = '$email'";
+
+
+			$contrasena_modificada = $pdo->prepare($sql);
+
+		if(($contrasena_modificada->execute())>0){ //si la consulta ha retornado algún resultado ---          
+			$pdo->commit();
+			$resultado = true; // --- entonces retorno el número de autores afectados (borrados)
+		}
+
+	else {
+		$resultado=false;
+		$pdo->rollback();		
+		}	
+	}	
+	catch(PDOException $e){
+	echo 'Excepción: ', $e->getMessage();
+	$resultado = false;				
+	}
+	$pdo = null;
+	return $resultado;
+	
+}else{  return null; die("error en la conexión a la BD");} //en caso de no haber conexión, directamente se para el proceso
+
+
 }
 
 function modificar_cuenta($email, $nuevo_estado){  ///PENDIENTE QUERY QUE FUNCIONE (PROBABLEMENTE SUBQUERY Y SINO  1 POR CADA TABLA )

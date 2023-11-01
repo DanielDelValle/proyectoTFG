@@ -1,0 +1,50 @@
+{% extends "#{base}.html" %}
+
+{% block stylesheets %}
+<link rel="stylesheet" type="text/css" href="css/base.css">
+{% endblock %}
+
+{% block toolbar %}      
+<!-- indicando el block en vacio, anulo la herencia de base.html (en la pantalla login, no conviene ni es necesario que haya toolbar) -->
+{% endblock %}
+
+{% block content %}	
+
+
+<h1>Cambio de Contraseña</h1>
+
+			 <form action="" method="POST">
+
+	 
+					 <label for="contrasena">Contraseña Actual</label>
+					 <input type="password" name="contrasena_actual"/>
+					 <br>	 <br>	 <br>
+	 
+					 <label for="contrasena">Nueva Contraseña</label>
+					 <input type="password" name="contrasena_nueva"/>
+					 <br>	 <br>	 <br>
+					 
+					 <label for="contrasena">Repita Nueva Contraseña</label>
+					 <input type="password" name="contrasena_repetir"/>
+					 <br>	 <br>	 <br>
+	 
+					 <!--	<input type = "submit" name ="entrar" value = "Entrar" method ="POST" /> -->
+					 <button class='critical_green' type="submit" name="guardar_cambios" method="POST">Guardar Cambios</button>	 
+			 </form>
+			 
+			 {% block mensaje %}
+			 <p class='mensaje'>{{mensaje}}</p><br>
+			 {% endblock %}
+
+			 <p class='importante'>
+				{{validaciones.clave_nueva}}<br>{{validaciones.clave_repetir}}<br>{{validaciones.clave_renovar}}<br>{{validaciones.clave_actual}}<br>{{validaciones.exito}}<br>
+			</p><br>
+		
+
+
+	<form action="index.php/{{volver}}" method="POST">
+		<button type="submit" name="volver" value="volver"/>Volver a Mis Datos</button>
+	</form>
+
+
+{% endblock %}	

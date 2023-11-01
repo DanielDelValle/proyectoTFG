@@ -32,6 +32,7 @@ elseif ($URI == 'detalle_producto' && isset($_GET['id']))
     controlador_detalle_producto($_GET['id']); 
 }
 
+
 elseif ($URI == 'detalle_mercancia' && isset($_GET['id'])) 
 {
 
@@ -69,10 +70,14 @@ elseif ($URI == 'detalle_pedido' && isset($_GET['id_pedido']))
 }
 
 
-
 elseif ($URI == 'iniciar_sesion')
 {      
 		controlador_iniciar_sesion(); 
+}
+
+elseif ($URI == 'cambiar_contrasena')
+{      
+		controlador_cambiar_contrasena(); 
 }
 
 elseif ($URI == 'crear_cuenta')

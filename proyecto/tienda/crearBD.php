@@ -68,6 +68,7 @@
                 cod_postal INTEGER(5),
                 provincia VARCHAR(35),
                 contrasena VARCHAR(255),
+                contrasena_fecha DATETIME,
                 creado_fecha DATETIME,
                 estado_cuenta ENUM ('activo', 'inactivo', 'pendiente', 'bloqueado') DEFAULT 'pendiente',
                 tipo_cuenta ENUM ('cliente') DEFAULT 'cliente'
