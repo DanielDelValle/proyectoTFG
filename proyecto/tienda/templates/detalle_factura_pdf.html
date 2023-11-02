@@ -1,66 +1,94 @@
+<!DOCTYPE HTML>
+<html lang='es'>
+
+<head>
+
+	<meta charset='UTF-8'>
+	<meta name='viewport' content='width=device-width, initial-scale=1.0'>
+<!--	<link rel='stylesheet' type='text/css' href='css/base_pdf.css'> -->
 
 
-	<!DOCTYPE HTML>
-	<html lang="es">
-	
-	<head>
-	
-		<meta charset="UTF-8">
-		<meta http-equiv="X-UA-Compatible" content="IE=edge">
-		<!-- 	<meta name="viewport" content="width=device-width, initial-scale=1.0">-->
-		<base href="http://localhost/proyecto/tienda/">
-	
-	
-	</head>
-	
-	<body>
-		<header class="banner"></header>
+</head>
 
-		<h1>Factura:{{factura.id_factura}}</h1>	
-		<h3>Fecha factura: {{factura.creado_fecha}}</h3>	
-		<h3>Pedido Nº: {{factura.id_pedido}}</h3>	
-		<h3>Factura Rectificativa: {{factura.fact_rectif}}</h3>	
+<body>
+<!--	<img style='float:right; margin-right:6em;' src='C:/xampp/htdocs/proyecto/tienda/imagenes/banner.jpg'>-->
+	<header></header>
+	<table style='float:right; margin-right:6em; margin-top:2em;'>
+		<tr>
+			<td>FRUTAS DEL VALLE S.L.U</td>
+		</tr>
+		<tr>
+			<td>Avenida de las Huertas, 39</td>
+		</tr>
+		<tr>
+			<td>58550 ALMERIA</td>
+		</tr>
+		<tr>
+			<td>CIF.:123456789A</td>
+		</tr>
+	</table><br>
+	<h3>Factura: {{factura.id_factura}}</h3>
+	<p>Fecha factura: <b>{{factura.creado_fecha}}</b></p>
+	<p>Pedido Nº: <b>{{factura.id_pedido}}</b></p>
+	<p>Factura Rectificativa: <b>{{factura.fact_rectif}}</b></p>
+	<table>
+		<tr>
+			<td><b>{{factura.nombre}}</b></td>
+		</tr>
+		<tr>
+			<td><b>{{factura.direccion}}</b></td>
+		</tr>
+		<tr>
+			<td><b>{{factura.localidad}}</b></td>
+		</tr>
+		<tr>
+			<td style='text-transform:uppercase;'><b>{{factura.cod_postal}} {{factura.provincia}}</b></td>
+		</tr>
+		<tr>
+			<td><b>CIF/NIF: {{ factura.nif}}</b></td>
+		</tr>
+	</table><br>
+	<table style="border:0.2em solid black;">
+		<tr>
+		<th style="border-bottom:0.1em solid black;">CONCEPTO</th>
+		</tr>
+		<th style="text-align:center;border-bottom:0.1em solid black;">Id Producto</th>
+		<th style="text-align:center;border-bottom:0.1em solid black;">Nombre</th>
+		<th style="text-align:center;border-bottom:0.1em solid black;">Cantidad</th>
+		<th style="text-align:center;border-bottom:0.1em solid black;">€/Kg</th>
+		<th style="text-align:center;border-bottom:0.1em solid black;">Subtotal</th>
 
-	
-		<!-- 	<img src="imagenes/banner.jpg"> -->
-			<table>
-				<tr><td>FRUTAS DEL VALLE S.L.U</td></tr>
-				<tr><td>123456789A</td></tr>
-				<tr><td>Avenida de las Huertas, 39</td></tr>
-				<tr><td>58550 ALMERIA</td></tr>
-			</table>
-			
-			<table>
-				<tr><td>{{factura.nombre}}</td></tr>
-				<tr><td>{{factura.direccion}}</td></tr>	
-				<tr><td>{{factura.localidad}}</td></tr>
-				<tr><td>{{factura.cod_postal}}{{factura.provincia}}</td></tr>
-				<tr><td><b>CIF/NIF: {{ factura.nif}}</b></td></tr>
-			</table>
-			<table>
-				<tr><th>CONCEPTO</th></tr>
-				<th>Id Producto</th>
-				<th>Nombre</th>
-				<th>Cantidad</th>
-				<th>Precio/Kg</th>
-				<th>Subtotal</th>
-				{% for key, producto in contenido %}
-				<tr>	
-				<td>	{{producto.id_prod}}</td>	
-				<td>	{{producto.nombre}}</a></td>	
-				<td>	{{producto.cantidad}} Kg</td>	
-				<td>	{{producto.precio}} €</td>	
-				<td>	{{producto.cantidad * producto.precio}} €</td>	
-				</tr>
-				{% endfor %}
-			</table>
-			<table>
-				<tr><th>Total Coste Productos: </th><td>{{factura.total_mercancia}} €</td></tr>    
-				<tr><th>Coste de Envío: </th><td>{{factura.coste_envio}} €</td></tr>    
-				<tr><th>Base Imponible: </th><td>{{factura.base_imponible}} €</td></tr>    
-				<tr><th>IVA: </th><td>{{factura.iva}} €</td></tr>    
-				<tr><th>TOTAL FACTURA:</th><td><b>{{factura.total_pedido}}€</b></td></tr>  
-			</table>
-			<footer>
-				2023 Daniel del Valle Gonzalez - Proyecto Fin de FP DAW
-			</footer>
+		{% for key, producto in contenido %}
+		<tr>
+			<td style="padding-right:1.5em;text-align:center;text-justify:left;"> {{producto.id_prod}}</td>
+			<td style="padding-right:1.5em;"> {{producto.nombre}}</a></td>
+			<td style="padding-right:1.5em;text-align:center;text-justify:left;"> {{producto.cantidad}} Kg</td>
+			<td style="padding-right:1.5em;text-align:center;text-justify:left;"> {{producto.precio}} €</td>
+			<td style="padding-right:1.5em;text-align:center;text-justify:left;"> {{producto.cantidad * producto.precio}} €</td>
+		</tr>
+		{% endfor %}
+
+	</table><br>
+	<table style='float:right;margin-right:6em;'>
+		<tr>
+
+			<th style="text-align:left;padding-right:1.5em;"><b>Total Coste Productos:</b> </th>
+			<td>{{factura.total_mercancia}} €</td>
+		</tr>
+		<tr>
+			<th style="text-align:left;padding-right:1.5em;">Coste de Envío: </th>
+			<td>{{factura.coste_envio}} €</td>
+		</tr>
+		<tr>
+			<th style="text-align:left;padding-right:1.5em;">Base Imponible: </th>
+			<td>{{factura.base_imponible}} €</td>
+		</tr>
+		<tr>
+			<th style="text-align:left;padding-right:1.5em;">IVA: </th>
+			<td>{{factura.iva}} €</td>
+		</tr>
+		<tr>
+			<th style="text-align:left;padding-right:1.5em;">TOTAL FACTURA:</th>
+			<td><b>{{factura.total_pedido}}€</b></td>
+		</tr>
+	</table>

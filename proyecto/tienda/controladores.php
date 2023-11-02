@@ -267,9 +267,6 @@ function controlador_detalle_factura($id_factura)
 
         $dompdf = new Dompdf(); 
         $dompdf->load_html($twig->render('detalle_factura.html', array ('URI'=>$URI, 'empleado'=>$empleado, 'usuario'=>$usuario,'base'=>$base, 'factura'=>$factura, 'contenido'=>$contenido, 'mensaje'=> $mensaje, 'logged'=>$logged, 'logged_legible'=>$logged_legible)));
-        $dompdf->setPaper('A4', 'landscape');
-        $dompdf->render(); 
-        $dompdf->stream("factura.pdf");
         exit(0);
 
     }
@@ -283,7 +280,6 @@ function controlador_detalle_factura_pdf($id_factura){
     $URI = get_URI();    
     //Con las siguientes 2 lineas restrinjo el acceso a partes solo destinadas a empleados
     $usuario = checkSession();
-    //$usuario = "danimolar@hotmail.com";
     $base = checkDomain($usuario);   
     $empleado = datos_empleado($usuario);
     $cliente = datos_cliente($usuario);
@@ -293,16 +289,17 @@ function controlador_detalle_factura_pdf($id_factura){
     $factura = datos_factura($id_factura);
     $contenido= json_decode($factura->contenido);  //DESHAGO EL "SERIALIZE" QUE PERMITIA GUARDAR EL ARRAY EN LA BBDD, PARA PODER INTERPRETARLO
     $mensaje = "";
-
-
     global $twig;
+
     $dompdf = new Dompdf(); 
     $dompdf->load_html($twig->render('detalle_factura_pdf.html', array ('URI'=>$URI, 'empleado'=>$empleado, 'usuario'=>$usuario,'base'=>$base, 'factura'=>$factura, 'contenido'=>$contenido, 'mensaje'=> $mensaje, 'logged'=>$logged, 'logged_legible'=>$logged_legible)));
     $dompdf->setPaper('A4', 'landscape');
     $dompdf->render(); 
-    $dompdf->stream("factura.pdf");
+    $pdf = $dompdf->output();
+    $numfact = 'factura'.$id_factura.'.pdf';
+    ob_end_clean();
+    $dompdf->stream($numfact);
     exit(0);
-
 }
 
 function controlador_detalle_albaran($id_albaran)
@@ -804,12 +801,7 @@ function controlador_mis_pedidos()
         }
     else $mensaje = "Por favor, seleccione al menos un producto para modificar";
     }
-
-
-   
-    if (isset($_POST["cerrar_sesion"])){
-        exit(header('location:cerrar_sesion'));
-    }
+    
     $template = $twig->load('mis_pedidos.html');
 	echo $template->render(array ('URI'=>$URI, 'usuario' =>$usuario, 'cliente'=> $cliente, 'logged'=>$logged, 'mensaje'=>$mensaje, 'total_prods'=>$total_prods, 'logged_legible'=>$logged_legible, 'pedidosArray' => $pedidosArray));
 
