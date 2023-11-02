@@ -1,6 +1,6 @@
 <?php
 /**
-* Comprueba que una cadena contenga exclusivamente caracteres, y espacios en blanco con \s.
+* Comprueba que una cadena contenga exclusivamente letras, y espacios en blanco con \s.
 *
 * @param string $cadena Cadena que se va a comprobar.
 *
@@ -34,7 +34,7 @@ function es_cifra($cadena) {
 }
 
 /**
-* Comprueba que una cadena contenga exclusivamente caracteres y numeros, y espacios en blanco con \s.
+* Comprueba que una cadena contenga exclusivamente letras y numeros, y espacios en blanco con \s.
 *
 * @param string $cadena Cadena que se va a comprobar.
 *
@@ -146,6 +146,7 @@ function valid_tel($tel){
      //este patrón permite que el número empiece por 6 o 7 para móviles, y por 8 o 9 si se tratase de un fijo (el mismo campo admite ambos valores)
     return (preg_match($patron, $tel));
  }
+
  
 /**
 * Comprueba que una cadena contenga exclusivamente caracteres y numeros, y espacios en blanco con \s.
@@ -168,7 +169,7 @@ function valid_direccion($cadena) {
 * @param string $email Cadena que se va a comprobar.
 * @param array $lista_emails Cadena que se va a comprobar.
 *
-* @return bool Retorna true si el email se encuentra en el array, false sino.
+* @return bool Retorna true si el email se encuentra en el array, false en caso contrario.
 */
 
 function email_existe($email, $lista_emails) {

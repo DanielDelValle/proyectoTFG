@@ -7,14 +7,14 @@
 {% block content %}	
 <!-- ESTA PLANTILLA LA COMPARTEN EMPLEADOS Y CLIENTES, GRACIAS A LA variable BASE y las que se derivan de ella. -->
 	<div class = "imprimible"><br>
-		<table class ='izq'></table>
-		<th><h1>Factura: &nbsp&nbsp {{factura.id_factura}}</h1></th>	
-		<td><h3>Fecha factura: &nbsp&nbsp {{factura.creado_fecha}}</h3></td>	
-		<td><h3>Pedido Nº: &nbsp&nbsp {{factura.id_pedido}}</h3></td>	
-		<td><h3>Factura Rectificativa: &nbsp&nbsp {{factura.fact_rectif}}</h3></td>	
-		</table>
+
+		<h1>Factura: {{factura.id_factura}}</h1>	
+		<h3>Fecha factura: &nbsp&nbsp {{factura.creado_fecha}}</h3>	
+		<h3>Pedido Nº: &nbsp&nbsp {{factura.id_pedido}}</h3>	
+		<h3>Factura Rectificativa: &nbsp&nbsp {{factura.fact_rectif}}</h3>
 	
-				<img class='membrete' src="imagenes/banner.png"> 
+	
+			<img class='membrete' src="imagenes/banner.jpg">
 			<table class ='dcha'>
 				<tr><td>FRUTAS DEL VALLE S.L.U</td></tr>
 				<tr><td>123456789A</td></tr>
@@ -39,7 +39,7 @@
 				{% for key, producto in contenido %}
 				<tr>	
 				<td>	{{producto.id_prod}}</td>	
-				<td><a href="http://localhost/proyecto/tienda/index.php/detalle_{{detalle}}?id={{producto.id_prod}}">{{producto.nombre}}</a></td>	
+				<td>	{{producto.nombre}}</td>	
 				<td>	{{producto.cantidad}} Kg</td>	
 				<td>	{{producto.precio}} €</td>	
 				<td>	{{producto.cantidad * producto.precio}} €</td>	
@@ -54,6 +54,11 @@
 				<tr><th>TOTAL FACTURA:</th><td><b>{{factura.total_pedido}}€</b></td></tr>  
 			</table>
 		<div><br></br>
+
+			
+			<form action="index.php/detalle_factura_pdf?id_factura={{factura.id_factura}}" method="POST">
+				<button type="submit" name="imprimir" value="imprimir"/>Imprimir PDF</button>
+			</form>
 
 			<form action="index.php/detalle_pedido?id_pedido={{factura.id_pedido}}" method="POST">
 				<button type="submit" name="volver" value="Volver"/>Volver</button>

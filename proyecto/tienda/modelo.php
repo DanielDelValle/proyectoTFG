@@ -1605,6 +1605,28 @@ function items_pedido($id_pedido)
 	return $detallePedidoArray;
 						
 }
+function contenido_factura($id_pedido)
+{	
+		$pdo = conexion();
+		if($pdo){
+			try{
+			$sql = "SELECT id_prod, nombre, cantidad, precio FROM productos_pedido
+					WHERE id_pedido ='$id_pedido'";	
+
+			$resultado = $pdo->query($sql);
+			$detallePedidoArray = $resultado->fetchAll(PDO::FETCH_OBJ);
+			$pdo = null;
+		}	
+		
+		catch(PDOException $e){
+			echo 'Excepción: ', $e->getMessage();
+			return null;
+			}
+		}  
+		
+	return $detallePedidoArray;
+						
+}
 
 function datos_factura($id_factura)
 {	

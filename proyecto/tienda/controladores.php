@@ -2,6 +2,7 @@
 // controladores.php
 require_once '../vendor/autoload.php';
 require_once 'email.php';
+use Dompdf\Dompdf as Dompdf;
 
 
 $loader = new \Twig\Loader\FilesystemLoader('templates');
@@ -245,6 +246,44 @@ function controlador_detalle_factura($id_factura)
 {   $URI = get_URI();    
     //Con las siguientes 2 lineas restrinjo el acceso a partes solo destinadas a empleados
     $usuario = checkSession();
+    //$usuario = "danimolar@hotmail.com";
+    $base = checkDomain($usuario);   
+    $empleado = datos_empleado($usuario);
+    $cliente = datos_cliente($usuario);
+    $logged = isset($_SESSION['usuario']) ? "cerrar_sesion" : "iniciar_sesion";
+    $logged_legible = isset($_SESSION['usuario']) ? "Cerrar Sesión" : "Iniciar Sesión";
+
+   /* $renderable = [
+        '#theme' => 'my_template',
+        '#test_var' => 'test variable',
+        ];*/
+  
+
+    $factura = datos_factura($id_factura);
+    $contenido= json_decode($factura->contenido);  //DESHAGO EL "SERIALIZE" QUE PERMITIA GUARDAR EL ARRAY EN LA BBDD, PARA PODER INTERPRETARLO
+    $mensaje = "";
+    global $twig;
+    if(isset($_POST['imprimir'])){
+
+        $dompdf = new Dompdf(); 
+        $dompdf->load_html($twig->render('detalle_factura.html', array ('URI'=>$URI, 'empleado'=>$empleado, 'usuario'=>$usuario,'base'=>$base, 'factura'=>$factura, 'contenido'=>$contenido, 'mensaje'=> $mensaje, 'logged'=>$logged, 'logged_legible'=>$logged_legible)));
+        $dompdf->setPaper('A4', 'landscape');
+        $dompdf->render(); 
+        $dompdf->stream("factura.pdf");
+        exit(0);
+
+    }
+
+
+
+    $template = $twig->load('detalle_factura.html');  
+    echo $template->render(array ('URI'=>$URI, 'empleado'=>$empleado, 'usuario'=>$usuario,'base'=>$base, 'factura'=>$factura, 'contenido'=>$contenido, 'mensaje'=> $mensaje, 'logged'=>$logged, 'logged_legible'=>$logged_legible));
+}
+function controlador_detalle_factura_pdf($id_factura){
+    $URI = get_URI();    
+    //Con las siguientes 2 lineas restrinjo el acceso a partes solo destinadas a empleados
+    $usuario = checkSession();
+    //$usuario = "danimolar@hotmail.com";
     $base = checkDomain($usuario);   
     $empleado = datos_empleado($usuario);
     $cliente = datos_cliente($usuario);
@@ -252,16 +291,18 @@ function controlador_detalle_factura($id_factura)
     $logged_legible = isset($_SESSION['usuario']) ? "Cerrar Sesión" : "Iniciar Sesión";
 
     $factura = datos_factura($id_factura);
-    $contenido= unserialize ($factura->contenido);  //DESHAGO EL "SERIALIZE" QUE PERMITIA GUARDAR EL ARRAY EN LA BBDD, PARA PODER INTERPRETARLO
+    $contenido= json_decode($factura->contenido);  //DESHAGO EL "SERIALIZE" QUE PERMITIA GUARDAR EL ARRAY EN LA BBDD, PARA PODER INTERPRETARLO
     $mensaje = "";
-
-  //  var_dump($factura);
 
 
     global $twig;
-    $template = $twig->load('detalle_factura.html');  
-	echo $template->render(array ('URI'=>$URI, 'empleado'=>$empleado, 'usuario'=>$usuario,'base'=>$base, 'factura'=>$factura, 'contenido'=>$contenido, 'mensaje'=> $mensaje, 'logged'=>$logged, 'logged_legible'=>$logged_legible));
-    
+    $dompdf = new Dompdf(); 
+    $dompdf->load_html($twig->render('detalle_factura_pdf.html', array ('URI'=>$URI, 'empleado'=>$empleado, 'usuario'=>$usuario,'base'=>$base, 'factura'=>$factura, 'contenido'=>$contenido, 'mensaje'=> $mensaje, 'logged'=>$logged, 'logged_legible'=>$logged_legible)));
+    $dompdf->setPaper('A4', 'landscape');
+    $dompdf->render(); 
+    $dompdf->stream("factura.pdf");
+    exit(0);
+
 }
 
 function controlador_detalle_albaran($id_albaran)
@@ -274,7 +315,7 @@ function controlador_detalle_albaran($id_albaran)
     $logged_legible = isset($_SESSION['usuario']) ? "Cerrar Sesión" : "Iniciar Sesión";
     $id_factura = str_replace('ALB', 'FAC', $id_albaran);
     $factura = datos_factura($id_factura);
-    $contenido= unserialize ($factura->contenido);  //DESHAGO EL "SERIALIZE" QUE PERMITIA GUARDAR EL ARRAY EN LA BBDD, PARA PODER INTERPRETARLO
+    $contenido= json_decode($factura->contenido);  //DESHAGO EL "SERIALIZE" QUE PERMITIA GUARDAR EL ARRAY EN LA BBDD, PARA PODER INTERPRETARLO
     $mensaje = "";
 
  
@@ -729,7 +770,7 @@ function controlador_mis_pedidos()
                     $contador3 += $cuenta3;
                     $mensaje .= $contador3. " Facturas Rectificativas Creadas";
 
-                    $pedido = items_pedido($val);
+                    $pedido = contenido_factura($val);
                         foreach($pedido as $prod){
                         $cuenta2 = actualizar_stock($prod->id_prod, $prod->cantidad, 'sumar');
                         $contador2 +=$cuenta2;     
@@ -865,19 +906,19 @@ function controlador_pedidos()
                         $base_imponible = $total_pedido-$iva; 
     
                         //Obtengo detalles de cada pedido para ahondar en los productos que lo componen, y modificar su stock, en el momento de marcar como pagado
-                        $pedido_items = items_pedido($id_pedido);               
+                        $pedido_items = contenido_factura($id_pedido);               
                         foreach($pedido_items as $prod){
                             $contenido[] = $prod; 
                             $cuenta2 = actualizar_stock($prod->id_prod, $prod->cantidad, 'restar');
                             $contador2 +=$cuenta2;  
                             }
-                        $contenido = serialize($contenido); //CONVIERTO EL ARRAY EN TEXTO PARA PODER GUARDARLO EN BBDD
+                        $contenido = json_encode($contenido, JSON_UNESCAPED_UNICODE); //CODIFIFO EN JSON PARA GUARDAR EN BBDD - CON EL ARGUMENTO QUE EVITA ERRORES CON LOS ACENTOS
                         $cuenta1 = factura_creada($id_factura, $id_pedido, $nif_cliente, $nombre, $cliente->direccion, $cliente->localidad, $cliente->cod_postal, $cliente->provincia,
                         $total_mercancia, $coste_envio, $base_imponible, $iva, $total_pedido, $pedido->forma_pago, $pagado_fecha, $contenido);    
                         $contador1 +=$cuenta1; 
                         //Debe actualizarse facturacion tras factura para ir de acuerdo al FK_facturacion_factura
                         facturacion_creada($id_pedido, $id_factura, $id_albaran,$nif_cliente);  
-
+                var_dump($contenido);
                     } else $mensaje = "Alguno de los pedidos seleccionados no puede marcarse como pagado por el estado en que se encuentra";
                    
                 }   
@@ -911,6 +952,21 @@ function controlador_pedidos()
     else $mensaje = "Por favor, seleccione al menos un pedido para modificar";
 
         }
+
+
+    if (isset($_POST["ver_contenido"])) {
+        foreach($checked as $id_pedido){
+        $pedido_items = contenido_factura($id_pedido);               
+        foreach($pedido_items as $prod){
+            $contenido[] = $prod; 
+            }
+
+        $contenido = json_decode($contenido); 
+        var_dump($contenido);
+        }
+
+    }
+        
 
     if (isset($_POST["marcar_entregado"])) {
         $contador = 0;
@@ -1024,9 +1080,10 @@ function controlador_pedidos()
                     $pedido = items_pedido($val);
                         foreach($pedido as $prod){
                         $cuenta2 = actualizar_stock($prod->id_prod, $prod->cantidad, 'sumar');
-                        $contador2 +=$cuenta2;     
-                        $mensaje .= $contador2. " Stock Actualizados ";        
-                            }                
+  
+                            }   
+                            $contador2 +=$cuenta2;     
+                            $mensaje .= $contador2. " Stock Actualizados ";                   
                 }
             } else $mensaje = "Alguno de los pedidos seleccionados no puede marcarse como devuelto debido al estado en que se encuentra";
         }
@@ -1042,10 +1099,12 @@ function controlador_pedidos()
         if(intval($checked) == 1){            
             foreach($checked as $id_pedido){
                 $situacion_pedido = situacion_pedido($id_pedido); 
-                if($situacion_pedido->estado_pedido =='cancelado'){
-                $cuenta = reactivar_pedido($id_pedido);
-                $contador +=$cuenta;
-                $mensaje = $contador. " Pedidos Reactivados";
+                if($situacion_pedido->estado_pago == 'pagado'){
+                    if($situacion_pedido->estado_pedido =='cancelado' || $situacion_pedido->estado_pedido =='procesando' ){
+                    $cuenta = reactivar_pedido($id_pedido);
+                    $contador +=$cuenta;
+                    $mensaje = $contador. " Pedidos Reactivados";
+                    }
             }else $mensaje = "Alguno de los pedidos no puede reactivarse debido al estado en que se encuentra";
         }
             $delay=3;

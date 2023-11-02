@@ -50,6 +50,12 @@ elseif ($URI == 'detalle_factura' && isset($_GET['id_factura']))
     controlador_detalle_factura($_GET['id_factura']); 
 }
 
+elseif ($URI == 'detalle_factura_pdf' && isset($_GET['id_factura'])) 
+{
+
+    controlador_detalle_factura_pdf($_GET['id_factura']); 
+}
+
 elseif ($URI == 'detalle_albaran' && isset($_GET['id_albaran'])) 
 {
 

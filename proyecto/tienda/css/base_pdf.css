@@ -79,13 +79,6 @@ td{
 }
 
 
-.campo{
-	position: relative;
-	margin: auto;
-	display:block;		
-	padding:1em;	
-}
-
 
 .checkbox{
 	width: 1.3em; 
@@ -102,10 +95,6 @@ td{
 	margin-left:1.2em;
 }
 
-.opcion_radio{
-display:inline-flex;
-
-}
 
 img {
 	border-radius: 0.7em;
@@ -122,7 +111,7 @@ img {
 
 #titulo_imagen{
 	padding:0.2em;
-	display:block;
+
 	font-size: 1.3em;
 	font-weight: bold;
 }
@@ -133,7 +122,7 @@ img {
 	border-radius: 0.7em;
 	border: 4px double;
 	text-align: center;
-	display:inline-block;
+
 
 }
 
@@ -150,7 +139,6 @@ li {
 	/*border-color: #e7a109;*/
 	text-align: center;
 	padding:0.8em;
-	display: inline-block;
 	background-color: #ddc45285;
 	margin:0.2em;
 }
@@ -186,7 +174,6 @@ form{
 fieldset {
 		position: relative;
 		margin: auto;
-		display:inline-flex;		
 		padding:1em;
 	}
 
@@ -195,7 +182,7 @@ legend {
 	/*float:left;*/
 	/*position: relative;*/
 	margin-left: auto;
-	top: -1em;
+	top: -1.5em;
 	font-weight: bold;
 	position:absolute;
 
@@ -209,7 +196,7 @@ label {
 	margin-bottom:1em;
 	font-size: 1.2em;
 	font-weight: bold;
-	display: flex;
+
 
 }
 
@@ -316,9 +303,7 @@ footer {
 	
 }
 
-span{
-	display: inline-block;
-}
+
 .upper{
 	text-transform: uppercase;
 }
@@ -336,7 +321,6 @@ span{
 	color:red;
 	font-weight:bold;
 	font-size: 1.1em;
-	display:flex;
 	text-align: left;
 	margin: auto;
 	width: 35%;
@@ -355,7 +339,6 @@ span{
 #migas_pan{
 	font-weight: bold;
 	font-size:1.1em;
-	display:flex;
 	align-self: left;
 	margin-left:2em;
 }
@@ -385,18 +368,16 @@ span{
 
 #sugerencias{
 	color: #0080FF;
-	display: inline;
 }
 .imprimible *{
 	color:black;
 	
 }
 		
-/*.izq{
-	justify-content: center;
+.izq{
+	justify-content: left;
 	text-justify: left;
-	align-items: left;
-}*/
+}
 
 
 .cuadro{
@@ -413,12 +394,8 @@ span{
 
 	
 
-.membrete{
-	border-radius: 0.7em;
-	border: solid 3px #b68b2e;
-	width :15em; 
-	height : 10em;
-}
+/*.membrete{
+}*/
 
 
 /*footer{ 
