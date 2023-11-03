@@ -129,7 +129,7 @@ function controlador_stock()
                 $precio=htmlspecialchars($_POST['precio'], ENT_COMPAT, 'UTF-8');
                 $descripcion=htmlspecialchars($_POST['descripcion'], ENT_COMPAT, 'UTF-8');
 
-                if(es_texto($_POST['nombre']) && es_cifra($nombre) && es_cifra( $precio) && valid_descripcion($descripcion)){
+                if(es_texto($_POST['nombre']) && es_cifra($nombre) && es_cifra( $precio) && valid_direccion($descripcion)){
                     $cuenta = producto_actualizado($id_prod,$nombre, $_POST['stock'], $precio, $descripcion);
                     $contador +=$cuenta;
                     $mensaje = $contador. " Productos Actualizados'";

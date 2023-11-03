@@ -1,4 +1,6 @@
 <?php
+
+
 /**
 * Comprueba que una cadena contenga exclusivamente letras, y espacios en blanco con \s.
 *
@@ -32,22 +34,6 @@ function es_cifra($cadena) {
      
     return (preg_match($patron, $cadena));	
 }
-
-/**
-* Comprueba que una cadena contenga exclusivamente letras y numeros, y espacios en blanco con \s.
-*
-* @param string $cadena Cadena que se va a comprobar.
-*
-* @return bool Retorna true si es alfanumerico.
-*/
-function valid_descripcion($cadena) {
-    //definimos el patrón
-    $patron = '/^[a-zA-Zá-úÁ-ÚñÑ0-9\s?]+$/';
-	//$patron = '/^[a-zA-Z]+(\s*[a-zA-Z]*)*[a-zA-Z]+$/';
-     
-    return (preg_match($patron, $cadena));	
-}
-
 
 
 
@@ -194,7 +180,7 @@ function valid_email($email) {
     $email = strtolower($email);
     //definimos el patrón
     $patron = '/^[a-zA-Z0-9.!#$%&\'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/i';
-	//Con la "i" final le digo que sea insensible a mayusculas/minusculas, ya que el email se traducira siempre a minusculas
+	//Con la "i" final le digo que sea insensible a mayusculas/minusculas, ya que el email se traducira siempre a minusculas una vez recogido
     return (preg_match($patron, $email));
 }
 
@@ -237,13 +223,13 @@ function valid_contrasena($contrasena) {
 * @param    string  $email la dirección email a validar
 * @return   bool retorna true si el mail cumple con el patrón
 */
-
+/*
 function valid_email2($email)
 {
   return (false !== filter_var($email, FILTER_VALIDATE_EMAIL));
 }
 
-
+*/
 
 
 /*
@@ -269,5 +255,5 @@ function valid_email2($email)
 		echo '<p style="color:red">Teléfono incorrecto</p>'; 
 	}
 */
-	
+
 ?>

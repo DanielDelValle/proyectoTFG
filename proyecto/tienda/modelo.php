@@ -1,61 +1,67 @@
 <?php
 // modelo.php
 
-/**
-* Crea una conexión PDO directa a la BD 2libros"
 
-* @return object Retorna $pdo (un objeto de conexión pdo) si todo va bien
+/**
+* Crea una conexión PDO directa a la BD tienda"
+* @return true si la conexion se establece
 * @return null retorna null si hay algún error
 */
 
-
 function conexion()
 {
-try {    
+
+	$servidor = 'localhost';
+	$usuario = 'daniel';
+	$contraseña = 'Daniel88!';
+	$bd = 'tienda';
+
 //Conexión PDO
-    $cadenaConexion="mysql:host=localhost;dbname=tienda;charset=utf8";
-    $pdo = new PDO($cadenaConexion, 'daniel', 'Daniel88',    
-	array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8", PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, PDO::MYSQL_ATTR_FOUND_ROWS => true)); 
-	//PDO::ATTR_EMULATE_PREPARES, false   desactivar emulacion
+try {
+    
+    $cadenaConexion = "mysql:dbname=$bd;host=$servidor";
+    $pdo = new PDO($cadenaConexion, $usuario, $contraseña,
+    array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8",PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, PDO::MYSQL_ATTR_FOUND_ROWS => true)) ;
 	//PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_OBJ) para devolver objetos, pero fetchObject ya lo hace
+	//PDO::ATTR_EMULATE_PREPARES, false   desactivar emulacion
+	//PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_OBJ) para devolver array objetos // fetchObject devuelve objeto 
+
     return $pdo;
+
     }
-	
 catch (PDOException $e) {
     return null;
-	die(json_encode(array('resultado' => false, 'mensaje' => 'Conexión a BD no conseguida')));
-    }return $pdo;
+	die('Conexión a base de datos no conseguida');
+    }
 }
 
+
 /**
-* Consulta a la BD "TIENDA" y busca titulos de libro en función del input del usuario
-
-* @param string $busqueda, que es el input que el usuario escribe en el formulario
-
-* @return array Retorna $coincidencias(una cadena de caracteres) si encuentra coincidencias con la búsqueda en mysql
+* Crea una conexión mysqli directa a la BD tienda"
+* @return true si la conexion se establece
 * @return null retorna null si hay algún error
 */
 
 function conexion_mysqli(){
+	$servidor = 'localhost';
+	$usuario = 'daniel';
+	$contraseña = 'Daniel88!';
+	$bd = 'tienda';
+try {
+	$cadenaConexion = "mysql:dbname=$bd;host=$servidor";
 
-$servername = "localhost";
-$username = 'daniel';
-$password = 'Daniel88';
-$DB = 'tienda';
+	// Create connection 
+	mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+	$mysqli = new mysqli($cadenaConexion, $usuario, $contraseña);
 
-// Create connection
-
-mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
-$mysqli = new mysqli($servername, $username, $password, $DB);
-
-// Check connection
-if (!$mysqli) {
-	die("Fallo en la conexión a BD: " . mysqli_connect_error());
+	return $mysqli;
 }
-else echo "Conectado con éxito a BD";
-
-return $mysqli;
+catch (PDOException $e) {
+    return null;
+	die('Conexión a base de datos no conseguida');
+    }
 }
+
 
 function backup_bbdd($tabla){
 
@@ -127,9 +133,8 @@ function get_sugerencias_ajax($busqueda){
 		echo 'Excepción: ', $e->getMessage();
 		return null;
 	  }
-	}  
 	}
-	
+}
 
 	// obtenemos el parámetro GET de la URL (Ej: "sugerenciasPHP.php?q=Anna")
 	$q = isset($_REQUEST["q"]) ? $_REQUEST["q"] : "";
@@ -982,11 +987,8 @@ function pedidos_usuario($nif){
 
 				
 			$resultado = $pdo->query($sql);
-			$pedidosArray = $resultado->fetchAll(PDO::FETCH_OBJ);
+			$pedidosArray = $resultado->fetchAll(PDO::FETCH_OBJ);//retorna array de objetos
 
-		/*	foreach($pedidosArray as $i => $pedido) {   
-			}*/
-			
 			if($resultado->rowCount()>0) $mensaje = "Se han encontrado <b>" . $resultado->rowCount() . "</b> pedido(s) <br><br>"; 
 			else $mensaje = "No se han encontrado pedidos";
 	}	
@@ -1592,7 +1594,7 @@ function items_pedido($id_pedido)
 					WHERE id_pedido ='$id_pedido'";	
 
 			$resultado = $pdo->query($sql);
-			$detallePedidoArray = $resultado->fetchAll(PDO::FETCH_OBJ);
+			$detallePedidoArray = $resultado->fetchAll(PDO::FETCH_OBJ);//retorna array de objetos
 			$pdo = null;
 		}	
 		
@@ -1614,7 +1616,7 @@ function contenido_factura($id_pedido)
 					WHERE id_pedido ='$id_pedido'";	
 
 			$resultado = $pdo->query($sql);
-			$detallePedidoArray = $resultado->fetchAll(PDO::FETCH_OBJ);
+			$detallePedidoArray = $resultado->fetchAll(PDO::FETCH_OBJ); //retorna array de objetos
 			$pdo = null;
 		}	
 		
@@ -1753,7 +1755,6 @@ return $resultado;
 
 
 }
-
 
 ?>
 		
