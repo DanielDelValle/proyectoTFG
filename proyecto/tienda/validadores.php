@@ -24,7 +24,7 @@ function es_texto($cadena) {
 *
 * @param string $cadena Cadena que se va a comprobar.
 *
-* @return bool Retorna true si es texto.
+* @return bool Retorna true si es numérico.
 */
 function es_cifra($cadena) {
     //definimos el patrón
@@ -191,10 +191,10 @@ function valid_email($email) {
 *
 * @return bool Retorna true si el email cumple con la expresión regular.
 */
-function valid_email_empleado($email) {  //PATRON PARA QUE TERMINE EN @FRUTASDELVALLE.COM
+function valid_email_empleado($email) {  
     $email = strtolower($email);
-    //definimos el patrón
-    $patron = '/^[a-zA-Z0-9.!#$%&\'*+\/=?^_`{|}~-]+@frutasdelvalle.com*$/i';
+     //PATRON PARA QUE TERMINE EN @FRUTASDELVALLE.COM
+    $patron = '/^[a-zA-Z0-9.!#$%&\'*+\/=?^_`{|}~-]+@frutasdelvalle.com*$/i';  
  
     return (preg_match($patron, $email));
 }

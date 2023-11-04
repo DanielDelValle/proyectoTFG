@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "dee53b9f29f6a5cdd5c0c91e3625b2e3",
+    "content-hash": "fe2657fc8a64818e753397d0b4482ac1",
     "packages": [
         {
             "name": "dompdf/dompdf",

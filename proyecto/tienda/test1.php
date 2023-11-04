@@ -9,7 +9,6 @@ use PHPUnit\Framework\TestCase;
 class test1 extends TestCase
 {
 
-
 public function testEstextoOK()
 {
 $esperado = true;

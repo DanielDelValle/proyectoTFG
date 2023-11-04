@@ -910,7 +910,7 @@ function controlador_pedidos()
                         $contador1 +=$cuenta1; 
                         //Debe actualizarse facturacion tras factura para ir de acuerdo al FK_facturacion_factura
                         facturacion_creada($id_pedido, $id_factura, $id_albaran,$nif_cliente);  
-                var_dump($contenido);
+
                     } else $mensaje = "Alguno de los pedidos seleccionados no puede marcarse como pagado por el estado en que se encuentra";
                    
                 }   
@@ -944,9 +944,7 @@ function controlador_pedidos()
     else $mensaje = "Por favor, seleccione al menos un pedido para modificar";
 
         }
-
-
-    if (isset($_POST["ver_contenido"])) {
+    /*if (isset($_POST["ver_contenido"])) {
         foreach($checked as $id_pedido){
         $pedido_items = contenido_factura($id_pedido);               
         foreach($pedido_items as $prod){
@@ -956,9 +954,7 @@ function controlador_pedidos()
         $contenido = json_decode($contenido); 
         var_dump($contenido);
         }
-
-    }
-        
+    }*/        
 
     if (isset($_POST["marcar_entregado"])) {
         $contador = 0;
@@ -1304,17 +1300,17 @@ function controlador_iniciar_sesion(){
     $mensaje = "";
     $usuario = isset($_POST["usuario"]) ? htmlspecialchars(strtolower($_POST["usuario"])) : ""; //normalizo en minusculas el email
     $contrasena = isset($_POST["contrasena"]) ? htmlspecialchars($_POST["contrasena"]) : "";
-    $dominio_empleado = 'frutasdelvalle.com';
+    //$dominio_empleado = 'frutasdelvalle.com';
 
     if (isset($_POST["entrar"])) {
         //Procesar formulario
          //Si no están vacíos, se llama a Base de Datos para obtener contraseña, estado de la cuenta y tipo de cuenta
         if (($usuario != "") && ($contrasena != "")) {
 
-            $dominio = ltrim(strstr($usuario, '@'), '@');    //con esto obtengo lo que va tras la @ para conocer si es un mail de empleado o no
+           // $dominio = ltrim(strstr($usuario, '@'), '@');    //con esto obtengo lo que va tras la @ para conocer si es un mail de empleado o no
                 //Si el usuario está en la lista de usuarios (tanto cliente como empleado):
                 if(in_array($usuario, $lista_users)){
-                    if ($dominio === $dominio_empleado) {$user = datos_empleado($usuario);}
+                    if (valid_email_empleado($usuario)) {$user = datos_empleado($usuario);}
                     else {$user = datos_cliente($usuario);}  
                        // echo 'USUARIO EN LISTADO'; 
                         $pass = $user->contrasena;
@@ -1381,7 +1377,7 @@ function controlador_cambiar_contrasena()
 
     if($base =='base'){        
         $tipo_cuenta = 'cliente';
-        $user= datos_cliente($usuario);
+        $user = datos_cliente($usuario);
         $volver = 'mis_datos';
     }else {
     $tipo_cuenta = 'empleado';
@@ -1425,7 +1421,7 @@ function controlador_cambiar_contrasena()
                 if($datos->contrasena_nueva == $datos->contrasena_actual){
                     $validaciones->clave_renovar ="La NUEVA CONTRASEÑA debe ser diferente a la actual";
                 }
-                if(!password_verify($datos->contrasena_actual, $cliente->contrasena)){
+                if(!password_verify($datos->contrasena_actual, $user->contrasena)){
                     $validaciones->clave_actual ="La CONTRASEÑA ACTUAL introducida es errónea";
                 }
 
@@ -1450,9 +1446,9 @@ function controlador_mi_cuenta()
     $antiguedad_contrasena = $fecha_contrasena->diff($fecha_actual);
     $mensaje_contrasena = '';
    // $antiguedad_contrasena = date_diff($fecha_contrasena, $fecha_actual); // otra manera de hacerlo
-   // Si los días de antiguedad de la contraseña son mayores a 7 y menor que 60, se muestra mensaje de cambio
-    if((intval($antiguedad_contrasena->d) >= 7) && (intval($antiguedad_contrasena->d) < $validez_clave)) $mensaje_contrasena = 'Su contraseña caducará dentro de ' .($validez_clave-(intval($antiguedad_contrasena->d))) . ' días';
-    //Si es más antigua de 30 dias, le redirecciona al cambio de contraseña.
+   // Si los días de antiguedad de la contraseña son mayor a 1 y menor que 60, se muestra mensaje de cambio
+    if((intval($antiguedad_contrasena->d) > 1) && (intval($antiguedad_contrasena->d) <= $validez_clave)) $mensaje_contrasena = 'Su contraseña caducará dentro de ' .($validez_clave-(intval($antiguedad_contrasena->d))) . ' días';
+    //Si es más antigua de 60 dias, le redirecciona al cambio de contraseña.
     elseif(intval($antiguedad_contrasena->d) >= $validez_clave) exit(header('location:cambiar_contrasena'));
     //echo($antiguedad_contrasena->format('%R%a días'));
     global $twig;
@@ -1501,7 +1497,7 @@ function controlador_home_almacen()
     $empleado = datos_empleado($usuario);
     if ($empleado->tipo_cuenta != 'almacen'){exit(header('location:iniciar_sesion'));}
     $validez_clave = 60; //dias que durara la clave
-    $fecha_contrasena = new DateTime($almacen->contrasena_fecha);
+    $fecha_contrasena = new DateTime($empleado->contrasena_fecha);
     $fecha_actual = new DateTime('now');
     $antiguedad_contrasena = $fecha_contrasena->diff($fecha_actual);
     $mensaje_contrasena = '';  
@@ -1540,7 +1536,7 @@ function controlador_crear_cuenta()
     $resultado = "";
     $lista_users = lista_users();
     $lista_emails = array_column(lista_users(), 'email'); //extraigo solo el dato "email" de array multidimensional (todos los emails registrados)
-    $dominio_empleado = 'frutasdelvalle.com';
+    //$dominio_empleado = 'frutasdelvalle.com';
     $validaciones = array('val_nif'=> '', 'val_nom'=> '', 'val_ape'=>'', 'val_tel'=>'', 'val_email_existe'=>'', 'val_email'=>'', 'val_email_hack'=>'', 
                         'val_dir'=>'','val_loc'=>'','val_postal'=>'', 'val_prov'=>'','val_contrasena'=>'');  
 
@@ -1557,12 +1553,12 @@ function controlador_crear_cuenta()
 
    
     if(isset($_POST['crear_cuenta'])){   
-        $dominio = ltrim(strstr($_POST['email'], '@'), '@'); 
+        //$dominio = ltrim(strstr(strtolower($_POST['email']), '@'), '@'); 
 
         if((val_nif($datos->nif))&&(es_texto($_POST['nombre'])) && (es_texto($_POST['apellidos'])) && 
         (valid_direccion($_POST['direccion'])) && (es_texto($_POST['localidad'])) && (valid_postal($_POST['cod_postal'])) && (es_texto($_POST['provincia'])) 
         && (valid_tel($_POST['telefono'])) && !email_existe($_POST['email'], $lista_emails) && (valid_email(strtolower($_POST['email'])))
-        && ($dominio != $dominio_empleado) && (valid_contrasena($_POST['contrasena'])) && ($_POST['contrasena'] === $_POST['rep_contrasena'])) 
+        && (!valid_email_empleado($_POST['email'])) && (valid_contrasena($_POST['contrasena'])) && ($_POST['contrasena'] === $_POST['rep_contrasena'])) 
             {
 
 
@@ -1614,7 +1610,7 @@ function controlador_crear_cuenta()
                 $validaciones->val_email="EMAIL - Debe incluir una dirección de email válida";
             }
 
-            if ($dominio == $dominio_empleado){
+            if (valid_email_empleado($datos->email)){  //si el cliente intentase registrar un email con dominio empleado
                 $validaciones->val_email_hack="EMAIL - Debe incluir una dirección de email válida";;  //NO INDICAMOS QUE SE TRATA DEL DOMINIO EMPLEADO NO AYUDAR AL HACKEO
             }
 
@@ -1646,7 +1642,7 @@ function controlador_alta_empleado()
     if ($empleado->tipo_cuenta != 'admon'){exit(header('location:iniciar_sesion'));}
     $logged = isset($_SESSION['usuario']) ? "cerrar_sesion" : "iniciar_sesion";
     $logged_legible = isset($_SESSION['usuario']) ? "Cerrar Sesión" : "Iniciar Sesión";
-    $dominio_empleado = 'frutasdelvalle.com';
+    $dominio_empleado = '@frutasdelvalle.com';
     $mensaje = "";
     $resultado = "";
 
@@ -1721,7 +1717,7 @@ function controlador_alta_empleado()
 
         if (!valid_email_empleado($datos->email)){
             $datos->email = $dominio_empleado; //por defecto sale indicado el dominio de la empresa, para mayor ayuda
-            $validaciones->val_email_empleado="EMAIL - Debe incluir una dirección de email válida con extension @frutasdelvalle.com";
+            $validaciones->val_email_empleado="EMAIL - Debe incluir una dirección de email válida con dominio ".$dominio_empleado;
         }
 
         if (!valid_contrasena($datos->contrasena)){
