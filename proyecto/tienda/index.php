@@ -101,7 +101,10 @@ elseif ($URI == 'alta_empleado')
 {      
 		controlador_alta_empleado(); 
 }
-
+elseif ($URI == 'alta_mercancia')
+{      
+		controlador_alta_mercancia(); 
+}
 
 elseif ($URI == 'home_admon')
 {

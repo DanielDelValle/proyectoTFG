@@ -26,7 +26,8 @@
                 nombre VARCHAR(25),
                 precio DECIMAL(8,2),
                 stock DECIMAL(8,2),
-                descripcion VARCHAR(250)
+                descripcion VARCHAR(250),
+                estado ENUM ('activo', 'inactivo') DEFAULT 'activo'
                 )";
             if($bd->query($sql0)){
                 echo "Tabla PRODUCTO creada con éxito<br>";

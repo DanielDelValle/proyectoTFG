@@ -52,30 +52,37 @@ $(document).ready(function(){
 
 
 {% block content %}
-<form accept-charset="UTF-8" method ='GET'> 
+<form accept-charset="UTF-8" method ='POST'> 
         <table>
+            <th></th>
             <th></th>
             <th>Imagen</th>
             <th>Id Producto</th>
             <th>Nombre</th>
             <th>Stock (Kg)</th>
             <th>Precio (€/Kg)</th>
+            <th>Estado</th>
             <th>Descripcion</th>
             <!-- Mostramos una lista de los artículos-->
 			{% for producto in lista_productos %}
                 <tr>          
+                <td><input type="checkbox" name="prod_select[]" class="checkbox" value={{producto.id_prod}}></td>
                 <td><a href="http://localhost/proyecto/tienda/index.php/modificar_mercancia?id={{producto.id_prod}}">Editar</a></td>                
                 <td><img class='img_stock'src="imagenes/{{producto.nombre}}.jpg"/> </td>
                 <td>{{producto.id_prod}}</td>	
                 <td>{{producto.nombre}}</td>	
                 <td>{{producto.stock}}</td>	
                 <td>{{producto.precio}}</td>
+                <td>{{producto.estado}}</td>
                 <td>{{producto.descripcion}}</td>
  
             </tr>        
 
             {% endfor %}
         </table>
-
+        <button class='critical_green' type="submit" name="activar_mercancia" >Activar Mercancia</button>
+        <button class='critical' type="submit" name="desactivar_mercancia" >Desactivar Mercancia</button>
+        <button class='critical_green' type="submit" name="alta_mercancia" >Alta Mercancia</button>
+        <button class='critical' type="submit" {{funcion_admon}} name="eliminar_mercancia" >Eliminar Mercancia</button>
 </form>
 {% endblock %}	

@@ -422,6 +422,119 @@ function lista_productos()
 }
 
 
+function mercancia_eliminada($id_prod){
+		$resultado = 0;
+		$pdo = conexion();
+		if($pdo){
+			try{				
+				$pdo->beginTransaction();			
+	
+				$sql = ("DELETE
+						FROM producto
+						WHERE id_prod = '$id_prod'");
+	
+				$mercancia_eliminada = $pdo->prepare($sql);
+	
+			if(($mercancia_eliminada->execute())>0){ //si la consulta ha retornado algún resultado ---          
+				$pdo->commit();
+				$resultado = $mercancia_eliminada->rowCount(); // --- entonces retorno el número de autores afectados (borrados)
+			}
+		else {
+			//$resultado=false;
+			echo "Ninguna mercancía eliminada - intentelo de nuevo";
+			$pdo->rollback();		
+			}	
+		}	
+	catch(PDOException $e){
+	echo 'Excepción: ', $e->getMessage();
+	$resultado = false;				
+	}
+	$pdo = null;
+	return $resultado;
+		
+	}else{  return null; die("error en la conexión a la BD");} //en caso de no haber conexión, directamente se para el proceso
+		
+}
+
+function mercancia_estado($id_prod, $nuevo_estado){
+	$resultado = 0;
+	$pdo = conexion();
+	if($pdo){
+		try{				
+			$pdo->beginTransaction();			
+
+			$sql = "UPDATE producto
+					SET estado = '$nuevo_estado'
+					WHERE id_prod = '$id_prod'"
+					;
+
+			$mercancia_cambiado = $pdo->prepare($sql);
+
+		if(($mercancia_cambiado->execute())>0){ //si la consulta ha retornado algún resultado ---          
+			$pdo->commit();
+			$resultado = $resultado + $mercancia_cambiado->rowCount(); // --- entonces retorno el número de autores afectados (borrados)
+		}
+
+	else {
+		//$resultado=false;
+		echo "Ninguna mercancia modificada - intentelo de nuevo";
+		$pdo->rollback();		
+		}	
+	}	
+catch(PDOException $e){
+echo 'Excepción: ', $e->getMessage();
+$resultado = false;				
+}
+$pdo = null;
+return $resultado;
+	
+}else{  return null; die("error en la conexión a la BD");} //en caso de no haber conexión, directamente se para el proceso
+	
+}
+
+
+
+
+
+/*function lista_productos_activos()
+{	
+		$pdo = conexion();
+		if($pdo){
+			try{
+			$pdo->beginTransaction();
+			$sql = ("SELECT * FROM producto  
+					 WHERE estado = 'activo'
+					 ORDER BY nombre");	
+
+			$lectura = $pdo->prepare($sql);
+
+			if(($lectura->execute())>0){ //si la consulta ha retornado algún resultado ---          
+				$pdo->commit();
+				$resultado = $lectura->rowCount(); // --- entonces retorno el número de autores afectados (borrados)
+
+				$lista_productos_activos= $lectura->fetchAll(PDO::FETCH_OBJ);
+			//	echo 'Encontrados '. $resultado. ' productos';
+			}
+
+			else {
+				$resultado=false;
+				echo "No se encontraron productos - por favor, intentelo de nuevo";
+				$pdo->rollback();		
+				}	
+			}	
+	catch(PDOException $e){
+		echo 'Excepción: ', $e->getMessage();
+		$resultado = false;				
+		}
+		$pdo = null;
+		return $lista_productos_activos;
+
+ }else{  return null; die("error en la conexión a la BD");} //en caso de no haber conexión, directamente se para el proceso
+			
+		
+}*/
+
+
 function insert_cliente($nif, $nombre, $apellidos, $email, $telefono, $direccion, $localidad, $cod_postal, $provincia, $contrasena, $contrasena_fecha, $creado_fecha){
 	$resultado = false;
 	$pdo = conexion();
@@ -733,7 +846,7 @@ return $resultado;
 
 }
 
-function producto_actualizado($id_prod, $nombre, $precio, $stock, $descripcion){
+function mercancia_actualizada($id_prod, $precio, $stock, $descripcion){
 			
 	$pdo = conexion();
 	if($pdo){
@@ -741,20 +854,20 @@ function producto_actualizado($id_prod, $nombre, $precio, $stock, $descripcion){
 	$pdo->beginTransaction();
 			//Actualizo el estado del pago y el del pedido, y establezco fecha de cancelacion a NULL por si hubiese sido cancelado y reactivado. 
 	$sql = "UPDATE producto 
-			SET nombre = '$nombre', precio = '$precio', stock = '$stock', descripcion = '$descripcion'
+			SET precio = '$precio', stock = '$stock', descripcion = '$descripcion'
 			WHERE id_prod= '$id_prod'" ;
 
 
-	$producto_actualizado = $pdo->prepare($sql);
+	$mercancia_actualizada = $pdo->prepare($sql);
 
-	if(($producto_actualizado->execute())>0){ //si la consulta ha retornado algún resultado ---          
+	if(($mercancia_actualizada->execute())>0){ //si la consulta ha retornado algún resultado ---          
 		$pdo->commit();
-		$resultado = $producto_actualizado->rowCount(); // --- entonces retorno el número de autores afectados (borrados)
+		$resultado = $mercancia_actualizada->rowCount(); // --- entonces retorno el número de autores afectados (borrados)
 	}
 
 	else {
 		$resultado=false;
-		echo "Ningún pedido modificado - intentelo de nuevo";
+		echo "Ninguna mercancía actualizada - intentelo de nuevo";
 		$pdo->rollback();		
 		}	
 	}
@@ -770,33 +883,38 @@ return $resultado;
 
 
 }
-function alta_producto($nombre, $stock, $precio, $descripcion){
+function alta_mercancia($nombre, $precio, $stock,  $descripcion){
+	$pdo = conexion();
+	if($pdo){
+		$resultado = false;
+		try{
+			$pdo->beginTransaction();
 
-	//En esta operacion usaré un conector mysqli para poder usar su multy_query y simplificar el proceso (en el resto uso PDO)
-		$sql = "";
-		$mensaje = "";
-		$mysqli = conexion_mysqli();
-		if($mysqli){
-			try{
-				foreach($cesta as $producto){
+			$sql = "INSERT INTO producto (nombre, precio, stock, descripcion) 
+					VALUES ('".$nombre."', '".$precio."', '".$stock."', '".$descripcion."');";
+			$insertarMercancia = $pdo->prepare($sql);
 
-					//$sql .= "INSERT INTO pedido_productos (id_pedido, id_prod, cantidad) VALUES ('".$id_pedido."', '".$producto['id_prod']."', '".$producto['cantidad']."');";
-					$sql .= "INSERT INTO productos_pedido (id_pedido, id_prod, nombre, cantidad, precio) 
-					VALUES ('".$id_pedido."', '".$producto['id_prod']."', '".$producto['nombre']."', '".$producto['cantidad']."' , '".$producto['precio']."');";
-				}
-				
-			$insertarProductosPedido = $mysqli->multi_query($sql);
-			if($insertarProductosPedido) {echo $mysqli->affected_rows; return true;}
-			else {echo 'ERROR AL INSERTAR PRODUCTOS'; return false;}
-			
-		}	
-		
-		catch(Exception $e){
-			echo 'Excepción: ', $e->getMessage();
-			return null;
+			if(($insertarMercancia->execute())>0){ //si la consulta ha retornado algún resultado ---          
+				$pdo->commit();
+				$resultado = $insertarMercancia->rowCount(); // --- entonces retorno el número de autores afectados (borrados)
 			}
-		} 
-		$mysqli.close();
+
+			else {
+				$resultado=false;
+				echo "Ningún mercancia dada de alta - intentelo de nuevo";
+				$pdo->rollback();		
+				}	
+			}	
+	catch(PDOException $e){
+		echo 'Excepción: ', $e->getMessage();
+		$resultado = false;				
+		}
+	$pdo = null;
+	return $resultado;
+
+ }else{  return null; die("error en la conexión a la BD");} //en caso de no haber conexión, directamente se para el proceso
+
+
 }
 
 

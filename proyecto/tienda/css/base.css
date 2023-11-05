@@ -106,6 +106,10 @@ td{
 display:inline-flex;
 
 }
+#subida{
+	width :7em; 
+	height : 2em;
+	}
 
 img {
 	border-radius: 0.7em;

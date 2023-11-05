@@ -109,9 +109,58 @@ function controlador_stock()
     $logged = isset($_SESSION['usuario']) ? "cerrar_sesion" : "iniciar_sesion";
     $logged_legible = isset($_SESSION['usuario']) ? "Cerrar Sesión" : "Iniciar Sesión";
     $lista_productos = lista_productos();
+    $checked = isset($_POST['prod_select']) ? $_POST['prod_select'] : [];
     $mensaje = '';
 
+    if (isset($_POST["activar_mercancia"])) {
+        $contador = 0;
+        //If intval($checked == 1 significa que el array "checked" tiene al menos un valor dentro, con lo que hay algún mercancia seleccionado)
+        if(intval($checked) == 1){  
+            $nuevo_estado = 'activo';       
+            foreach($checked as $id_prod){
+                $cuenta = mercancia_estado($id_prod, $nuevo_estado);
+                $contador +=$cuenta;
+                $mensaje = $contador. " mercancias activados";
+            }
+            $delay=3;
+            header("Refresh:$delay");    
+        }
+    else $mensaje = "Por favor, seleccione al menos un mercancia para activar";
+    }
 
+    if (isset($_POST["desactivar_mercancia"])) {
+        $contador = 0;
+        //If intval($checked == 1 significa que el array "checked" tiene al menos un valor dentro, con lo que hay algún mercancia seleccionado)
+        if(intval($checked) == 1){  
+            $nuevo_estado = 'inactivo';       
+            foreach($checked as $id_prod){
+                $cuenta = mercancia_estado($id_prod, $nuevo_estado);
+                $contador +=$cuenta;
+                $mensaje = $contador. " mercancias desactivados";
+            }
+            $delay=3;
+            header("Refresh:$delay");    
+        }
+    else $mensaje = "Por favor, seleccione al menos un mercancia para desactivar";
+    }
+   
+    if (isset($_POST["eliminar_mercancia"])) {
+        $contador = 0;
+        //If intval($checked == 1 significa que el array "checked" tiene al menos un valor dentro, con lo que hay algún mercancia seleccionado)
+        if(intval($checked) == 1){            
+            foreach($checked as $id_prod){
+                $cuenta = mercancia_eliminada($id_prod);
+                $contador +=$cuenta;
+                $mensaje = $contador. " mercancias eliminadas";
+            }
+            $delay=3;
+            header("Refresh:$delay");    
+        }
+    else $mensaje = "Por favor, seleccione al menos un mercancia para eliminar";
+    }
+    if (isset($_POST["alta_mercancia"])) {        
+        exit(header("location:alta_mercancia"));
+    }
 
    
     global $twig;
@@ -120,6 +169,76 @@ function controlador_stock()
 
 
 }
+
+function controlador_alta_mercancia()
+{ $URI = get_URI();
+    $usuario = checkSession();
+    $base = checkDomain($usuario);   
+    if ($base !== 'base_empl') exit(header('location:iniciar_sesion'));
+    $empleado = datos_empleado($usuario);
+    $funcion_admon = '';
+    if ($empleado->tipo_cuenta =='almacen')$funcion_admon = "hidden";
+  //  if ($empleado->tipo_cuenta != 'admon'){exit(header('location:iniciar_sesion'));} //solo ADMON puede manipular cuentas de usuario
+    $logged = isset($_SESSION['usuario']) ? "cerrar_sesion" : "iniciar_sesion";
+    $logged_legible = isset($_SESSION['usuario']) ? "Cerrar Sesión" : "Iniciar Sesión";
+    $mensaje= '';
+    $validaciones = array('val_imagen'=> '','val_nombre'=> '', 'val_precio'=>'', 'val_stock'=>'',  'val_descrip'=>'');  
+    $nombre_imagen = '';
+    $datos = [];
+
+    foreach($_POST as $key => $value){
+        if(!isset($datos[$key])){
+            $datos[$key] = htmlspecialchars($value, ENT_COMPAT, 'UTF-8');
+        }
+    }
+    
+    $validaciones= (object) $validaciones; //CONVIERTO A OBJETOS PARA MAYOR FACILIDAD DE USO AQUI Y EN LA PLANTILLA TWIG
+    $datos = (object)$datos;
+    
+    if (isset($_POST["guardar_cambios"])) {
+      
+
+        if(($_FILES['imagen']['name']!='') && es_texto($datos->nombre) && es_decimal($datos->precio) && es_decimal($datos->stock) && es_descripcion($datos->descripcion)){
+            move_uploaded_file($_FILES['imagen']['tmp_name'],'./imagenes/'.$_FILES['imagen']['name']); //copio la imagen subida de su carpeta temporal a la deseada
+            alta_mercancia($datos->nombre, $datos->precio, $datos->stock, $datos->descripcion);
+            $mensaje = "¡Alta de ".$datos->nombre. " realizada con éxito!";
+
+
+        } else{  //reviso los posibles errores de 1 en 1, para poder modificar su validacion individualmente (ya que pueden darse varios fallos simultaneos)
+                    
+           if ($_FILES['imagen']['name']!=''){
+            $validaciones->val_imagen = "IMAGEN - Por favor, suba una imágen en formato JPG de máximo 5MB";
+            }
+
+           if (!es_texto($datos->nombre)){
+                $validaciones->val_nombre = "NOMBRE - Sólo puede incluir caracteres del alfabeto";
+            }
+    
+            if (!es_decimal($datos->precio)){ 
+                $validaciones->val_precio ="PRECIO- debe tener un valor numérico con 2 decimales";
+            }    
+            if (!es_decimal($datos->stock)){
+                $validaciones->val_stock="STOCK - debe tener un valor numérico con 2 decimales";
+            }
+
+            if (!es_descripcion($datos->descripcion)){
+                $validaciones->val_descrip="DESCRIPCIÓN - Sólo puede incluir caracteres del alfabeto y numeros";
+            }
+        }
+    }
+   /* if(isset($_POST['subir_imagen'])){
+        var_dump($_FILES);
+        move_uploaded_file($_FILES['imagen']['tmp_name'],'./imagenes/'.$_FILES['imagen']['name']); //copio la imagen subida de su carpeta temporal a la deseada
+    }*/
+
+    if(isset($_POST['volver_stock']))exit(header('location:control_stock'));
+
+    global $twig;
+    $template = $twig->load('alta_mercancia.html');  
+	echo $template->render(array ('URI'=>$URI, 'empleado'=>$empleado, 'base'=>$base,'mensaje'=> $mensaje, 'nombre_imagen'=>$nombre_imagen, 'datos'=>$datos,'validaciones'=>$validaciones, 'funcion_admon'=>$funcion_admon,));
+
+}
+
 
 function controlador_detalle_producto($id)
 {   
@@ -226,25 +345,20 @@ function controlador_modificar_mercancia($id)
     $datos = (object)$datos;
 
     if (isset($_POST["guardar_cambios"])) {
-      //  if(isset($_POST['nombre']) && isset($_POST['nombre']) && isset($_POST['nombre']) && isset($_POST['nombre']))
       
-     /* $nombre=isset($_POST['nombre'])?htmlspecialchars($_POST['nombre'], ENT_COMPAT, 'UTF-8'):'';
-        $stock=isset($_POST['stock'])?htmlspecialchars($_POST['stock'], ENT_COMPAT, 'UTF-8'):'';
-        $precio=isset($_POST['precio'])?htmlspecialchars($_POST['precio'], ENT_COMPAT, 'UTF-8'):'';
-        $descripcion=isset($_POST['descripcion'])?htmlspecialchars($_POST['descripcion'], ENT_COMPAT, 'UTF-8'):'';*/
 
-        if(es_texto($datos->nombre) && es_decimal($datos->precio) && es_decimal($datos->stock) && es_descripcion($datos->descripcion)){
-            producto_actualizado($producto['id_prod'], $datos->nombre, $datos->precio, $datos->stock, $datos->descripcion);
+        if(es_decimal($datos->precio) && es_decimal($datos->stock) && es_descripcion($datos->descripcion)){
+            mercancia_actualizada($producto['id_prod'], $datos->precio, $datos->stock, $datos->descripcion);
             $delay=3;
             header("Refresh:$delay");
             $mensaje = "Mercancía Actualizada";
 
         } else{  //reviso los posibles errores de 1 en 1, para poder modificar su validacion individualmente (ya que pueden darse varios fallos simultaneos)
     
-            if (!es_texto($datos->nombre)){
+      /*     if (!es_texto($datos->nombre)){
                 $validaciones->val_nombre = "NOMBRE - Sólo puede incluir caracteres del alfabeto";
             }
-    
+    */
             if (!es_decimal($datos->precio)){ 
                 $validaciones->val_precio ="PRECIO- debe tener un valor numérico con 2 decimales";
             }    

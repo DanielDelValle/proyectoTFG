@@ -9,13 +9,12 @@
 
 
 
-	<h2>ID Producto: {{producto.id_prod}} </h2>
+	<h2>{{producto.nombre}} - ID Producto: {{producto.id_prod}} </h2>
 	<img src="imagenes/{{producto.nombre}}.jpg" />
 	<table>
-		<td><b>Nombre:</b><input type ='text' name='nombre' value={{producto.nombre}}>{{producto.nombre}} </input></td>
-		<td><b>Precio:</b><input type ='text' name='precio' value={{producto.precio}}>{{producto.precio}} </input>€/Kg</td>
-		<td><b>Stock:</b><input type ='text' name='stock' value={{producto.stock}}>{{producto.stock}} </input>Kg</td>
-		<td><b>Descripción:</b><br><textarea name='descripcion' maxlength='250' cols='75'
+		<td><b>Precio:</b><input {{funcion_admon}} type ='text' name='precio' value={{datos.precio}}>{{producto.precio}} </input>€/Kg</td>
+		<td><b>Stock:</b><input type ='text' name='stock' value={{datos.stock}}>{{producto.stock}} </input>Kg</td>
+		<td><b>Descripción:</b><br><textarea {{funcion_admon}} name='descripcion' maxlength='250' cols='75'
 				value={{datos.descripcion}}>{{producto.descripcion}}</textarea></td>
 	</table>
 	<p class='importante'>
@@ -24,7 +23,7 @@
 
 	<button type="submit" class='critical_green' name="guardar_cambios">Guardar Cambios</button>
 
-	<button type="submit" name="volver_stock" />Volver a Stock</button>
+	<button type="submit" name="volver_stock" />Ir a Control Stock</button>
 </form>
 
 {% endblock %}

@@ -1,0 +1,32 @@
+{% extends "base_empl.html" %}
+
+{% block stylesheets %}
+<link rel="stylesheet" type="text/css" href="css/base.css">
+{% endblock %}
+
+{% block content %}
+
+
+<form method="POST" enctype="multipart/form-data">
+	<label for="imagen">Subir Imagen (.JPG):</label>
+	<input type="file" name="imagen" id='subida' accept="image/*" upload_max_filesize='5M'><br>
+	<!--<button name = "subir_imagen" type="submit">Enviar</button><br>-->
+
+	<img src="imagenes/{{datos.nombre}}.jpg" />
+	<table>
+		<td><b>Nombre:</b><input type ='text' name='nombre' value={{datos.nombre}}></input>€/Kg</td>
+		<td><b>Precio:</b><input type ='text' name='precio' value={{datos.precio}}></input>€/Kg</td>
+		<td><b>Stock:</b><input type ='text' name='stock' value={{datos.stock}}> </input>Kg</td>
+		<td><b>Descripción:</b><br><textarea  name='descripcion' maxlength='250' cols='75' value={{datos.descripcion}}></textarea></td>
+	</table>
+	<p class='importante'>
+		{{validaciones.val_imagen}}<br>{{validaciones.val_nombre}}<br>{{validaciones.val_precio}}<br>{{validaciones.val_stock}}<br>{{validaciones.val_descrip}}
+	</p><br>
+
+
+	<button type="submit" class='critical_green' name="guardar_cambios">Guardar Cambios</button>
+
+	<button type="submit" name="volver_stock" />Ir a Control Stock</button>
+</form>
+
+{% endblock %}

@@ -13,6 +13,8 @@
 			<h3><u>Stock Disponible</u>:   {{producto.stock}} Kg </h3>
 			<h3><u>Descripción</u>:  {{producto.descripcion}}</h3>
 
+			<button><a href="http://localhost/proyecto/tienda/index.php/modificar_mercancia?id={{producto.id_prod}}">Editar</a></button>      
+
 
 				<form action="index.php/mercancia" method="POST">
 					<button type="submit" name="volver" value="Volver"/>Volver a Mercancia</button>
