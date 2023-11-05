@@ -38,6 +38,12 @@ elseif ($URI == 'detalle_mercancia' && isset($_GET['id']))
 
     controlador_detalle_mercancia($_GET['id']); 
 }
+
+elseif ($URI == 'modificar_mercancia' && isset($_GET['id'])) 
+{
+
+    controlador_modificar_mercancia($_GET['id']); 
+}
 elseif ($URI == 'detalle_cliente' && isset($_GET['nif'])) 
 {
 

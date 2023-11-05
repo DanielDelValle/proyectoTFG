@@ -52,36 +52,30 @@ $(document).ready(function(){
 
 
 {% block content %}
-<form accept-charset="UTF-8"> 
+<form accept-charset="UTF-8" method ='GET'> 
         <table>
             <th></th>
-            <th></th>
-            <th></th>
+            <th>Imagen</th>
             <th>Id Producto</th>
             <th>Nombre</th>
             <th>Stock (Kg)</th>
-            <th><p  {{funcion_admon}}>Precio (€/Kg)</p></th>
-            <th><p {{funcion_admon}}>Descripcion</p></th>
+            <th>Precio (€/Kg)</th>
+            <th>Descripcion</th>
             <!-- Mostramos una lista de los artículos-->
 			{% for producto in lista_productos %}
-                <tr>              
-                <td><input type="checkbox" name="producto_select[]" class="checkbox" value={{producto.id_prod}}></td>   
-                <td></td>
-  
+                <tr>          
+                <td><a href="http://localhost/proyecto/tienda/index.php/modificar_mercancia?id={{producto.id_prod}}">Editar</a></td>                
                 <td><img class='img_stock'src="imagenes/{{producto.nombre}}.jpg"/> </td>
-                <td><input type="hidden" value ="{{producto.id_prod}}"></input>{{producto.id_prod}}</td>	
-                <td><input type="text" name='nombre' value="{{producto.nombre}}"></input></td>	
-                <td><input class='input_stock' type="text" name='stock' value="{{producto.stock}}"></input></td>	
-                <td><input {{funcion_admon}} class='input_stock' type="text" name='precio' value="{{producto.precio}}"></input></td>
-                <td><input {{funcion_admon}} class='input_descrip' type="text" name='descripcion' value="{{producto.descripcion}}"></input></td>
+                <td>{{producto.id_prod}}</td>	
+                <td>{{producto.nombre}}</td>	
+                <td>{{producto.stock}}</td>	
+                <td>{{producto.precio}}</td>
+                <td>{{producto.descripcion}}</td>
+ 
             </tr>        
 
             {% endfor %}
         </table>
-        <p class='importante'>
-            {{validaciones.val_nombre}}<br>{{validaciones.val_stock}}<br>{{validaciones.precio}}<br>{{validaciones.descrip}}
-        </p><br>
 
-        <button type="submit" name="guardar_cambios"method="POST">Guardar Cambios</button>
 </form>
 {% endblock %}	

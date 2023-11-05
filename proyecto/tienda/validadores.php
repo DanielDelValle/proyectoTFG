@@ -10,25 +10,43 @@
 */
 function es_texto($cadena) {
     //definimos el patrón
-    $patron = '/^[a-zA-Zá-úÁ-ÚñÑ,\s?]+$/';
+    $patron = '/^[a-zA-Zá-úÁ-ÚñÑ\s?]+$/';
 
 	//$patron = '/^[a-zA-Z]+(\s*[a-zA-Z]*)*[a-zA-Z]+$/';
      
     return (preg_match($patron, $cadena));	
 }
 
+/**
+* Comprueba que una cadena contenga exclusivamente caracteres y numeros, y espacios en blanco con \s., 
+* ademas de comas, puntos, signos de admiracion y exclamacion y paréntesis, y guion medio.
+*
+* @param string $cadena Cadena que se va a comprobar.
+*
+* @return bool Retorna true si es alfanumerico.
+*/
+function es_descripcion($cadena) {
+    //definimos el patrón
+    $patron = '/^[\.a-zA-Zá-úÁ-ÚñÑ0-9,()!?¡¿\-\s?]+$/';
+	//$patron = '/^[a-zA-Z]+(\s*[a-zA-Z]*)*[a-zA-Z]+$/';
+     
+    return (preg_match($patron, $cadena));	
+}
+ 
+
+
 
 
 /**
-* Comprueba que una cadena contenga exclusivamente cifras.
+* Comprueba que una cadena contenga exclusivamente cifras y puntos (para los decimales)
 *
 * @param string $cadena Cadena que se va a comprobar.
 *
 * @return bool Retorna true si es numérico.
 */
-function es_cifra($cadena) {
+function es_decimal($cadena) {
     //definimos el patrón con máximo 8 cifras (en la BBDD es un decimal de 8+2)
-    $patron = '/^[0-9]{1,8}*$/';
+    $patron = '/^[\.0-9]{1,9}+$/';
 
 	//$patron = '/^[a-zA-Z]+(\s*[a-zA-Z]*)*[a-zA-Z]+$/';
      
@@ -133,21 +151,6 @@ function valid_tel($tel){
     return (preg_match($patron, $tel));
  }
 
- 
-/**
-* Comprueba que una cadena contenga exclusivamente caracteres y numeros, y espacios en blanco con \s.
-*
-* @param string $cadena Cadena que se va a comprobar.
-*
-* @return bool Retorna true si es alfanumerico.
-*/
-function es_descripcion($cadena) {
-    //definimos el patrón
-    $patron = '/^[\.a-zA-Zá-úÁ-ÚñÑ0-9,!?¿¡\s?]+$/';
-	//$patron = '/^[a-zA-Z]+(\s*[a-zA-Z]*)*[a-zA-Z]+$/';
-     
-    return (preg_match($patron, $cadena));	
-}
  
 /**
 * Comprueba que el email esté en la lista de emails de la Base de Datos.

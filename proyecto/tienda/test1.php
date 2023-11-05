@@ -22,7 +22,25 @@ public function testEstextoKO()
 {
 $esperado = false;
 
-$resultado = es_texto('!?-');
+$resultado = es_texto('!?¡,-');
+$this->assertEquals($esperado, $resultado);
+}//OK
+
+
+public function testEsdescripcionOK()
+{
+$esperado = true;
+
+$resultado = es_descripcion('camiseta óñ Á arroz 245 ,()!?¡¿-.' );
+$this->assertEquals($esperado, $resultado);
+}//OK
+
+
+public function testEsdescripcionKO()
+{
+$esperado = false;
+
+$resultado = es_descripcion(']¡we-+');
 $this->assertEquals($esperado, $resultado);
 }//OK
 
@@ -30,7 +48,7 @@ public function testEscifraOK()
 {
 $esperado = true;
 
-$resultado = es_cifra(123456);
+$resultado = es_decimal(123456.5);
 $this->assertEquals($esperado, $resultado);
 }//OK
 
@@ -39,7 +57,7 @@ public function testEscifraKO()
 {
 $esperado = false;
 
-$resultado = es_cifra('camiseta óñ Á 5');
+$resultado = es_decimal('camiseta óñ Á 5');
 $this->assertEquals($esperado, $resultado);
 }//OK
 
@@ -92,24 +110,6 @@ public function testValidtelKO()
 $esperado = false;
 
 $resultado = valid_tel(5554075635);
-$this->assertEquals($esperado, $resultado);
-}//OK
-
-
-public function testValiddireccionOK()
-{
-$esperado = true;
-
-$resultado = valid_direccion('camiseta óñ Á arroz 245');
-$this->assertEquals($esperado, $resultado);
-}//OK
-
-
-public function testValiddireccionKO()
-{
-$esperado = false;
-
-$resultado = valid_direccion(']!¡we-+');
 $this->assertEquals($esperado, $resultado);
 }//OK
 

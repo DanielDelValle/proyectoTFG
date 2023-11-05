@@ -109,62 +109,15 @@ function controlador_stock()
     $logged = isset($_SESSION['usuario']) ? "cerrar_sesion" : "iniciar_sesion";
     $logged_legible = isset($_SESSION['usuario']) ? "Cerrar Sesión" : "Iniciar Sesión";
     $lista_productos = lista_productos();
-    $checked = isset($_POST['producto_select']) ? $_POST['producto_select'] : [];
-    $validaciones = array('val_nombre'=> '', 'val_stock'=>'', 'val_precio'=>'', 'val_descrip'=>'');  
     $mensaje = '';
-    $datos = [];
 
 
 
-
-   if (isset($_POST["guardar_cambios"])) {
-        $contador = 0;
-        //If intval($checked == 1 significa que el array "checked" tiene al menos un valor dentro, con lo que hay algún pedido seleccionado)
-        if(intval($checked) == 1){            
-            foreach($checked as $id_prod){
-              if(isset($_POST['nombre']) && isset($_POST['stock']) && isset($_POST['precio']) && isset($_POST['descripcion'])){         
-
-                $nombre=htmlspecialchars($_POST['nombre'], ENT_COMPAT, 'UTF-8');
-                $stock=htmlspecialchars($_POST['stock'], ENT_COMPAT, 'UTF-8');
-                $precio=htmlspecialchars($_POST['precio'], ENT_COMPAT, 'UTF-8');
-                $descripcion=htmlspecialchars($_POST['descripcion'], ENT_COMPAT, 'UTF-8');
-
-                if(es_texto($_POST['nombre']) && es_cifra($nombre) && es_cifra($precio) && es_descripcion($descripcion)){
-                    $cuenta = producto_actualizado($id_prod,$nombre, $_POST['stock'], $precio, $descripcion);
-                    $contador +=$cuenta;
-                    $mensaje = $contador. " Productos Actualizados'";
-
-                } else{  //reviso los posibles errores de 1 en 1, para poder modificar su validacion individualmente (ya que pueden darse varios fallos simultaneos)
-            
-                    if (!val_nombre($nombre)){
-                        $validaciones->val_nombre = "NOMBRE - Sólo puede incluir caracteres del alfabeto";
-                    }
-            
-                    if (!es_cifra($stock)){
-                        $validaciones->val_ape="STOCK - debe tener un valor numérico con 2 decimales";
-                    }
-                    if (!es_cifra($precio)){ 
-                        $validaciones->val_tel ="TELEFONO - debe tener un valor numérico con 2 decimales";
-                    }
-            
-                    if (!valid_descripcion($descripcion)){
-                        $validaciones->val_dir="DESCRIPCIÓN - Sólo puede incluir caracteres del alfabeto y numeros";
-                    }
-
-            }
-              }else $mensaje = "Alguno de los productos no puede actualizarse - compruebe que ha rellenado todos los campos";
-    }
-            $delay=3;
-            header("Refresh:$delay");
-
-        }
-    else $mensaje = "Por favor, seleccione al menos un pedido para modificar";
-    
-   }
+   
     global $twig;
     $template = $twig->load('control_stock.html');  
-	echo $template->render(array ('URI'=>$URI, 'empleado'=>$empleado, 'lista_productos' => $lista_productos,  'validaciones'=>$validaciones, 'funcion_admon'=>$funcion_admon, 'mensaje'=> $mensaje, 'logged'=>$logged, 'logged_legible'=>$logged_legible));
-    
+	echo $template->render(array ('URI'=>$URI, 'empleado'=>$empleado, 'lista_productos' => $lista_productos,  'mensaje'=> $mensaje, 'logged'=>$logged, 'logged_legible'=>$logged_legible));
+
 
 }
 
@@ -239,6 +192,77 @@ function controlador_detalle_mercancia($id)
     global $twig;
     $template = $twig->load('detalle_mercancia.html');  
 	echo $template->render(array ('URI'=>$URI, 'empleado'=>$empleado, 'base'=>$base, 'producto' => $producto, 'mensaje'=> $mensaje));
+    
+}
+
+function controlador_modificar_mercancia($id)
+{   $URI = get_URI();    
+    //Con las siguientes 2 lineas restrinjo el acceso a partes solo destinadas a empleados
+    $usuario = checkSession();
+    $base = checkDomain($usuario);   
+    if ($base !== 'base_empl') exit(header('location:iniciar_sesion'));
+    $empleado = datos_empleado($usuario);
+    $funcion_admon = '';
+    if ($empleado->tipo_cuenta =='almacen')$funcion_admon = "hidden";    
+    $mensaje = "";
+    // Petición al modelo para que retorne la lista de productos de la BD
+    $producto = get_object_vars(detalle_producto($id));  //transformo el objeto que devuelve el modelo en array asociativo
+    $validaciones = array('val_nombre'=> '', 'val_stock'=>'', 'val_precio'=>'', 'val_descrip'=>'');  
+
+    $datos = [];
+ /*   foreach($_POST as $key => $value){
+        if(!isset($datos[$key])){
+            $datos[$key] = htmlspecialchars($value, ENT_COMPAT, 'UTF-8');
+        }
+}*/
+    foreach($_POST as $key => $value){
+        if(!isset($datos[$key])){
+            $datos[$key] = htmlspecialchars($value, ENT_COMPAT, 'UTF-8');
+        }
+    }
+
+
+    $validaciones= (object) $validaciones; //CONVIERTO A OBJETOS PARA MAYOR FACILIDAD DE USO AQUI Y EN LA PLANTILLA TWIG
+    $datos = (object)$datos;
+
+    if (isset($_POST["guardar_cambios"])) {
+      //  if(isset($_POST['nombre']) && isset($_POST['nombre']) && isset($_POST['nombre']) && isset($_POST['nombre']))
+      
+     /* $nombre=isset($_POST['nombre'])?htmlspecialchars($_POST['nombre'], ENT_COMPAT, 'UTF-8'):'';
+        $stock=isset($_POST['stock'])?htmlspecialchars($_POST['stock'], ENT_COMPAT, 'UTF-8'):'';
+        $precio=isset($_POST['precio'])?htmlspecialchars($_POST['precio'], ENT_COMPAT, 'UTF-8'):'';
+        $descripcion=isset($_POST['descripcion'])?htmlspecialchars($_POST['descripcion'], ENT_COMPAT, 'UTF-8'):'';*/
+
+        if(es_texto($datos->nombre) && es_decimal($datos->precio) && es_decimal($datos->stock) && es_descripcion($datos->descripcion)){
+            producto_actualizado($producto['id_prod'], $datos->nombre, $datos->precio, $datos->stock, $datos->descripcion);
+            $delay=3;
+            header("Refresh:$delay");
+            $mensaje = "Mercancía Actualizada";
+
+        } else{  //reviso los posibles errores de 1 en 1, para poder modificar su validacion individualmente (ya que pueden darse varios fallos simultaneos)
+    
+            if (!es_texto($datos->nombre)){
+                $validaciones->val_nombre = "NOMBRE - Sólo puede incluir caracteres del alfabeto";
+            }
+    
+            if (!es_decimal($datos->precio)){ 
+                $validaciones->val_precio ="PRECIO- debe tener un valor numérico con 2 decimales";
+            }    
+            if (!es_decimal($datos->stock)){
+                $validaciones->val_stock="STOCK - debe tener un valor numérico con 2 decimales";
+            }
+
+            if (!es_descripcion($datos->descripcion)){
+                $validaciones->val_descrip="DESCRIPCIÓN - Sólo puede incluir caracteres del alfabeto y numeros";
+            }
+        }
+    }
+
+    if(isset($_POST['volver_stock']))exit(header('location:control_stock'));
+    
+    global $twig;
+    $template = $twig->load('modificar_mercancia.html');  
+	echo $template->render(array ('URI'=>$URI, 'empleado'=>$empleado, 'base'=>$base, 'producto' => $producto, 'mensaje'=> $mensaje, 'datos'=>$datos,'validaciones'=>$validaciones, 'funcion_admon'=>$funcion_admon,));
     
 }
 

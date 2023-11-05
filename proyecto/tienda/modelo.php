@@ -733,7 +733,7 @@ return $resultado;
 
 }
 
-function producto_actualizado($id_prod, $nombre, $stock, $precio, $descripcion){
+function producto_actualizado($id_prod, $nombre, $precio, $stock, $descripcion){
 			
 	$pdo = conexion();
 	if($pdo){
@@ -741,7 +741,7 @@ function producto_actualizado($id_prod, $nombre, $stock, $precio, $descripcion){
 	$pdo->beginTransaction();
 			//Actualizo el estado del pago y el del pedido, y establezco fecha de cancelacion a NULL por si hubiese sido cancelado y reactivado. 
 	$sql = "UPDATE producto 
-			SET nombre = '$nombre', stock = '$stock', precio = '$precio', 'descripcion = '$descripcion'
+			SET nombre = '$nombre', precio = '$precio', stock = '$stock', descripcion = '$descripcion'
 			WHERE id_prod= '$id_prod'" ;
 
 
@@ -770,11 +770,7 @@ return $resultado;
 
 
 }
-
-
-
-
-function insert_productos_pedido($id_pedido, $cesta){
+function alta_producto($nombre, $stock, $precio, $descripcion){
 
 	//En esta operacion usaré un conector mysqli para poder usar su multy_query y simplificar el proceso (en el resto uso PDO)
 		$sql = "";
@@ -801,6 +797,35 @@ function insert_productos_pedido($id_pedido, $cesta){
 			}
 		} 
 		$mysqli.close();
+}
+
+
+
+function insert_productos_pedido($id_pedido, $cesta){
+
+	$pdo = conexion();
+	if($pdo){
+		try{
+			$notas=utf8_decode($notas);//para evitar errores con los caracteres especiales (ñ, Ñ, vocales acentuadas, etcf)
+			$sql = "INSERT INTO producto(nombre, precio, stock,  descripcion)
+					VALUES ('".$nombre."', '".$precio."', '".$stock."',  '".$descripcion."');";
+
+
+		$insertarPedido = $pdo->query($sql);
+		//return 	$insertarPedido->rowCount();
+		if($insertarPedido){
+		//	else echo 'ERROR AL INSERTAR PEDIDO';
+		$pdo = null;
+		return true;}
+	}	
+	
+	catch(PDOException $e){
+		echo 'Excepción: ', $e->getMessage();
+		return null;
+		}
+		
+	}  
+	$pdo=null;
 }
 
 
