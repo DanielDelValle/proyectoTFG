@@ -2,7 +2,7 @@
 
 
 /**
-* Comprueba que una cadena contenga exclusivamente letras, y espacios en blanco con \s.
+* Comprueba que una cadena contenga exclusivamente letras, y espacios en blanco con \s., y comas
 *
 * @param string $cadena Cadena que se va a comprobar.
 *
@@ -10,7 +10,7 @@
 */
 function es_texto($cadena) {
     //definimos el patrón
-    $patron = '/^[a-zA-Zá-úÁ-ÚñÑ\s?]+$/';
+    $patron = '/^[a-zA-Zá-úÁ-ÚñÑ,\s?]+$/';
 
 	//$patron = '/^[a-zA-Z]+(\s*[a-zA-Z]*)*[a-zA-Z]+$/';
      
@@ -27,8 +27,8 @@ function es_texto($cadena) {
 * @return bool Retorna true si es numérico.
 */
 function es_cifra($cadena) {
-    //definimos el patrón
-    $patron = '/^[0-9]*$/';
+    //definimos el patrón con máximo 8 cifras (en la BBDD es un decimal de 8+2)
+    $patron = '/^[0-9]{1,8}*$/';
 
 	//$patron = '/^[a-zA-Z]+(\s*[a-zA-Z]*)*[a-zA-Z]+$/';
      
@@ -141,9 +141,9 @@ function valid_tel($tel){
 *
 * @return bool Retorna true si es alfanumerico.
 */
-function valid_direccion($cadena) {
+function es_descripcion($cadena) {
     //definimos el patrón
-    $patron = '/^[a-zA-Zá-úÁ-ÚñÑ0-9\s?]+$/';
+    $patron = '/^[\.a-zA-Zá-úÁ-ÚñÑ0-9,!?¿¡\s?]+$/';
 	//$patron = '/^[a-zA-Z]+(\s*[a-zA-Z]*)*[a-zA-Z]+$/';
      
     return (preg_match($patron, $cadena));	

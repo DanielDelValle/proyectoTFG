@@ -129,7 +129,7 @@ function controlador_stock()
                 $precio=htmlspecialchars($_POST['precio'], ENT_COMPAT, 'UTF-8');
                 $descripcion=htmlspecialchars($_POST['descripcion'], ENT_COMPAT, 'UTF-8');
 
-                if(es_texto($_POST['nombre']) && es_cifra($nombre) && es_cifra( $precio) && valid_direccion($descripcion)){
+                if(es_texto($_POST['nombre']) && es_cifra($nombre) && es_cifra($precio) && es_descripcion($descripcion)){
                     $cuenta = producto_actualizado($id_prod,$nombre, $_POST['stock'], $precio, $descripcion);
                     $contador +=$cuenta;
                     $mensaje = $contador. " Productos Actualizados'";
@@ -570,11 +570,14 @@ function controlador_confirmar_pedido(){
             $notas = utf8_encode($_POST['notas']);
 
                 //si ambas operaciones insert retornan TRUE
-  if(insert_pedido($id_pedido, $cliente->nif, $total_mercancia, $total_kg, $coste_envio, $total_pedido, $forma_pago, $creado_fecha, $notas) && (insert_productos_pedido($id_pedido, $cesta))){
-             //  $email = pruebaMail($cliente->email, $cliente->nombre);
-            exit(header("location:pedido_realizado?id_pedido=$id_pedido"));
-          } else $mensaje= "Error al grabar el pedido - por favor, repita el proceso de nuevo";
-              
+                     if(es_descripcion($notas) && insert_pedido($id_pedido, $cliente->nif, $total_mercancia, $total_kg, $coste_envio, $total_pedido, $forma_pago, $creado_fecha, $notas) 
+                     && (insert_productos_pedido($id_pedido, $cesta))){
+                    // $email = pruebaMail($cliente->email, $cliente->nombre);
+                    exit(header("location:pedido_realizado?id_pedido=$id_pedido"));}
+
+                    elseif(!es_descripcion($notas)){ $mensaje= "Error al grabar las notas de su pedido - por favor, elimine los caracteres poco habituales o invalidos" ;
+                    }
+                    else $mensaje= "Error al grabar el pedido - por favor, repita el proceso de nuevo";
 
         } else $mensaje = "Por favor, seleccione una forma de pago";
 
@@ -1556,7 +1559,7 @@ function controlador_crear_cuenta()
         //$dominio = ltrim(strstr(strtolower($_POST['email']), '@'), '@'); 
 
         if((val_nif($datos->nif))&&(es_texto($_POST['nombre'])) && (es_texto($_POST['apellidos'])) && 
-        (valid_direccion($_POST['direccion'])) && (es_texto($_POST['localidad'])) && (valid_postal($_POST['cod_postal'])) && (es_texto($_POST['provincia'])) 
+        (es_texto($_POST['direccion'])) && (es_texto($_POST['localidad'])) && (valid_postal($_POST['cod_postal'])) && (es_texto($_POST['provincia'])) 
         && (valid_tel($_POST['telefono'])) && !email_existe($_POST['email'], $lista_emails) && (valid_email(strtolower($_POST['email'])))
         && (!valid_email_empleado($_POST['email'])) && (valid_contrasena($_POST['contrasena'])) && ($_POST['contrasena'] === $_POST['rep_contrasena'])) 
             {
@@ -1587,7 +1590,7 @@ function controlador_crear_cuenta()
                 $validaciones->val_tel ="TELEFONO - Debe tener una longitud de 9 cifras, sin prefijo internacional ni separaciones";
             }
     
-            if (!valid_direccion($datos->direccion)){
+            if (!es_texto($datos->direccion)){
                 $validaciones->val_dir="DIRECCION - Sólo puede incluir caracteres del alfabeto y numeros";
             }
             if (!es_texto($datos->localidad)){
@@ -1664,7 +1667,7 @@ function controlador_alta_empleado()
     if(isset($_POST['confirmar_alta'])){ 
             //valid_nif($_POST['nif']) && 
         if((val_nif($datos->nif))&&(es_texto($_POST['nombre'])) && (es_texto($_POST['apellidos'])) && 
-        (valid_direccion($_POST['direccion'])) && (es_texto($_POST['localidad'])) &&(valid_postal($_POST['cod_postal'])) &&
+        (es_texto($_POST['direccion'])) && (es_texto($_POST['localidad'])) &&(valid_postal($_POST['cod_postal'])) &&
         (es_texto($_POST['provincia'])) && (valid_tel($_POST['telefono'])) && !email_existe($_POST['email'], $lista_emails) && (valid_email_empleado(strtolower($_POST['email']))) && 
         (valid_contrasena($_POST['contrasena'])) && ($_POST['contrasena'] === $_POST['rep_contrasena']) && (!empty($_POST['tipo_cuenta']))){
               

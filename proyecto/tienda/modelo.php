@@ -43,24 +43,25 @@ catch (PDOException $e) {
 */
 
 function conexion_mysqli(){
-	$servidor = 'localhost';
-	$usuario = 'daniel';
-	$contraseña = 'Daniel88!';
-	$bd = 'tienda';
-try {
-	$cadenaConexion = "mysql:dbname=$bd;host=$servidor";
 
-	// Create connection 
+	$servername = "localhost";
+	$username = 'daniel';
+	$password = 'Daniel88!';
+	$DB = 'tienda';
+	
+	// Create connection
+	
 	mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
-	$mysqli = new mysqli($cadenaConexion, $usuario, $contraseña);
-
+	$mysqli = new mysqli($servername, $username, $password, $DB);
+	
+	// Check connection
+	if (!$mysqli) {
+		die("Fallo en la conexión a BD: " . mysqli_connect_error());
+	}
+	else echo "Conectado con éxito a BD";
+	
 	return $mysqli;
-}
-catch (PDOException $e) {
-    return null;
-	die('Conexión a base de datos no conseguida');
-    }
-}
+	}
 
 
 function backup_bbdd($tabla){
