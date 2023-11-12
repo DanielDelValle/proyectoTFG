@@ -27,6 +27,25 @@ $this->assertEquals($esperado, $resultado);
 }//OK
 
 
+public function testEsdireccionOK()
+{
+$esperado = true;
+
+$resultado = es_descripcion('camiseta óñ Á arroz 245 ,.' );
+$this->assertEquals($esperado, $resultado);
+}//OK
+
+
+public function testEsdireccionKO()
+{
+$esperado = false;
+
+$resultado = es_descripcion(']¡we-+ ()!?¡¿-');
+$this->assertEquals($esperado, $resultado);
+}//OK
+
+
+
 public function testEsdescripcionOK()
 {
 $esperado = true;

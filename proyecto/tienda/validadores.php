@@ -33,7 +33,21 @@ function es_descripcion($cadena) {
     return (preg_match($patron, $cadena));	
 }
  
-
+/**
+* Comprueba que una cadena contenga caracteres y numeros, espacios en blanco con \s. y comas. 
+* ademas de comas, puntos, signos de admiracion y exclamacion y paréntesis, y guion medio.
+*
+* @param string $cadena Cadena que se va a comprobar.
+*
+* @return bool Retorna true si es correcto.
+*/
+function es_direccion($cadena) {
+    //definimos el patrón
+    $patron = '/^[a-zA-Zá-úÁ-ÚñÑ0-9,\s?]+$/';
+	//$patron = '/^[a-zA-Z]+(\s*[a-zA-Z]*)*[a-zA-Z]+$/';
+     
+    return (preg_match($patron, $cadena));	
+}
 
 
 

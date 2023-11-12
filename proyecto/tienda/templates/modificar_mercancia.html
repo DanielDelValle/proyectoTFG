@@ -12,8 +12,8 @@
 	<h2>{{producto.nombre}} - ID Producto: {{producto.id_prod}} </h2>
 	<img src="imagenes/{{producto.nombre}}.jpg" />
 	<table>
-		<td><b>Precio:</b><input {{funcion_admon}} type ='text' name='precio' value={{datos.precio}}>{{producto.precio}} </input>€/Kg</td>
-		<td><b>Stock:</b><input type ='text' name='stock' value={{datos.stock}}>{{producto.stock}} </input>Kg</td>
+		<td><b>Precio:</b><input {{funcion_admon}} type ='text' name='precio' value={{producto.precio}}>{{producto.precio}} </input>€/Kg</td>
+		<td><b>Stock:</b><input type ='text' name='stock' value={{producto.stock}}>{{producto.stock}} </input>Kg</td>
 		<td><b>Descripción:</b><br><textarea {{funcion_admon}} name='descripcion' maxlength='250' cols='75'
 				value={{datos.descripcion}}>{{producto.descripcion}}</textarea></td>
 	</table>

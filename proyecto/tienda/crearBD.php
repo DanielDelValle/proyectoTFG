@@ -2,7 +2,7 @@
     try{
     $cadenaConexion ="mysql:host=localhost";  //no indico ninguna base de datos, porque se trata de crearla ("mysql:dbname=BD_daniel; host=localhost" por ejemplo)
     $usuario="daniel";
-    $clave="Daniel88";
+    $clave="Daniel88!";
     $bd = new PDO($cadenaConexion,$usuario,$clave,
         array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8")
     );

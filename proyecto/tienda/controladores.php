@@ -165,7 +165,7 @@ function controlador_stock()
    
     global $twig;
     $template = $twig->load('control_stock.html');  
-	echo $template->render(array ('URI'=>$URI, 'empleado'=>$empleado, 'lista_productos' => $lista_productos,  'mensaje'=> $mensaje, 'logged'=>$logged, 'logged_legible'=>$logged_legible));
+	echo $template->render(array ('URI'=>$URI, 'empleado'=>$empleado, 'lista_productos' => $lista_productos,  'mensaje'=> $mensaje, 'funcion_admon'=>$funcion_admon, 'logged'=>$logged, 'logged_legible'=>$logged_legible));
 
 
 }
@@ -206,8 +206,9 @@ function controlador_alta_mercancia()
 
         } else{  //reviso los posibles errores de 1 en 1, para poder modificar su validacion individualmente (ya que pueden darse varios fallos simultaneos)
                     
-           if ($_FILES['imagen']['name']!=''){
-            $validaciones->val_imagen = "IMAGEN - Por favor, suba una imágen en formato JPG de máximo 5MB";
+           if ($_FILES['imagen']['name']==''){
+            $validaciones->val_imagen = "IMAGEN - Por favor, suba una imágen en formato JPG de máximo 5MB.\n \n Debe llamarse exactamente igual que el producto (sin contar la extensión.jpg)
+            -->Ejemplo: Nombre del producto: 'chirimoya'-->la imagen debe llamarse 'chirimoya.jpg'";
             }
 
            if (!es_texto($datos->nombre)){
@@ -1697,7 +1698,7 @@ function controlador_crear_cuenta()
         //$dominio = ltrim(strstr(strtolower($_POST['email']), '@'), '@'); 
 
         if((val_nif($datos->nif))&&(es_texto($_POST['nombre'])) && (es_texto($_POST['apellidos'])) && 
-        (es_texto($_POST['direccion'])) && (es_texto($_POST['localidad'])) && (valid_postal($_POST['cod_postal'])) && (es_texto($_POST['provincia'])) 
+        (es_direccion($_POST['direccion'])) && (es_texto($_POST['localidad'])) && (valid_postal($_POST['cod_postal'])) && (es_texto($_POST['provincia'])) 
         && (valid_tel($_POST['telefono'])) && !email_existe($_POST['email'], $lista_emails) && (valid_email(strtolower($_POST['email'])))
         && (!valid_email_empleado($_POST['email'])) && (valid_contrasena($_POST['contrasena'])) && ($_POST['contrasena'] === $_POST['rep_contrasena'])) 
             {
@@ -1728,7 +1729,7 @@ function controlador_crear_cuenta()
                 $validaciones->val_tel ="TELEFONO - Debe tener una longitud de 9 cifras, sin prefijo internacional ni separaciones";
             }
     
-            if (!es_texto($datos->direccion)){
+            if (!es_direccion($datos->direccion)){
                 $validaciones->val_dir="DIRECCION - Sólo puede incluir caracteres del alfabeto y numeros";
             }
             if (!es_texto($datos->localidad)){
@@ -1805,7 +1806,7 @@ function controlador_alta_empleado()
     if(isset($_POST['confirmar_alta'])){ 
             //valid_nif($_POST['nif']) && 
         if((val_nif($datos->nif))&&(es_texto($_POST['nombre'])) && (es_texto($_POST['apellidos'])) && 
-        (es_texto($_POST['direccion'])) && (es_texto($_POST['localidad'])) &&(valid_postal($_POST['cod_postal'])) &&
+        (es_direccion($_POST['direccion'])) && (es_texto($_POST['localidad'])) &&(valid_postal($_POST['cod_postal'])) &&
         (es_texto($_POST['provincia'])) && (valid_tel($_POST['telefono'])) && !email_existe($_POST['email'], $lista_emails) && (valid_email_empleado(strtolower($_POST['email']))) && 
         (valid_contrasena($_POST['contrasena'])) && ($_POST['contrasena'] === $_POST['rep_contrasena']) && (!empty($_POST['tipo_cuenta']))){
               
@@ -1822,7 +1823,7 @@ function controlador_alta_empleado()
     
         }
         //reviso los posibles errores de 1 en 1, para poder modificar su validacion individualmente (ya que pueden darse varios fallos simultaneos)
-        //PENDIENTE VALIDADOR DE NIF
+        //
     else{  
         if (!val_nif($datos->nif)){
             $validaciones->val_nif = "NIF - Por favor revise que no contenga espacios y la letra sea correcta";
@@ -1838,7 +1839,7 @@ function controlador_alta_empleado()
             $validaciones->val_tel ="TELEFONO - Debe tener una longitud de 9 cifras, sin prefijo internacional ni separaciones";
         }
 
-        if (!es_texto($datos->direccion)){
+        if (!es_direccion($datos->direccion)){
             $validaciones->val_dir="DIRECCION - Sólo puede incluir caracteres alfanuméricos";
         }
         if (!es_texto($datos->localidad)){
