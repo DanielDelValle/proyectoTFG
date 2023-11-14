@@ -1,7 +1,0 @@
-php_value max_execution_time 4000
-
-RewriteEngine On
-RewriteBase /
-options +FollowSymLinks
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteRule .* server.php/$0 [L]
