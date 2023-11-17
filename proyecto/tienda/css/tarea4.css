@@ -1,0 +1,121 @@
+
+body {background-color: #b0e0e6; text-align:center; font-family: Copperplate Gothic; margin-top:75px; margin-bottom:30px;}
+h1   {font-size:35px;color: #309c30; font-weight: bold; margin-top:75px;}
+h2   {color: #309c30;margin-top:50px;}	
+h3   {font-size:25px;color: #309c30; font-weight: bold; margin-top:75px;margin-bottom:75px;}
+
+.banner {
+	height:160px; 
+	background-position: center center;	
+	background: url("../imagenes/banner.png") no-repeat #80bdc5;
+	margin-top:0;
+}
+
+.titulo   {font-size:50px;color: #309c30; font-weight: bold; margin-top:75px;margin-bottom:75px;}
+
+div {
+	text-align:center;
+	margin-top:50px;
+	margin-bottom:30px;
+	width:500px;
+	margin-right:auto;
+	margin-left:auto;
+	
+	/*align-items:center;*/
+}
+
+form{
+	border-radius:20px;
+	border:2px solid;
+	border-color:#3678cebd;
+	padding:5px;
+	background-color: #80bdc5;
+}	
+	
+fieldset {
+	border-radius:20px;
+	border:2px solid;
+	border-color:#00806bc9;
+	padding:5px;
+	position:relative;
+	margin:auto;
+	padding:15px;
+}
+
+
+legend{
+	position:absolute;
+	margin-left: auto;
+	top:-25px;
+	font-weight: bold;
+
+		
+}
+
+label {
+	display: flex;
+	justify-content:center;
+	padding:10px;
+	font-size: 18px;
+
+}
+input {
+	margin-left: 10px;
+	padding:5px;
+	margin:5px 0;
+	padding:.5em;
+	border-radius:10px;
+	border:1px solid;
+	border-color:#3678ce;
+	width: auto;
+	background-color: #b0e0e6;
+}
+
+
+button {
+	padding:0.75em;
+	margin:5px 0;
+	border-radius:10px;
+	border:2px solid;
+	border-color:#3678ce;
+	background-color: #b0e0e6;
+	width: auto;
+
+  }
+
+select{
+	padding:.5em;
+	border-radius:10px;
+	border:1px solid;
+	border-color:#3678ce;
+	width: auto;
+	text-align:center;
+	margin-right: 15px;;
+	background-color: #b0e0e6;
+}
+
+input:hover{
+	background-color:#97be8b;
+}
+
+input:focus{
+	outline: 2px dashed #ff8c00;
+}
+
+select:hover{
+	background-color:#97be8b;
+}
+
+select:focus{
+	outline: 2px dashed #ff8c00;
+}
+
+.mensaje{	
+	padding:2px;
+	font-size: 20px;
+	color: #001aff;
+	
+}
+#sugerencias{
+	color: #0080FF
+}

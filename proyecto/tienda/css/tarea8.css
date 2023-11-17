@@ -1,0 +1,165 @@
+body {background-color: #b0e0e6; text-align:center; font-family: Copperplate Gothic; margin-top:25px; margin-bottom:25px;}
+h1   {font-size:35px;color: #309c30; font-weight: bold; margin-top:75px;}
+h2   {color: #309c30;margin-top:50px;}	
+h3   {font-size:25px;color: #309c30; font-weight: bold; margin-top:25px;margin-bottom:25px;}
+
+.cabecera {
+	height:160px; 
+	background-position: center center;	
+	background: url("../imagenes/banner.png") no-repeat #7968BB;
+}
+
+.mensaje{	
+	padding:2px;
+	font-size: 20px;
+	color: #001aff;
+	
+}
+
+div {
+	text-align:center;
+	margin-top:50px;
+	margin-bottom:30px;
+	width:75%;
+	margin-right:auto;
+	margin-left:auto;
+	
+	/*align-items:center;*/
+}
+
+p{font-size:20px;color: #309c30; font-weight: bold; margin-top:75px;margin-bottom:15px;
+	
+}
+
+input {
+	margin-left: 10px;
+	padding:5px;
+	margin:5px 0;
+	padding:.5em;
+	border-radius:10px;
+	border:1px solid;
+	border-color:#3678ce;
+	width: auto;
+	background-color: #b0e0e6;
+}
+
+
+button {
+	padding:0.75em;
+	margin:5px 0;
+	border-radius:10px;
+	border:2px solid;
+	border-color:#3678ce;
+	background-color: #b0e0e6;
+	width: auto;
+
+  }
+
+select{
+	padding:.5em;
+	border-radius:10px;
+	border:1px solid;
+	border-color:#3678ce;
+	width: auto;
+	text-align:center;
+	margin-right: 15px;;
+	background-color: #b0e0e6;
+}
+
+
+a{
+	font-weight: bold;
+}
+
+
+.cesta {
+	color: #8b4513;
+	font-size: 20px;
+	font-weight: bold;
+	width: 100%;
+	margin-left: auto;
+	margin-right: auto;
+	padding:25px;
+	display: flex;
+}
+
+.datos_cliente {
+	color: #8b4513;
+	font-size: 20px;
+	font-weight: bold;
+	width: 100%;
+	margin-left: auto;
+	margin-right: auto;
+	padding:25px;
+	display: flex;
+}
+
+.info{
+	font-size:15;
+	color:red;
+
+
+}
+
+.sidemenu ul{
+    list-style: none;
+    padding: 5px;
+    
+}
+
+.sidemenu li{
+    border:4px double; 
+	border-color:#3678ce;
+	background-color: #b0e0e6;
+    text-align: center;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 15px;
+    padding-right: 15px;
+    height:25px;
+    display: flex;
+  
+    
+}
+
+.sidemenu a{
+    text-decoration: none;
+    color: #309c30;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.sidemenu a:hover{
+    font-size: 150%;
+}
+
+input:hover{
+	background-color:#97be8b;
+}
+
+input:focus{
+	outline: 2px dashed #0080FF;
+}
+#sugerencias{
+	color: #0080FF
+}
+
+
+footer {
+	width: 100%;
+	margin-left: auto;
+	margin-right: auto;
+	font-weight: bold;
+	color: #8b4513;
+	margin-top:5%;
+	background: #0ef19377;
+}
+
+#banner img {
+	float:left; 
+	margin-left:1%;  
+	margin-top:4px; 
+	transition: transform 1s;
+		
+}
+/*#marco{ padding : 15px, 15px; margin-bottom : 30px; border-style: solid; border-color: red; background-color: black; color: white}

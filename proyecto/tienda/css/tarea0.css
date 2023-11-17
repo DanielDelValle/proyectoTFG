@@ -1,0 +1,154 @@
+header {
+	height:80px;
+	background-color:yellow;
+	text-align:center;
+	color: green;
+
+}
+header h1 {
+	text-shadow:2px 1px #ff0000;	
+	text-decoration:underline;
+}
+	
+body {
+	background-color:#cccccc;
+}
+	
+
+nav {
+	margin-top:50px;
+	margin-bottom:30px;
+	width:700px;
+	margin-right:auto;
+	margin-left:auto;
+	
+	/* align-items:center; */
+
+
+
+}
+
+nav ul li {
+	border: 2px solid black;
+	border-radius:20px;
+	background-color: orange;
+	width:150px;
+	height:35px;
+	font-size:20pt;
+	display:inline-block;
+	padding:20px;
+	text-align:center;
+	
+
+}
+
+nav ul li a {
+	text-decoration:none;
+	
+}
+
+nav ul li:hover {
+	background-color:grey;
+	
+
+}
+nav ul li a:hover {
+	color:red;
+
+}
+
+
+#articles {
+	text-align:center;
+	
+	}
+	
+#articles h2 {
+	text-decoration:underline;
+}
+
+#about_us {
+	text-align:center;
+}
+
+#contact {
+	text-align:center;
+}
+
+#contact_form{
+	border-radius:20px;
+	border:2px solid;
+	border-color:blue;
+}	
+	
+#contact fieldset {
+	border-radius:20px;
+	border:2px solid;
+	border-color:green;
+	
+}
+
+#data label {
+	display: flex;
+	justify-content:center;
+
+}
+
+#data input {
+	margin-left: 10px;
+}
+
+
+
+footer{ 
+	position: fixed;
+	border-style:solid;
+	border-radius:20px;
+	background-color:coral;
+	color: green;
+	bottom: 0;
+	animation: mymove 5s infinite;
+	display:flex;
+	left: 0;
+	right: 0;
+	height: 40px;
+	justify-content:center;
+	align-items:center;
+}
+@keyframes mymove {
+	50% {bottom: 25px;}
+}
+
+
+
+img{
+	width:300px; 
+	height:200px;
+	display:block;
+	margin-left:auto;
+	margin-right:auto;
+}
+
+.help {
+	font-size:12;
+	color:red;
+	font-style:italic;
+
+	
+}
+
+content .date {	
+	font-size:11;
+	color:blue;
+	font-style:italic;
+	
+}
+
+input:hover{
+	background-color:#cccccc;
+}
+
+input:focus{
+	outline: 2px dashed darkorange;
+
+}

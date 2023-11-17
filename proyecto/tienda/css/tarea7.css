@@ -1,0 +1,296 @@
+body {
+	background-color: #dee6b0;
+	font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+	margin-top: 0px;
+	text-align: center;
+
+}
+
+h1 {
+	font-size: 32px;
+	color: #8b4513;
+	font-weight: bold;
+	padding:2em;
+}
+
+h2 {
+	color: #8b4513;
+	margin-top: 20px;
+	font-weight: bold;
+	font-size: 25px;
+}
+
+h3 {
+	font-size: 20px;
+	color: #8b4513;
+	font-weight: bold;
+	margin-top: 75px;
+	margin-bottom: 2px;
+}
+
+
+.descrip {
+
+	font-size: 20px;
+	/*font-weight: bold;*/
+	margin-left: auto;
+	margin-right: auto;
+	padding:25px;
+
+}
+
+table {
+	color: #8b4513;
+	font-size: 20px;
+	font-weight: bold;
+	width:auto;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 25px;
+	margin-bottom: 25px;
+	border-radius: 20px;
+	border: double 3px #b68b2e;
+	padding: 20px;
+	border-collapse: collapse;
+	position:relative;
+	border-radius: 20px;
+	border-style: hidden; /* hide standard table (collapsed) border */
+	box-shadow: 3 0 0 3px; /* this draws the table border  */   /*si pongo 0 0 0 3, los bordes son redondos a pesar de ser collapsed TRUCO*/
+	position:relative;
+
+}
+
+
+th{
+	color: #8b4513;
+	font-size: 23px;
+	font-weight: bold;
+	margin-bottom:2em;
+	border: double 3px ;
+	border-collapse: collapse;
+	border-radius: 20px;
+	
+
+}
+tr {
+	border-bottom: 3px double ;  /*separadores entre filas*/
+	border:3px double rgb(124, 71, 71);
+	
+}
+td {
+	border-bottom: 3px double ;  /*separadores entre filas*/
+	border: 3px double rgb(124, 71, 71);
+
+	
+}
+
+
+/*.content a {
+	text-decoration: none;
+	color: #8b4513;
+	font-size: 20px;
+	font-weight: bold;
+	border: 4px double;
+	border-color: #e7a109;
+	background-color: #d3d01b;
+
+}*/
+
+/*img {
+	border-radius: 20px;
+	border: solid 3px #b68b2e;
+}*/
+
+		ul {
+	list-style: none;
+}
+
+
+ li {
+	border-radius: 10px;
+	border: 4px double;
+	/*border-color: #e7a109;
+	*/background-color: #d8d65ae1;
+	text-align: center;
+	padding:8px;
+	display: inline-flex;
+}
+
+
+a {
+	text-decoration: none;
+	color: #8b6b13;
+	font-size: 20px;
+	font-weight: bold;
+
+}
+
+
+a:hover {
+	font-size: 120%;
+	/*text-decoration: underline;*/
+	background-color:#89ad506e;
+}
+
+
+/*form{
+	border-radius: 10px;
+	border: 2px solid;
+	border-color: #00806bc9;
+	padding: 5px;
+	background-color: #bac47e85;
+	width:25%;
+	margin-left: auto;
+	margin-right: auto;
+
+}
+*/
+fieldset {
+	border-radius: 20px;
+	border: 2px solid;
+	border-color: #00806bc9;
+	padding: 5px;
+	position: relative;
+	margin: auto;
+	padding: 15px;
+
+}
+
+legend {
+	position: absolute;
+	margin-left: auto;
+	top: -25px;
+	font-weight: bold;
+}
+
+label {
+	display: flex;
+	justify-content: center;
+	padding:0.5em;
+	font-size: 18px;
+	font-weight: bold;
+}
+
+input {
+
+	padding: .5em;
+	border-radius: 10px;
+	border: 2px solid;
+	border-color: #00806bc9;
+	width: auto;
+	background-color: #dee6b0;
+}
+
+
+button {
+	padding: 0.75em;
+	margin: 5px 0;
+	border-radius: 10px;
+	border: 2px solid;
+	border-color: #00806bc9;
+	background-color: #d3d01b;
+	width: auto;
+	font-size: 15px;
+
+}
+
+input:hover {
+	background-color: #97be8b;
+}
+
+button:hover {
+	background-color: #97be8b;
+}
+
+
+input:focus {
+	outline: 2px dashed #ff8c00;
+}
+select{
+	padding:.5em;
+	border-radius:10px;
+	border:1px solid;
+	border-color:#3678ce;
+	width: auto;
+	text-align:center;
+	margin-right: 15px;;
+	background-color: #b0e0e6;
+}
+
+select:hover {
+	background-color: #97be8b;
+}
+
+select:focus {
+	outline: 2px dashed #ff8c00;
+}
+
+footer {
+	width: 100%;
+	margin-left: auto;
+	margin-right: auto;
+	font-weight: bold;
+	color: #8b4513;
+	margin-top:5%;
+	background: #7cac2e;
+}
+
+.critical {
+	border-color: red;
+	border-width: 3px;
+}
+.critical_green{
+	border-color: green;
+	border-width: 3px;
+}
+
+.continue{
+	border-color: red;
+}
+
+.banner {
+	height: 160px;
+	/*background-image: '../imagenes/banner.png' no-repeat #7cac2e;*/
+	background-position: center center;
+	background-color: #7cac2e;
+	margin-top:0; 
+}
+
+.mensaje{	
+	padding:2px;
+	font-size: 20px;
+	color: #001aff;
+	
+}
+
+#banner img {
+	float:left; 
+	margin-left:1%;  
+	margin-top:4px; 
+	transition: transform 1s;
+		
+}
+
+#titular {
+	color:#aa702e;
+	float:left;
+	margin-left: 5%;
+	margin-top: 25px;
+	margin-bottom: 25px;
+	width:auto;
+	position:relative;
+	border-collapse: collapse;
+
+}
+#titular th, #titular td, #titular tr{
+border:none;
+text-align: left;
+}
+
+#titular td{
+	border:3px double;
+	padding-inline-end: 10px;
+	padding-inline-start: 10px;
+
+	}
+	

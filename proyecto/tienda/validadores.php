@@ -19,7 +19,7 @@ function es_texto($cadena) {
 
 /**
 * Comprueba que una cadena contenga exclusivamente caracteres y numeros, y espacios en blanco con \s., 
-* ademas de comas, puntos, signos de admiracion y exclamacion y paréntesis, y guion medio.
+* ademas de comas, puntos, signos de admiracion y exclamacion y paréntesis, y guion medio y diéresis (2 puntos).
 *
 * @param string $cadena Cadena que se va a comprobar.
 *
@@ -27,7 +27,7 @@ function es_texto($cadena) {
 */
 function es_descripcion($cadena) {
     //definimos el patrón
-    $patron = '/^[\.a-zA-Zá-úÁ-ÚñÑ0-9,()!?¡¿\-\s?]+$/';
+    $patron = '/^[\.a-zA-Zá-úÁ-ÚñÑ0-9,()!?¡¿:\-\s?]+$/';
 	//$patron = '/^[a-zA-Z]+(\s*[a-zA-Z]*)*[a-zA-Z]+$/';
      
     return (preg_match($patron, $cadena));	

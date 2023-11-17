@@ -918,33 +918,35 @@ function alta_mercancia($nombre, $precio, $stock,  $descripcion){
 }
 
 
-
 function insert_productos_pedido($id_pedido, $cesta){
 
-	$pdo = conexion();
-	if($pdo){
-		try{
-			$notas=utf8_decode($notas);//para evitar errores con los caracteres especiales (ñ, Ñ, vocales acentuadas, etcf)
-			$sql = "INSERT INTO producto(nombre, precio, stock,  descripcion)
-					VALUES ('".$nombre."', '".$precio."', '".$stock."',  '".$descripcion."');";
+	//En esta operacion usaré un conector mysqli para poder usar su multy_query y simplificar el proceso (en el resto uso PDO)
+		$sql = "";
+		$mensaje = "";
+		$mysqli = conexion_mysqli();
+		if($mysqli){
+			try{
+				foreach($cesta as $producto){
 
-
-		$insertarPedido = $pdo->query($sql);
-		//return 	$insertarPedido->rowCount();
-		if($insertarPedido){
-		//	else echo 'ERROR AL INSERTAR PEDIDO';
-		$pdo = null;
-		return true;}
-	}	
-	
-	catch(PDOException $e){
-		echo 'Excepción: ', $e->getMessage();
-		return null;
-		}
+					//$sql .= "INSERT INTO pedido_productos (id_pedido, id_prod, cantidad) VALUES ('".$id_pedido."', '".$producto['id_prod']."', '".$producto['cantidad']."');";
+					$sql .= "INSERT INTO productos_pedido (id_pedido, id_prod, nombre, cantidad, precio) 
+					VALUES ('".$id_pedido."', '".$producto['id_prod']."', '".$producto['nombre']."' ,'".$producto['cantidad']."', '".$producto['precio']."');";
+				}
+				
+			$insertarProductosPedido = $mysqli->multi_query($sql);
+			if($insertarProductosPedido) {echo $mysqli->affected_rows; return true;}
+			else {echo 'ERROR AL INSERTAR PRODUCTOS'; return false;}
+			
+		}	
 		
-	}  
-	$pdo=null;
+		catch(Exception $e){
+			echo 'Excepción: ', $e->getMessage();
+			return null;
+			}
+		} 
+		$mysqli.close();
 }
+
 
 
 function insert_pedido($id_pedido, $nif, $total_mercancia, $total_kg, $coste_envio, $total_pedido, $forma_pago, $creado_fecha, $notas){
