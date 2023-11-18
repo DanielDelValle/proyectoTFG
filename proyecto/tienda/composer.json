@@ -1,7 +1,0 @@
-{
-    "config": {
-        "allow-plugins": {
-            "symfony/flex": false
-        }
-    }
-}
