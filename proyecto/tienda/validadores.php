@@ -27,7 +27,7 @@ function es_texto($cadena) {
 */
 function es_descripcion($cadena) {
     //definimos el patrón
-    $patron = '/^[\.a-zA-Zá-úÁ-ÚñÑ0-9,()!?¡¿:\-\s?]+$/';
+    $patron = '/^[\.a-zA-Zá-úÁ-ÚñÑ0-9,()!?¡¿:\-\s?]*$/';
 	//$patron = '/^[a-zA-Z]+(\s*[a-zA-Z]*)*[a-zA-Z]+$/';
      
     return (preg_match($patron, $cadena));	
