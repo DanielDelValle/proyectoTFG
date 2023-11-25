@@ -663,7 +663,7 @@ function controlador_datos_envio(){
 
     global $twig;
     $template = $twig->load('datos_envio.html');
-	echo $template->render(array ('URI'=>$URI, 'usuario' =>$usuario, 'cliente'=>$cliente, 'mensaje' => $mensaje, 'logged'=>$logged, 'logged_legible'=>$logged_legible));
+	echo $template->render(array ('URI'=>$URI, 'usuario' =>$usuario, 'cliente'=>$cliente, 'mensaje' => $mensaje, 'logged'=>$logged, 'logged_legible'=>$logged_legible, 'total_prods'=>$total_prods));
 
 }
 
@@ -916,7 +916,7 @@ function controlador_mis_pedidos()
                         //$mensaje .= $contador2. " Stock Actualizados ";        
                             }                
                 }
-            } else $mensaje = "Alguno de los pedidos seleccionados no puede marcarse como devuelto debido al estado en que se encuentra";
+            } else $mensaje = "Alguno de los pedidos seleccionados no puede marcarse como cancelado debido al estado en que se encuentra";
         }
             $delay=3;
             header("Refresh:$delay");
@@ -1477,7 +1477,8 @@ function controlador_iniciar_sesion(){
                     
                 } elseif ($estado === 'pendiente') {
                                 $mensaje = "Por favor, confirme su cuenta de usuario a través del email que recibió";
-                                
+                } elseif ($estado === 'inactivo') {
+                            $mensaje = "Su cuenta está inactiva - por favor, contacte con nosotros";                                        
                 } elseif ($estado === 'bloqueado') {
                                 $mensaje = "Su cuenta ha sido bloqueada - por favor, contacte con nosotros";
                 }               
@@ -1903,13 +1904,15 @@ function controlador_alta_correcta(){
 function controlador_contacto()
 {
     {   $URI = get_URI();
+        $usuario = checkSession();
+        $total_prods = $_SESSION['total_prods'];
     // Carga la plantilla que se mostrará al usuario con los datos recuperados del modelo
 	global $twig;
     // Carga la plantilla que se mostrará al usuario con los datos recuperados 
     // del modelo
 
     $template = $twig->load('contacto.html');
-	echo $template->render(array ('URI'=>$URI));
+	echo $template->render(array ('URI'=>$URI, 'total_prods'=>$total_prods));
 }
 }
 

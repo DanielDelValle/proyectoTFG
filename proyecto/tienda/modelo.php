@@ -924,11 +924,12 @@ function insert_productos_pedido($id_pedido, $cesta){
 		$sql = "";
 		$mensaje = "";
 		$mysqli = conexion_mysqli();
+		$mysqli->set_charset("utf8");
 		if($mysqli){
 			try{
 				foreach($cesta as $producto){
 
-					//$sql .= "INSERT INTO pedido_productos (id_pedido, id_prod, cantidad) VALUES ('".$id_pedido."', '".$producto['id_prod']."', '".$producto['cantidad']."');";
+					
 					$sql .= "INSERT INTO productos_pedido (id_pedido, id_prod, nombre, cantidad, precio) 
 					VALUES ('".$id_pedido."', '".$producto['id_prod']."', '".$producto['nombre']."' ,'".$producto['cantidad']."', '".$producto['precio']."');";
 				}
