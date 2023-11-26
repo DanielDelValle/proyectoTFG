@@ -708,7 +708,7 @@ function cambiar_contrasena($email, $nueva_contrasena, $contrasena_fecha){  ///P
 			$pdo->beginTransaction();			
 
 			$sql = "UPDATE $tipo
-					SET contrasena = '$hash_passwd'
+					SET contrasena = '$hash_passwd', contrasena_fecha = '$contrasena_fecha'
 					WHERE email = '$email'";
 
 

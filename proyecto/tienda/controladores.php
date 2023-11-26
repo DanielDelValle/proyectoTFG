@@ -1583,17 +1583,19 @@ function controlador_mi_cuenta()
     $logged = isset($_SESSION['usuario']) ? "cerrar_sesion" : "iniciar_sesion";
     $logged_legible = isset($_SESSION['usuario']) ? "Cerrar Sesión" : "Iniciar Sesión";
     $total_prods = isset($_SESSION['cesta']) ? count($_SESSION['cesta']) : 0;
+    $mensaje_contrasena = '';
     $validez_clave = 60;
     $fecha_contrasena = new DateTime($cliente->contrasena_fecha);
     $fecha_actual = new DateTime('now');
     $antiguedad_contrasena = $fecha_contrasena->diff($fecha_actual);
-    $mensaje_contrasena = '';
+
    // $antiguedad_contrasena = date_diff($fecha_contrasena, $fecha_actual); // otra manera de hacerlo
-   // Si los días de antiguedad de la contraseña son mayor a 1 y menor que 60, se muestra mensaje de cambio
-    if((intval($antiguedad_contrasena->d) > 1) && (intval($antiguedad_contrasena->d) <= $validez_clave)) $mensaje_contrasena = 'Su contraseña caducará dentro de ' .($validez_clave-(intval($antiguedad_contrasena->d))) . ' días';
+   // Si los días de antiguedad de la contraseña son mayor a 0 y menor que 60, se muestra mensaje de cambio
+    if((intval($antiguedad_contrasena->d) > 0) && (intval($antiguedad_contrasena->d) < $validez_clave)){ $mensaje_contrasena = 'Su contraseña caducará dentro de ' .($validez_clave-(intval($antiguedad_contrasena->d))) . ' días';}
     //Si es más antigua de 60 dias, le redirecciona al cambio de contraseña.
     elseif(intval($antiguedad_contrasena->d) >= $validez_clave) exit(header('location:cambiar_contrasena'));
     //echo($antiguedad_contrasena->format('%R%a días'));
+  
     global $twig;
     $template = $twig->load('mi_cuenta.html');
 	echo $template->render(array ('URI'=>$URI, 'usuario' =>$usuario, 'cliente'=>$cliente, 'logged'=>$logged, 'logged_legible'=>$logged_legible, 'total_prods'=>$total_prods, 'mensaje_contrasena'=>$mensaje_contrasena));
@@ -1613,8 +1615,8 @@ function controlador_home_admon()
     $mensaje_contrasena = '';
     $mensaje = "";
    // $antiguedad_contrasena = date_diff($fecha_contrasena, $fecha_actual); // otra manera de hacerlo
-   // Si los días de antiguedad de la contraseña son mayores a 7 y menor que 60, se muestra mensaje de cambio
-    if((intval($antiguedad_contrasena->d) >= 7) && (intval($antiguedad_contrasena->d) < $validez_clave)) $mensaje_contrasena = 'Su contraseña caducará dentro de ' .($validez_clave-(intval($antiguedad_contrasena->d))) . ' días';
+   // Si los días de antiguedad de la contraseña son mayores a 0 y menor que 60, se muestra mensaje de cambio
+    if((intval($antiguedad_contrasena->d) >= 0) && (intval($antiguedad_contrasena->d) < $validez_clave)) {$mensaje_contrasena = 'Su contraseña caducará dentro de ' .($validez_clave-(intval($antiguedad_contrasena->d))) . ' días';}
     //Si es más antigua de 30 dias, le redirecciona al cambio de contraseña.
     elseif(intval($antiguedad_contrasena->d) >= $validez_clave) exit(header('location:cambiar_contrasena'));
     //echo($antiguedad_contrasena->format('%R%a días'));
@@ -1647,8 +1649,8 @@ function controlador_home_almacen()
     $mensaje = "";
 
    // $antiguedad_contrasena = date_diff($fecha_contrasena, $fecha_actual); // otra manera de hacerlo
-   // Si los días de antiguedad de la contraseña son mayores a 7 y menor que 60, se muestra mensaje de cambio
-    if((intval($antiguedad_contrasena->d) >= 7) && (intval($antiguedad_contrasena->d) < $validez_clave)) $mensaje_contrasena = 'Su contraseña caducará dentro de ' .($validez_clave-(intval($antiguedad_contrasena->d))) . ' días';
+   // Si los días de antiguedad de la contraseña son mayores a 0 y menor que 60, se muestra mensaje de cambio
+    if((intval($antiguedad_contrasena->d) >= 0) && (intval($antiguedad_contrasena->d) < $validez_clave)) {$mensaje_contrasena = 'Su contraseña caducará dentro de ' .($validez_clave-(intval($antiguedad_contrasena->d))) . ' días';}
     //Si es más antigua de 30 dias, le redirecciona al cambio de contraseña.
     elseif(intval($antiguedad_contrasena->d) >= $validez_clave) exit(header('location:cambiar_contrasena'));
     //echo($antiguedad_contrasena->format('%R%a días'));
